@@ -1,0 +1,2 @@
+use pip install NOT pip3 install
+use python3 manage.py runserver NOT python manage.py runserver
