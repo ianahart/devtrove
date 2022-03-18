@@ -6,6 +6,12 @@ from django.contrib.auth.models import BaseUserManager, PermissionsMixin
 
 class UserManager(BaseUserManager):
 
+    def user_exists(self, email: str) -> bool:
+        users = self.all().filter(email=email)
+
+        return True if users.count() else False
+
+
     def create_user(self, username, email, password=None, **kwargs):
         if username is None:
             raise TypeError('Users must have a username.')
@@ -42,6 +48,7 @@ class UserManager(BaseUserManager):
 
 
 class CustomUser(AbstractUser):
+
     logged_in = models.BooleanField(default=False, blank=True, null=True)
     avatar_file = models.TextField(max_length=500, blank=True, null=True)
     avatar_url = models.TextField(max_length=500, blank=True, null=True)
@@ -50,6 +57,7 @@ class CustomUser(AbstractUser):
     slug = models.CharField(max_length=200, blank=True, null=True)
 
     objects: UserManager = UserManager()
+
 
     def __str__(self):
         return f"{self.email}"

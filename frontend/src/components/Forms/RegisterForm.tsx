@@ -1,10 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Box, Button, Heading } from '@chakra-ui/react';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { IRegisterForm } from '../../interfaces';
+import { IRegisterResponse, IAxiosError } from '../../interfaces/responses';
 import EntryInput from './EntryInput';
 
 const RegisterForm = (): JSX.Element => {
+  const navigate = useNavigate();
   const initialForm = {
     email: { name: 'email', value: '', error: '' },
     username: { name: 'username', value: '', error: '' },
@@ -12,6 +15,13 @@ const RegisterForm = (): JSX.Element => {
     confirmpassword: { name: 'confirmpassword', value: '', error: '' },
   };
   const [form, setForm] = useState<IRegisterForm>(initialForm);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    if (isLoaded) {
+      navigate('/');
+    }
+  }, [isLoaded, navigate]);
 
   const handleOnSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     try {
@@ -21,23 +31,31 @@ const RegisterForm = (): JSX.Element => {
         return;
       }
 
-      const response = await axios({
-        method: 'POST',
-        url: '/api/v1/account/',
-        data: {
-          username: form.username.value,
-          email: form.email.value,
-          password: form.password.value,
-        },
+      const response = await axios.post<IRegisterResponse>('/api/v1/account/', {
+        username: form.username.value,
+        email: form.email.value,
+        password: form.password.value,
+        confirmpassword: form.confirmpassword.value,
       });
 
-      if (response.status === 200) {
-        console.log(response);
+      if (response.status === 201) {
+        setIsLoaded(true);
       }
-
       setForm(initialForm);
-    } catch (e) {
-      console.log(e);
+    } catch (e: unknown | AxiosError) {
+      setIsLoaded(false);
+      if (axios.isAxiosError(e)) {
+        setFormError(e.response?.data);
+      }
+    }
+  };
+
+  const setFormError = <IAxiosError extends unknown>(errors: IAxiosError) => {
+    for (let error in errors) {
+      setForm((prevState) => ({
+        ...prevState,
+        [error]: { ...prevState[error as keyof IRegisterForm], error: errors[error] },
+      }));
     }
   };
 

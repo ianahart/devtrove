@@ -9,12 +9,12 @@ class UserViewSet(viewsets.ViewSet):
     def create(self, request):
         serializer = CreateUserSerializer(data=request.data)
         if serializer.is_valid():
-            print('HAPPY')
             serializer.create()
             return Response(
                 {'message': 'User Created.'},
                 status=status.HTTP_201_CREATED)
         else:
+            print(serializer.errors)
             return Response(serializer.errors,
             status=status.HTTP_400_BAD_REQUEST)
 

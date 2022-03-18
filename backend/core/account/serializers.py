@@ -17,18 +17,19 @@ class UserSerializer(serializers.ModelSerializer):
                   'updated_at',)
 
 class CreateUserSerializer(serializers.ModelSerializer):
-
-    email = serializers.EmailField(
-        validators=[UniqueValidator(queryset=CustomUser.objects.all())]
-    )
-
+    confirmpassword = serializers.CharField()
     class Meta:
         model = CustomUser
-        fields = ('email', 'username','password')
+        fields = ('email', 'username','password', 'confirmpassword')
         extra_kwargs = {'password': {'write_only': True}}
 
-    def validate_password(self, value):
+    def validate_email(self, value):
+        if CustomUser.objects.user_exists(email=value):
+            raise serializers.ValidationError('A user with that email already exists.')
+        else:
+            return value
 
+    def validate_password(self, value):
         reqs = {
             'lower': False,
             'upper': False,
@@ -55,7 +56,23 @@ class CreateUserSerializer(serializers.ModelSerializer):
                     msg += f'1 {req} character.'
                     break
                 msg += f'1 {req}, ' if index < len(missing) - 1 else f'and 1 {req} character.'
-            raise serializers.ValidationError({'message': msg})
+
+            raise serializers.ValidationError(msg)
+
+    def validate(self, validated_data):
+        compare_fields = ['password', 'confirmpassword']
+        passwords = [value for field, value in validated_data.items() if field in compare_fields]
+        if passwords[0] != passwords[1]:
+            raise serializers.ValidationError(
+                {
+                    'password': ['Passwords do not match.']
+                })
+        elif len(passwords[0]) < 8:
+            raise serializers.ValidationError(
+                {
+                    'password': ['Password must be at least 8 characters']
+                })
+        return validated_data
 
     def create(self):
         user = CustomUser.objects.create_user(
