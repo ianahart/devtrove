@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Button, Heading } from '@chakra-ui/react';
 import axios, { AxiosError } from 'axios';
 import { IRegisterForm } from '../../interfaces';
-import { IRegisterResponse, IAxiosError } from '../../interfaces/responses';
+import { IRegisterRequest, IAxiosError } from '../../interfaces/requests';
 import EntryInput from './EntryInput';
 
 const RegisterForm = (): JSX.Element => {
@@ -31,8 +31,8 @@ const RegisterForm = (): JSX.Element => {
         return;
       }
 
-      const response = await axios.post<IRegisterResponse>('/api/v1/account/', {
-        username: form.username.value,
+      const response = await axios.post<IRegisterRequest>('/api/v1/account/', {
+        handle: form.username.value,
         email: form.email.value,
         password: form.password.value,
         confirmpassword: form.confirmpassword.value,

@@ -1,26 +1,26 @@
 from .models import CustomUser
-from rest_framework import serializers, validators
-from rest_framework.validators import UniqueValidator
-
+from rest_framework import serializers
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ('logged_in',
                   'last_login',
-                  'username',
                   'first_name',
+                  'id',
                   'last_name',
                   'avatar_file',
                   'avatar_url',
                   'created_at',
-                  'updated_at',)
+                  'updated_at',
+                'handle',
+                  )
 
 class CreateUserSerializer(serializers.ModelSerializer):
     confirmpassword = serializers.CharField()
     class Meta:
         model = CustomUser
-        fields = ('email', 'username','password', 'confirmpassword')
+        fields = ('email','password',  'handle', 'confirmpassword')
         extra_kwargs = {'password': {'write_only': True}}
 
     def validate_email(self, value):
@@ -59,9 +59,14 @@ class CreateUserSerializer(serializers.ModelSerializer):
 
             raise serializers.ValidationError(msg)
 
-    def validate(self, validated_data):
+    def validate(self, data):
+        cleaned_data = {}
+
+        for field, value in data.items():
+            cleaned_data[field] = value.replace(' ', '').strip()
+
         compare_fields = ['password', 'confirmpassword']
-        passwords = [value for field, value in validated_data.items() if field in compare_fields]
+        passwords = [value for field, value in data.items() if field in compare_fields]
         if passwords[0] != passwords[1]:
             raise serializers.ValidationError(
                 {
@@ -72,12 +77,13 @@ class CreateUserSerializer(serializers.ModelSerializer):
                 {
                     'password': ['Password must be at least 8 characters']
                 })
-        return validated_data
+        return cleaned_data
 
-    def create(self):
+    def create(self, validated_data):
+
         user = CustomUser.objects.create_user(
-            email=self.data.get('email'),
-            username=self.data.get('username'),
-            password=self.data.get('password'),
+            email=validated_data['email'],
+            password=validated_data['confirmpassword'],
+            handle=validated_data['handle'],
         )
         return user

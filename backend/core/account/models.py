@@ -1,69 +1,97 @@
+from typing import Union
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.utils import timezone
-from django.contrib.auth.models import AbstractUser
-from django.contrib.auth.models import BaseUserManager, PermissionsMixin
+from django.contrib.auth.models import BaseUserManager, AbstractUser, PermissionsMixin
+from django.utils.translation import gettext_lazy as _
 
+class CustomUserManager(BaseUserManager):
 
-class UserManager(BaseUserManager):
+    def get_user(self, pk: int):
+        try:
+            if not isinstance(pk, int):
+                raise TypeError
+
+            user = self.all().filter(pk=pk).first()
+            return user
+        except TypeError:
+            return None
 
     def user_exists(self, email: str) -> bool:
         users = self.all().filter(email=email)
 
         return True if users.count() else False
 
+    def retrieve_user_by_email(self, email):
+        try:
+            users = self.all().filter(email__exact=email)
+            found = None
+            for user in users:
+                if user:
+                    found = user
+            return found
+        except ObjectDoesNotExist:
+            return None
 
-    def create_user(self, username, email, password=None, **kwargs):
-        if username is None:
-            raise TypeError('Users must have a username.')
-        if email is None:
-            raise TypeError('Users must have an email.')
+    def create_user(self, email, password, **extra_fields):
+        """
+        Create and save a User with the given email and password.
+        """
 
-        user = self.model(
-            username=username,
-            email=self.normalize_email(email),
-            slug=username
-        )
+        if not email:
+            raise ValueError(_('The Email must be set'))
+        email = self.normalize_email(email)
+        user = self.model(email=email, password=password, **extra_fields)
         user.set_password(password)
-        user.save(using=self._db)
-
+        user.save()
         return user
-
-    def create_superuser(self, username, email, password):
+    def create_superuser(self, email, password, **extra_fields):
         """
-        Create and return a `User` with superuser (admin) permissions.
+        Create and save a SuperUser with the given email and password.
         """
-        if password is None:
-            raise TypeError('Superusers must have a password.')
-        if email is None:
-            raise TypeError('Superusers must have an email.')
-        if username is None:
-            raise TypeError('Superusers must have an username.')
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('is_active', True)
 
-        user = self.create_user(username, email, password)
-        user.is_superuser = True
-        user.is_staff = True
-        user.save(using=self._db)
-
-        return user
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError(_('Superuser must have is_staff=True.'))
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError(_('Superuser must have is_superuser=True.'))
+        return self.create_user(email, password, **extra_fields)
 
 
-class CustomUser(AbstractUser):
-
-    logged_in = models.BooleanField(default=False, blank=True, null=True)
+class CustomUser(AbstractUser, PermissionsMixin):
+    username = None
+    logged_in = models.BooleanField(default=False)
     avatar_file = models.TextField(max_length=500, blank=True, null=True)
     avatar_url = models.TextField(max_length=500, blank=True, null=True)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)
+    first_name = models.CharField(max_length=200, blank=True, null=True)
+    last_name = models.CharField(max_length=200, blank=True, null=True)
     slug = models.CharField(max_length=200, blank=True, null=True)
+    handle = models.CharField(max_length=100, unique=True, blank=True, null=True)
+    email = models.EmailField(_(
+                            'email address'),
+                              unique=True,
+                              error_messages={'unique': 
+                                  'A user with this email already exists.'
+                              }
+                              )
 
-    objects: UserManager = UserManager()
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
 
+    objects: CustomUserManager = CustomUserManager()
 
     def __str__(self):
         return f"{self.email}"
 
+    def set_logged_in(self, logged_in: bool) -> None:
+        if isinstance(logged_in, bool):
 
-
+            self.logged_in = logged_in
+            self.save()
 
 
 

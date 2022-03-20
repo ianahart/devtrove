@@ -1,4 +1,5 @@
-import { Box, Button, Link } from '@chakra-ui/react';
+import { Box, Button, Icon, Link } from '@chakra-ui/react';
+import { FaUserCircle } from 'react-icons/fa';
 import { Link as RouterLink } from 'react-router-dom';
 import Logo from '../Mixed/Logo';
 import { GlobalContext } from '../../context/global';
@@ -6,7 +7,7 @@ import { IGlobalContext } from '../../interfaces';
 import { useContext } from 'react';
 
 const Navigation = () => {
-  const { openModal } = useContext(GlobalContext) as IGlobalContext;
+  const { userAuth, openModal } = useContext(GlobalContext) as IGlobalContext;
   return (
     <Box
       color="#FFF"
@@ -29,9 +30,15 @@ const Navigation = () => {
             width="60px"
           />
         </Link>
-        <Button onClick={openModal} color="text.secondary" bg="light.primary">
-          Come aboard
-        </Button>
+        {userAuth.user.logged_in ? (
+          <Link to={`/${userAuth.user.handle}/profile`} as={RouterLink}>
+            <Icon as={FaUserCircle} height="40px" width="40px" />
+          </Link>
+        ) : (
+          <Button onClick={openModal} color="text.secondary" bg="light.primary">
+            Come aboard
+          </Button>
+        )}
       </Box>
     </Box>
   );

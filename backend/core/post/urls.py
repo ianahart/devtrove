@@ -1,13 +1,14 @@
 from django.contrib import admin
 from django.urls import path, include
-from account import views
+from post import views
 
 from rest_framework import routers
 
 routes = routers.SimpleRouter()
 
-routes.register(r'account', views.UserViewSet, basename='CustomUser')
+routes.register(r'posts', views.PostViewSet, basename='Post')
 
 urlpatterns = [
     *routes.urls
 ]
+

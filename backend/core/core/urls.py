@@ -1,13 +1,19 @@
 from django.contrib import admin
 from django.urls import path, include
-from account import views
 
 from rest_framework import routers
 
+
+
+
 router = routers.SimpleRouter()
-router.register(r'api/v1/account', views.UserViewSet, basename='CustomUser')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/v1/', include(('account.urls', 'account'))),
+    path('api/v1/', include(('auth.urls', 'auth'))),
+    path('api/v1/', include(('post.urls', 'post')))
 ]
-urlpatterns += router.urls
+
+
+

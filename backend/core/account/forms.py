@@ -3,15 +3,21 @@ from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from .models import CustomUser
 
 
-class CustomUserCreationForm(UserCreationForm):
+class UserCreationForm(UserCreationForm):
 
     class Meta:
         model = CustomUser
-        fields = ('username', 'email')
+        fields = ('email', )
+
+        error_messages = {
+            "email": {
+                "unique": "A user with this email already exists."
+            }
+        }
 
 
-class CustomUserChangeForm(UserChangeForm):
+class UserChangeForm(UserChangeForm):
 
     class Meta:
         model = CustomUser
-        fields = ('username', 'email')
+        fields = ('email',)

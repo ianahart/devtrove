@@ -1,8 +1,10 @@
 import { Box, Button, Heading, Link, Text } from '@chakra-ui/react';
+import axios, { AxiosError } from 'axios';
 import { useContext, useEffect, useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { GlobalContext } from '../../context/global';
 import { IGlobalContext, ILoginForm } from '../../interfaces';
+import { ILoginRequest } from '../../interfaces/requests';
 import EntryInput from './EntryInput';
 
 const LoginForm: React.FC = () => {
@@ -11,10 +13,15 @@ const LoginForm: React.FC = () => {
     password: { name: 'password', value: '', error: '' },
   };
   const navigate = useNavigate();
-  const { closeModal } = useContext(GlobalContext) as IGlobalContext;
+  const { closeModal, stowTokens } = useContext(GlobalContext) as IGlobalContext;
   const [form, setForm] = useState<ILoginForm>(initialForm);
-  const [formError, setFormError] = useState('');
   const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    if (isLoaded) {
+      navigate('/');
+    }
+  }, [isLoaded, navigate]);
 
   const captureInput = (name: string, value: string) => {
     setForm((prevState) => ({
@@ -38,14 +45,37 @@ const LoginForm: React.FC = () => {
       .filter((field) => field.length);
   };
 
-  const handleOnSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    validate();
-    if (errors().length) {
-      return;
+  const handleOnSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    try {
+      event.preventDefault();
+      validate();
+      if (errors().length) {
+        return;
+      }
+
+      const response = await axios.post<ILoginRequest>('/api/v1/auth/login/', {
+        email: form.email.value,
+        password: form.password.value,
+      });
+      if (response.status === 200) {
+        stowTokens(response.data.tokens, response.data.user);
+        setIsLoaded(true);
+        closeModal();
+      }
+    } catch (e: unknown | AxiosError) {
+      if (axios.isAxiosError(e)) {
+        setFormError(e.response?.data);
+      }
     }
-    setIsLoaded(true);
-    console.log('Logging user in...');
+  };
+
+  const setFormError = <IAxiosError extends unknown>(errors: IAxiosError) => {
+    for (let error in errors) {
+      setForm((prevState) => ({
+        ...prevState,
+        [error]: { ...prevState[error as keyof ILoginForm], error: errors[error] },
+      }));
+    }
   };
 
   return (
@@ -80,8 +110,8 @@ const LoginForm: React.FC = () => {
         );
       })}
       <EntryInput
-        id="email"
-        name="email"
+        id={form.email.name}
+        name={form.email.name}
         label="Email"
         error={form.email.error}
         value={form.email.value}
@@ -89,8 +119,8 @@ const LoginForm: React.FC = () => {
         captureInput={captureInput}
       />
       <EntryInput
-        id="password"
-        name="password"
+        id={form.password.name}
+        name={form.password.name}
         label="Password:"
         error={form.password.error}
         value={form.password.value}
