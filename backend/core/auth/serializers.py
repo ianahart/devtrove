@@ -1,3 +1,4 @@
+from datetime import timedelta
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -53,7 +54,17 @@ class LoginSerializer(TokenObtainPairSerializer):
 
         if user is not None:
             user.set_logged_in(True)
-            return RefreshToken.for_user(user), user
+
+            refresh_token = RefreshToken.for_user(user)
+            access_token = refresh_token.access_token
+
+            access_token.set_exp(lifetime=timedelta(days=3))
+
+            tokens = {
+                'access_token': str(access_token),
+                'refresh_token': str(refresh_token)
+            }
+            return tokens, user
         else:
             raise serializers.ValidationError(
                 dict(

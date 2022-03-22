@@ -1,19 +1,20 @@
-from rest_framework import  viewsets, status
+from rest_framework import generics,  serializers, viewsets, status
 from rest_framework.response import Response
-from .serializers import CreateUserSerializer
+from .serializers import UserSerializer
+from account.models import CustomUser
+from rest_framework.permissions import IsAuthenticated
+from django.shortcuts import get_object_or_404
 
-class UserViewSet(viewsets.ViewSet):
-    """
-    A Viewset for creating a user.
-    """
-    def create(self, request):
-        serializer = CreateUserSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.create(serializer.data)
-            return Response(
-                {'message': 'User Created.'},
-                status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors,
-            status=status.HTTP_400_BAD_REQUEST)
+
+class UserView(generics.ListCreateAPIView):
+    queryset = CustomUser.objects.all()
+    permission_classes = [IsAuthenticated, ]
+
+    def get(self, request, pk=None):
+        user = get_object_or_404(CustomUser, id=pk)
+        user_serializers = UserSerializer(user)
+        return Response(user_serializers.data, status=status.HTTP_200_OK)
+
+
+
 

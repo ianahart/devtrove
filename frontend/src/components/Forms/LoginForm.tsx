@@ -6,7 +6,7 @@ import { GlobalContext } from '../../context/global';
 import { IGlobalContext, ILoginForm } from '../../interfaces';
 import { ILoginRequest } from '../../interfaces/requests';
 import EntryInput from './EntryInput';
-
+import { http } from '../../helpers';
 const LoginForm: React.FC = () => {
   const initialForm = {
     email: { name: 'email', value: '', error: '' },
@@ -53,7 +53,7 @@ const LoginForm: React.FC = () => {
         return;
       }
 
-      const response = await axios.post<ILoginRequest>('/api/v1/auth/login/', {
+      const response = await http.post<ILoginRequest>('auth/login/', {
         email: form.email.value,
         password: form.password.value,
       });

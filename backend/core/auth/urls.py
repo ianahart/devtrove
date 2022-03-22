@@ -1,15 +1,10 @@
-from django.contrib import admin
-from django.urls import path, include
+from django.urls import path
 from auth import views
-from rest_framework import routers
-
-routes = routers.SimpleRouter()
-
-routes.register(r'auth/login', views.LoginViewSet, basename='auth-login')
-# routes.register(r'auth/refresh', RefreshViewSet, basename='auth-refresh')
-routes.register(r'auth/logout', views.LogoutViewSet, basename='auth-logout')
-
+from rest_framework_simplejwt.views import TokenRefreshView
 urlpatterns = [
-    *routes.urls
+        path('auth/register/', views.RegisterView.as_view()),
+        path('auth/refresh/', TokenRefreshView.as_view()),
+        path('auth/login/', views.TokenObtainPairView.as_view()),
+        path('auth/logout/', views.LogoutView.as_view()),
 ]
 

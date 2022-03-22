@@ -5,7 +5,7 @@ import axios, { AxiosError } from 'axios';
 import { IRegisterForm } from '../../interfaces';
 import { IRegisterRequest, IAxiosError } from '../../interfaces/requests';
 import EntryInput from './EntryInput';
-
+import { http } from '../../helpers';
 const RegisterForm = (): JSX.Element => {
   const navigate = useNavigate();
   const initialForm = {
@@ -31,7 +31,7 @@ const RegisterForm = (): JSX.Element => {
         return;
       }
 
-      const response = await axios.post<IRegisterRequest>('/api/v1/account/', {
+      const response = await http.post<IRegisterRequest>('auth/register/', {
         handle: form.username.value,
         email: form.email.value,
         password: form.password.value,

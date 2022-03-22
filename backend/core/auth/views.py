@@ -1,20 +1,41 @@
-from rest_framework import permissions
-from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework import generics
+from rest_framework.decorators import authentication_classes
+from rest_framework.views import APIView
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 
 from account.models import CustomUser
 from .serializers import LoginSerializer, LogoutSerializer
-from rest_framework import viewsets, status
+from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from account.serializers import CreateUserSerializer, UserSerializer
 
-
-
-class LogoutViewSet(viewsets.ViewSet):
+class RegisterView(generics.ListCreateAPIView):
     """
-    A Viewset for logging out a user.
+    A View for creating/registering a user.
+    """
+    permission_classes = [AllowAny, ]
+    http_method_names = ['post']
+
+    def create(self, request):
+        serializer = CreateUserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.create(serializer.data)
+            return Response(
+                {'message': 'User Created.'},
+                status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST)
+
+
+class LogoutView(generics.ListCreateAPIView):
+    """
+    A View for logging out a user.
     """
     queryset = CustomUser.objects.all()
-    permissions = (IsAuthenticated,)
+    permissions = [IsAuthenticated, ]
     def create(self, request):
 
        serializer = LogoutSerializer(data=request.data)
@@ -30,30 +51,37 @@ class LogoutViewSet(viewsets.ViewSet):
                        status=status.HTTP_403_FORBIDDEN
                     )
 
-class LoginViewSet(viewsets.ModelViewSet, TokenObtainPairView):
+
+
+class TokenObtainPairView(generics.ListCreateAPIView):
     """
-    A Viewset for logging out a user.
+    A View for logging a user in.
     """
+    permission_classes = [AllowAny, ]
+    http_method_names = ['post']
+    authentication_classes = []
+
     def create(self, request):
         context = {'request': request.user}
         serializer = LoginSerializer(data=request.data, context=context)
         if serializer.is_valid():
             try:
-                token, user = serializer.login(serializer.data)
-                if token and user:
+                tokens, user = serializer.login(serializer.data)
+                if len(tokens) and user:
                     return Response(
-                        { 'message': 'User authenticated. ',
+                        { 'message': 'User authenticated.',
                             'tokens': {
-                            'access_token': str(token.access_token),
-                            'refresh_token': str(token)
+                                'access_token': tokens['access_token'],
+                                'refresh_token': tokens['refresh_token'],
                             },
                             'user': {
                             'logged_in': True,
-                            'handle': user.handle,
+                           'handle': user.handle,
                             'id': user.id,
                             }
                         })
-            except  Exception:
+            except  Exception as e:
+                print(e)
                 return Response({
                                 'email': 'Unauthorized, please create an account.'
                                 }, status=status.HTTP_401_UNAUTHORIZED)

@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { IUserAuth } from '../interfaces';
 
 export const getStorage = () => {
@@ -18,3 +19,8 @@ export const wipeUser: IUserAuth = {
     id: null,
   },
 };
+
+export const http = axios.create({
+  // Change in production
+  baseURL: 'http://localhost:3000/api/v1/',
+});

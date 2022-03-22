@@ -6,8 +6,11 @@ from rest_framework import routers
 
 routes = routers.SimpleRouter()
 
-routes.register(r'account', views.UserViewSet, basename='CustomUser')
-
 urlpatterns = [
-    *routes.urls
+    path('account/<int:pk>/', views.UserView.as_view()),
 ]
+
+#routes.register(r'account', views.UserViewSet, basename='CustomUser')
+#urlpatterns = [
+ #   *routes.urls
+#]

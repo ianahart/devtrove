@@ -1,6 +1,7 @@
 import { Box, Button } from '@chakra-ui/react';
 import { useEffect, useState, useContext } from 'react';
 import axios, { AxiosError } from 'axios';
+import { http } from '../../helpers';
 import { IGlobalContext } from '../../interfaces';
 import { GlobalContext } from '../../context/global';
 import { ILogoutRequest } from '../../interfaces/requests';
@@ -19,10 +20,13 @@ const Logout = () => {
       const options = {
         headers: { Authorization: `Bearer ${userAuth.access_token}` },
       };
-      const response = await axios.post<ILogoutRequest>(
-        '/api/v1/auth/logout/',
+      if (!userAuth) {
+        return;
+      }
+      const response = await http.post<ILogoutRequest>(
+        'auth/logout/',
         {
-          pk: userAuth.user.id,
+          pk: userAuth.user.id ?? null,
           refresh_token: userAuth.refresh_token,
         },
         options
@@ -32,9 +36,7 @@ const Logout = () => {
       }
     } catch (e: unknown | AxiosError) {
       if (axios.isAxiosError(e) && e.response) {
-        if ([401, 403].includes(e.response.status)) {
-          setIsLoaded(true);
-        }
+        console.log('logout error');
       }
     }
   };

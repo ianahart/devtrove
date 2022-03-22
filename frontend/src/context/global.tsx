@@ -19,6 +19,7 @@ const GlobalContextProvider: React.FC<React.ReactNode> = ({ children }) => {
   };
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userAuth, setUserAuth] = useState<IUserAuth>(initialAuth);
+  const [interceptorsLoaded, setInterceptorsLoaded] = useState(false);
 
   const closeModal = () => setIsModalOpen(false);
   const openModal = () => setIsModalOpen(true);
@@ -38,7 +39,17 @@ const GlobalContextProvider: React.FC<React.ReactNode> = ({ children }) => {
   };
   return (
     <GlobalContext.Provider
-      value={{ userAuth, logout, stowTokens, isModalOpen, openModal, closeModal }}
+      value={{
+        setUserAuth,
+        userAuth,
+        interceptorsLoaded,
+        setInterceptorsLoaded,
+        logout,
+        stowTokens,
+        isModalOpen,
+        openModal,
+        closeModal,
+      }}
     >
       {children}
     </GlobalContext.Provider>

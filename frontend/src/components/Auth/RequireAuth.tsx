@@ -11,7 +11,7 @@ const RequireAuth: React.FC<Props> = ({ children }): JSX.Element => {
   const { userAuth } = useContext(GlobalContext) as IGlobalContext;
   const location = useLocation();
 
-  if (userAuth?.access_token && getStorage()?.access_token) {
+  if (getStorage()?.access_token) {
     return children;
   } else {
     return <Navigate to="/" replace state={{ path: location.pathname }} />;

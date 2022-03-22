@@ -53,24 +53,31 @@ export interface IBasicModalProps {
 }
 
 export interface IUser {
-  logged_in: boolean;
-  id: number | null;
-  handle: string;
+  logged_in?: boolean;
+  id?: number | null;
+  handle?: string | null;
 }
 
 export interface IUserAuth {
-  user: IUser;
+  user: {
+    logged_in?: boolean;
+    id?: number | null;
+    handle?: string | null;
+  };
   refresh_token: ITokens['refresh_token'] | null | string;
   access_token: ITokens['access_token'] | null | string;
 }
 
 export interface IGlobalContext {
   isModalOpen: boolean;
+  interceptorsLoaded: boolean;
   openModal: () => void;
   closeModal: () => void;
   stowTokens: (tokens: ITokens, user: IUser) => void;
   logout: () => void;
   userAuth: IUserAuth;
+  setUserAuth: (userAuth: IUserAuth) => void;
+  setInterceptorsLoaded: (loaded: boolean) => void;
 }
 
 export interface IInputTheme {
