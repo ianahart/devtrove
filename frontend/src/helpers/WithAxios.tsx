@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useEffect, useState } from 'react';
 import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GlobalContext } from '../context/global';
@@ -12,6 +12,7 @@ interface IProps {
 
 const WithAxios: React.FC<IProps> = ({ children }): JSX.Element => {
   const navigate = useNavigate();
+  const [isLoaded, setLoaded] = useState(false);
   const { logout, setUserAuth, setInterceptorsLoaded } = useContext(
     GlobalContext
   ) as IGlobalContext;
@@ -36,13 +37,14 @@ const WithAxios: React.FC<IProps> = ({ children }): JSX.Element => {
         return res;
       },
       async (error) => {
-        console.log(error.response, 'error');
         const originalRequest = error.config;
-        if (error.response.status === 403) {
-          logout();
-          navigate('/');
-        }
-        if (
+        const notAuthenticated =
+          error.response?.data?.code === 'bad_authorization_header' ||
+          error.response?.data?.detail?.toLowerCase() ===
+            'authentication credentials were not provided.';
+        if (error.response?.status === 401 && notAuthenticated) {
+          setLoaded(true);
+        } else if (
           error.response.status === 401 &&
           originalRequest.url.includes('auth/refresh/')
         ) {
@@ -50,23 +52,26 @@ const WithAxios: React.FC<IProps> = ({ children }): JSX.Element => {
         } else if (error.response.status === 401 && !originalRequest._retry) {
           originalRequest._retry = true;
           const storage = getStorage();
+          if (storage?.refresh_token) {
+            const response = await http.post(`auth/refresh/`, {
+              refresh: storage.refresh_token,
+            });
 
-          const response = await http.post(`auth/refresh/`, {
-            refresh: storage.refresh_token,
-          });
-          const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
 
-          user.access_token = response.data.access;
-          localStorage.setItem('user', JSON.stringify(user));
-          const access_token: string = response.data.access_token;
-          //@ts-ignore
-          setUserAuth((prevState: IUserAuth) => ({
-            ...prevState,
-            access_token: access_token,
-          }));
-
-          return http(originalRequest);
+            user.access_token = response.data.access;
+            localStorage.setItem('user', JSON.stringify(user));
+            const access_token: string = response.data.access;
+            //@ts-ignore
+            setUserAuth((prevState: IUserAuth) => ({
+              ...prevState,
+              access_token: access_token,
+            }));
+            return http(originalRequest);
+          }
         }
+        logout();
+        setLoaded(true);
         return Promise.reject(error);
       }
     );
@@ -74,7 +79,12 @@ const WithAxios: React.FC<IProps> = ({ children }): JSX.Element => {
       http.interceptors.response.eject(resInterceptorId);
       http.interceptors.request.eject(reqInterceptorId);
     };
-  }, [setUserAuth, navigate, logout]);
+  }, [setUserAuth, logout, setLoaded]);
+  useEffect(() => {
+    if (isLoaded) {
+      navigate('/');
+    }
+  }, [navigate, isLoaded]);
   return children;
 };
 

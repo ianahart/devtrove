@@ -1,19 +1,14 @@
 import { Box, Button } from '@chakra-ui/react';
-import { useEffect, useState, useContext } from 'react';
+import { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios, { AxiosError } from 'axios';
 import { http } from '../../helpers';
 import { IGlobalContext } from '../../interfaces';
 import { GlobalContext } from '../../context/global';
 import { ILogoutRequest } from '../../interfaces/requests';
 const Logout = () => {
+  const navigate = useNavigate();
   const { userAuth, logout } = useContext(GlobalContext) as IGlobalContext;
-  const [isLoaded, setIsLoaded] = useState(false);
-
-  useEffect(() => {
-    if (isLoaded) {
-      logout();
-    }
-  }, [logout, isLoaded]);
 
   const handleOnClick = async () => {
     try {
@@ -32,7 +27,8 @@ const Logout = () => {
         options
       );
       if (response.status === 200) {
-        setIsLoaded(true);
+        logout();
+        navigate('/');
       }
     } catch (e: unknown | AxiosError) {
       if (axios.isAxiosError(e) && e.response) {
