@@ -1,19 +1,16 @@
 import {
   Box,
-  Button,
   FormControl,
   FormLabel,
   FormErrorMessage,
   FormHelperText,
-  Heading,
   Input,
   Icon,
-  Text,
 } from '@chakra-ui/react';
 import { GiPirateHook } from 'react-icons/gi';
-import { IEntryInputProps } from '../../interfaces';
+import { IFormInputProps } from '../../interfaces';
 
-const EntryInput = ({
+const FormInput = ({
   label,
   name,
   id,
@@ -23,7 +20,7 @@ const EntryInput = ({
   error = '',
   value,
   captureInput,
-}: IEntryInputProps) => {
+}: IFormInputProps) => {
   const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     captureInput(name, value);
@@ -56,4 +53,4 @@ const EntryInput = ({
   );
 };
 
-export default EntryInput;
+export default FormInput;

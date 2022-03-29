@@ -11,10 +11,12 @@ import WithAxios from './helpers/WithAxios';
 import LoginForm from './components/Forms/LoginForm';
 import RequireAuth from './components/Auth/RequireAuth';
 import Account from './pages/Auth/Account';
-import ProfileForm from './components/Account/ProfileForm';
-import Security from './components/Account/Security';
-import ProfileMenu from './components/Account/ProfileMenu';
-import Settings from './components/Account/Settings';
+import ProfileForm from './components/Account/Profile/ProfileForm';
+import Security from './components/Account/Profile/Security';
+import ProfileMenu from './components/Account/Profile/ProfileMenu';
+import SettingsMenu from './components/Account/Settings/SettingsMenu';
+import General from './components/Account/Settings/General';
+import User from './components/Account/Settings/User';
 const App = () => {
   return (
     <Router>
@@ -47,14 +49,30 @@ const App = () => {
                 }
               >
                 <Route
-                  path="settings"
+                  path="settings/"
                   element={
                     <RequireAuth>
-                      <Settings />
+                      <SettingsMenu />
                     </RequireAuth>
                   }
-                />
-
+                >
+                  <Route
+                    path="general"
+                    element={
+                      <RequireAuth>
+                        <General />
+                      </RequireAuth>
+                    }
+                  />
+                  <Route
+                    path="user"
+                    element={
+                      <RequireAuth>
+                        <User />
+                      </RequireAuth>
+                    }
+                  />
+                </Route>
                 <Route
                   path="profile/"
                   element={

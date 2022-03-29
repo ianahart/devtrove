@@ -41,7 +41,7 @@ export interface IFooterProps {
   year: number;
 }
 
-export interface IEntryInputProps {
+export interface IFormInputProps {
   label: string;
   id: string;
   helperText?: string;

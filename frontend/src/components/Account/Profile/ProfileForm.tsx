@@ -1,11 +1,23 @@
-import { Box, Text } from '@chakra-ui/react';
-
+import { Box, Text, Button } from '@chakra-ui/react';
+import { useEffect, useContext } from 'react';
+import { http } from '../../../helpers';
+import FormInput from '../../Forms/FormInput';
 const ProfileForm = () => {
+  const handleOnClick = async () => {
+    try {
+      const response = await http.get('posts/');
+      console.log('Posts: ');
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   return (
     <Box>
       <Text fontSize="30px" color="#FFF">
         Profile Form
       </Text>
+      <Button onClick={handleOnClick}>GET pOSTS</Button>
       <Text>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
         incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
