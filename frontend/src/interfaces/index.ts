@@ -1,4 +1,17 @@
+import { IconType } from 'react-icons';
 import { InputEntryType, ButtonEntryType } from '../types';
+
+export interface IMenuItemProps {
+  to: string;
+  linkText: string;
+  icon: IconType;
+}
+
+export interface IAccountInnerMenuItemProps extends IMenuItemProps {
+  activeTab: string;
+  menu?: string;
+  handleSetActiveTab: (a: string) => void;
+}
 
 export interface ITokens {
   access_token: string;
@@ -70,7 +83,10 @@ export interface IUserAuth {
 
 export interface IGlobalContext {
   isModalOpen: boolean;
+  isUserMenuShowing: boolean;
   interceptorsLoaded: boolean;
+  toggleUserMenu: () => void;
+  closeUserMenu: () => void;
   openModal: () => void;
   closeModal: () => void;
   stowTokens: (tokens: ITokens, user: IUser) => void;

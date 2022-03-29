@@ -1,5 +1,6 @@
-import { Box, Button } from '@chakra-ui/react';
-import { useContext } from 'react';
+import { Box, Button, Icon } from '@chakra-ui/react';
+import { useState, useContext } from 'react';
+import { AiOutlineLogout } from 'react-icons/ai';
 import { useNavigate } from 'react-router-dom';
 import axios, { AxiosError } from 'axios';
 import { http } from '../../helpers';
@@ -9,6 +10,7 @@ import { ILogoutRequest } from '../../interfaces/requests';
 const Logout = () => {
   const navigate = useNavigate();
   const { userAuth, logout } = useContext(GlobalContext) as IGlobalContext;
+  const [error, setError] = useState('');
 
   const handleOnClick = async () => {
     try {
@@ -32,7 +34,7 @@ const Logout = () => {
       }
     } catch (e: unknown | AxiosError) {
       if (axios.isAxiosError(e) && e.response) {
-        console.log('logout error');
+        setError('Problem logging out.');
       }
     }
   };
@@ -40,11 +42,18 @@ const Logout = () => {
   return (
     <Box>
       <Button
+        p="0"
+        py={['0.5rem', '0.25rem']}
+        fontWeight="400"
+        fontSize={['1.5rem', '1rem']}
+        display="flex"
+        alignItems="flex-start"
+        backgroundColor="transparent"
         onClick={handleOnClick}
-        _hover={{ backgroundColor: '#C42CB0' }}
-        bg="purple.primary"
-        color="#FFF"
+        _hover={{ color: '#707071' }}
+        color="text.primary"
       >
+        <Icon alignSelf={['center', 'flex-start']} mr="0.25rem" as={AiOutlineLogout} />
         Logout
       </Button>
     </Box>

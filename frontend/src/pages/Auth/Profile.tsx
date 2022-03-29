@@ -1,7 +1,6 @@
 import { Box, Text } from '@chakra-ui/react';
 import axios, { AxiosError } from 'axios';
 import { useCallback, useEffect, useState } from 'react';
-import Logout from '../../components/Auth/Logout';
 import { getStorage } from '../../helpers';
 import { http } from '../../helpers/';
 const Profile = (): JSX.Element => {
@@ -17,6 +16,9 @@ const Profile = (): JSX.Element => {
         },
       };
       const response = await http.get(`account/${userId ? userId : 0}/`, options);
+      if (response) {
+        return;
+      }
     } catch (e: unknown | AxiosError) {
       if (axios.isAxiosError(e)) {
         setError(e.response?.data?.error);
@@ -29,10 +31,9 @@ const Profile = (): JSX.Element => {
   }, [handle]);
   return (
     <Box>
-      <Text fontSize="36px" textAlign="center" color="blue.primary">
+      <Text fontSize="36px" textAlign="center" color="light.primary">
         Your Profile...
       </Text>
-      <Logout />
     </Box>
   );
 };

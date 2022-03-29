@@ -13,7 +13,7 @@ export const devtroveTheme = extendTheme({
       secondary: '#200F21',
     },
     text: {
-      primary: '#969eb5',
+      primary: '#8a8f9d',
       secondary: '#444447',
     },
     light: {
@@ -21,6 +21,7 @@ export const devtroveTheme = extendTheme({
     },
     dark: {
       primary: '#382039',
+      secondary: '#363636',
     },
     night: {
       primary: '#7d547f',

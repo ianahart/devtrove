@@ -18,11 +18,20 @@ const GlobalContextProvider: React.FC<React.ReactNode> = ({ children }) => {
         },
   };
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isUserMenuShowing, setIsUserMenuShowing] = useState(false);
   const [userAuth, setUserAuth] = useState<IUserAuth>(initialAuth);
   const [interceptorsLoaded, setInterceptorsLoaded] = useState(false);
 
   const closeModal = () => setIsModalOpen(false);
   const openModal = () => setIsModalOpen(true);
+
+  const toggleUserMenu = () => {
+    setIsUserMenuShowing((prevState) => !prevState);
+  };
+
+  const closeUserMenu = () => {
+    setIsUserMenuShowing(false);
+  };
 
   const logout = () => {
     localStorage.removeItem('user');
@@ -40,6 +49,9 @@ const GlobalContextProvider: React.FC<React.ReactNode> = ({ children }) => {
   return (
     <GlobalContext.Provider
       value={{
+        isUserMenuShowing,
+        toggleUserMenu,
+        closeUserMenu,
         setUserAuth,
         userAuth,
         interceptorsLoaded,

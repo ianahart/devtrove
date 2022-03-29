@@ -1,19 +1,26 @@
 import { Box, Button, Icon, Link } from '@chakra-ui/react';
 import { FaUserCircle } from 'react-icons/fa';
 import { Link as RouterLink } from 'react-router-dom';
+import { useContext } from 'react';
 import Logo from '../Mixed/Logo';
 import { GlobalContext } from '../../context/global';
 import { IGlobalContext } from '../../interfaces';
-import { useContext } from 'react';
+import UserMenu from './UserMenu';
 
 const Navigation = () => {
-  const { userAuth, openModal } = useContext(GlobalContext) as IGlobalContext;
+  const { isUserMenuShowing, toggleUserMenu, userAuth, openModal } = useContext(
+    GlobalContext
+  ) as IGlobalContext;
+
+  const canShowUserMenu = userAuth.user.logged_in && isUserMenuShowing;
+
   return (
     <Box
       color="#FFF"
       borderBottomWidth="1px"
       borderBottomStyle="solid"
       borderBottomColor="#444447"
+      position="relative"
     >
       <Box
         p="0.25rem 0.75rem"
@@ -31,15 +38,20 @@ const Navigation = () => {
           />
         </Link>
         {userAuth.user.logged_in ? (
-          <Link to={`/${userAuth.user.handle}/profile`} as={RouterLink}>
-            <Icon as={FaUserCircle} height="40px" width="40px" />
-          </Link>
+          <Icon
+            onClick={toggleUserMenu}
+            cursor="pointer"
+            as={FaUserCircle}
+            height="40px"
+            width="40px"
+          />
         ) : (
           <Button onClick={openModal} color="text.secondary" bg="light.primary">
             Come aboard
           </Button>
         )}
       </Box>
+      {canShowUserMenu && <UserMenu />}
     </Box>
   );
 };

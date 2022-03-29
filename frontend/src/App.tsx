@@ -10,7 +10,11 @@ import BasicModal from './components/Mixed/BasicModal';
 import WithAxios from './helpers/WithAxios';
 import LoginForm from './components/Forms/LoginForm';
 import RequireAuth from './components/Auth/RequireAuth';
-
+import Account from './pages/Auth/Account';
+import ProfileForm from './components/Account/ProfileForm';
+import Security from './components/Account/Security';
+import ProfileMenu from './components/Account/ProfileMenu';
+import Settings from './components/Account/Settings';
 const App = () => {
   return (
     <Router>
@@ -34,6 +38,51 @@ const App = () => {
                   </RequireAuth>
                 }
               />
+              <Route
+                path="/:username/account"
+                element={
+                  <RequireAuth>
+                    <Account />
+                  </RequireAuth>
+                }
+              >
+                <Route
+                  path="settings"
+                  element={
+                    <RequireAuth>
+                      <Settings />
+                    </RequireAuth>
+                  }
+                />
+
+                <Route
+                  path="profile/"
+                  element={
+                    <RequireAuth>
+                      <ProfileMenu />
+                    </RequireAuth>
+                  }
+                >
+                  <Route
+                    index={false}
+                    path="edit"
+                    element={
+                      <RequireAuth>
+                        <ProfileForm />
+                      </RequireAuth>
+                    }
+                  />
+                  <Route
+                    index={false}
+                    path="security"
+                    element={
+                      <RequireAuth>
+                        <Security />
+                      </RequireAuth>
+                    }
+                  />
+                </Route>
+              </Route>
             </Routes>
           </Box>
           <Footer name="DevTrove" year={2022} />

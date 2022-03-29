@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'bookmark',
     'comment',
     'post',
+    'language',
 ]
 
 AUTH_USER_MODEL = 'account.CustomUser'
