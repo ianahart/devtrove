@@ -5,7 +5,7 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { GlobalContext } from '../../context/global';
 import { IGlobalContext, ILoginForm } from '../../interfaces';
 import { ILoginRequest } from '../../interfaces/requests';
-import EntryInput from './EntryInput';
+import FormInput from './FormInput';
 import { http } from '../../helpers';
 const LoginForm: React.FC = () => {
   const initialForm = {
@@ -109,7 +109,7 @@ const LoginForm: React.FC = () => {
           </Text>
         );
       })}
-      <EntryInput
+      <FormInput
         id={form.email.name}
         name={form.email.name}
         label="Email"
@@ -118,7 +118,7 @@ const LoginForm: React.FC = () => {
         type="email"
         captureInput={captureInput}
       />
-      <EntryInput
+      <FormInput
         id={form.password.name}
         name={form.password.name}
         label="Password:"

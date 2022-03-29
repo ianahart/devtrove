@@ -13,9 +13,7 @@ interface IProps {
 const WithAxios: React.FC<IProps> = ({ children }): JSX.Element => {
   const navigate = useNavigate();
   const [isLoaded, setLoaded] = useState(false);
-  const { logout, setUserAuth, setInterceptorsLoaded } = useContext(
-    GlobalContext
-  ) as IGlobalContext;
+  const { logout, setUserAuth } = useContext(GlobalContext) as IGlobalContext;
   useMemo(() => {
     const reqInterceptorId = http.interceptors.request.use(
       (config) => {
@@ -70,8 +68,10 @@ const WithAxios: React.FC<IProps> = ({ children }): JSX.Element => {
             return http(originalRequest);
           }
         }
-        logout();
-        setLoaded(true);
+        if (error.response.status === 403 || error.response.status === 401) {
+          logout();
+          setLoaded(true);
+        }
         return Promise.reject(error);
       }
     );

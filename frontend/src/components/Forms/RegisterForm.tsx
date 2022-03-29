@@ -4,7 +4,7 @@ import { Box, Button, Heading } from '@chakra-ui/react';
 import axios, { AxiosError } from 'axios';
 import { IRegisterForm } from '../../interfaces';
 import { IRegisterRequest, IAxiosError } from '../../interfaces/requests';
-import EntryInput from './EntryInput';
+import FormInput from './FormInput';
 import { http } from '../../helpers';
 const RegisterForm = (): JSX.Element => {
   const navigate = useNavigate();
@@ -94,7 +94,7 @@ const RegisterForm = (): JSX.Element => {
         </Heading>
       </Box>
 
-      <EntryInput
+      <FormInput
         id="email"
         name="email"
         active={true}
@@ -106,7 +106,7 @@ const RegisterForm = (): JSX.Element => {
         captureInput={captureInput}
       />
 
-      <EntryInput
+      <FormInput
         id="username"
         name="username"
         active={true}
@@ -117,7 +117,7 @@ const RegisterForm = (): JSX.Element => {
         captureInput={captureInput}
       />
 
-      <EntryInput
+      <FormInput
         id="password"
         name="password"
         active={true}
@@ -128,7 +128,7 @@ const RegisterForm = (): JSX.Element => {
         captureInput={captureInput}
       />
 
-      <EntryInput
+      <FormInput
         id="confirmpassword"
         name="confirmpassword"
         active={true}
