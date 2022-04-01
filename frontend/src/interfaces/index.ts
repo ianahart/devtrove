@@ -1,5 +1,11 @@
 import { IconType } from 'react-icons';
-import { InputEntryType, ButtonEntryType } from '../types';
+import { DevIcon, InputEntryType, ButtonEntryType, TAvatar } from '../types';
+
+export interface IFileUploaderProps {
+  saveAvatar: (file: TAvatar<File>) => void;
+  avatar: TAvatar<File>;
+  handleAvatarError: (error: string, active: boolean) => void;
+}
 
 export interface IMenuItemProps {
   to: string;
@@ -29,6 +35,19 @@ export interface ILoginForm {
   password: IFormField;
 }
 
+export interface IProfileForm {
+  first_name: IFormField;
+  last_name: IFormField;
+  email: IFormField;
+  handle: IFormField;
+  job_title: IFormField;
+  company: IFormField;
+  bio: IFormField;
+  twitter: IFormField;
+  website: IFormField;
+  github: IFormField;
+}
+
 export interface IRegisterForm {
   email: IFormField;
   username: IFormField;
@@ -46,6 +65,16 @@ export interface IFormInputProps {
   id: string;
   helperText?: string;
   type: string;
+  name: string;
+  error: string;
+  value: string;
+  active?: boolean;
+  captureInput: (name: string, value: string) => void;
+}
+
+export interface IFormTextareaProps {
+  label: string;
+  id: string;
   name: string;
   error: string;
   value: string;

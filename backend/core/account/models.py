@@ -1,4 +1,3 @@
-from typing import Union
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.utils import timezone
@@ -80,6 +79,8 @@ class CustomUser(AbstractUser, PermissionsMixin):
     email = models.EmailField(_(
                             'email address'),
                               unique=True,
+                              blank=True,
+                              null=True,
                               error_messages={'unique': 
                                   'A user with this email already exists.'
                               }

@@ -6,8 +6,8 @@ from django.utils import timezone
 class Language(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)
-    language = models.CharField(max_length=150, null=True, blank=True)
-    icon = models.TextField(null=True, blank=True)
+    name = models.CharField(max_length=150, null=True, blank=True)
+    snippet = models.TextField(null=True, blank=True)
     user = models.ForeignKey(
         'account.CustomUser',
         on_delete=models.CASCADE,
@@ -17,4 +17,4 @@ class Language(models.Model):
 
 
     def __str__(self):
-        return self.language
+        return self.name

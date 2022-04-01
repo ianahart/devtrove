@@ -1,8 +1,9 @@
 import { extendTheme } from '@chakra-ui/react';
 import { components } from './components';
-
+import { layerStyles } from './layerStyles';
 export const devtroveTheme = extendTheme({
   components,
+  layerStyles,
   fonts: {
     heading: 'Roboto Condensed, sans-serif',
     body: 'Open Sans, sans-serif',

@@ -38,7 +38,6 @@ body {
 .account-menu {
   display: flex;
   flex-direction: column;
-  height: 100%;
   width: 250px;
   min-width: 250px;
 }
@@ -46,13 +45,18 @@ body {
 .account-main-menu {
   min-width: 190px;
   width: 190px;
-  height: 100%;
+  min-height: 100vh;
 }
 
 .account-viewbox {
-  height: 100%;
   min-width: 400px;
+  min-height: 100vh;
   width: 100%;
+}
+
+#profileForm {
+  width: 95%;
+  margin: 0 auto;
 }
 
 @media (max-width: 860px) {
@@ -62,10 +66,14 @@ body {
 
   .account-menu {
     width: 100%;
+    height: 100%;
+    min-height: 100%;
     min-width: 100%;
   }
 
   .account-main-menu {
+    height: 100%;
+    min-height: 100%;
     width: 100%;
     min-width: 100%;
   }

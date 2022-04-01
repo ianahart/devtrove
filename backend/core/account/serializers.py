@@ -1,5 +1,8 @@
+from typing import OrderedDict
+from rest_framework import serializers, status
+import re
 from .models import CustomUser
-from rest_framework import serializers
+from .validators import CustomValidator
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -87,3 +90,60 @@ class CreateUserSerializer(serializers.ModelSerializer):
             handle=validated_data['handle'],
         )
         return user
+
+
+class UserPhotoSerializer(serializers.Serializer):
+    avatar = serializers.ImageField(required=False)
+    class Meta:
+        model = CustomUser
+        fields = ('avatar', )
+
+
+    def validate_avatar(self, data):
+        if (data):
+            if data.size > 1500000:
+                raise serializers.ValidationError('Your avatar must be under 1.5MB.')
+        return data
+
+
+class UserUpdateFormSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ('email',
+                  'handle',
+                  'last_name',
+                  'first_name',
+                  'job_title',
+                  'company',
+                  'bio',
+                  'website',
+                  'github',
+                  'twitter',
+                  )
+
+    def validate(self, data):
+        to_validate = ['handle', 'last_name', 'first_name', 'bio', 'job_title', 'company']
+        for key, value in data.items():
+            if key in to_validate and value is not None:
+                pattern = re.compile(r"^[a-zA-Z0-9,\s+.]*$")
+                matched = re.fullmatch(pattern, value)
+
+                if not matched:
+                    raise CustomValidator(
+                        'cannot contain special characters',
+                        key,
+                        status_code=status.HTTP_400_BAD_REQUEST
+                    )
+
+        return OrderedDict(
+            [
+              (key, value.strip().replace(' ', '')) for key, value in data.items()
+            ])
+    def update(self, **validated_data):
+        print('UPDATE RAN')
+        print(validated_data, '      VALIDATED_DATA UPDATE()')
+        return validated_data
+
+
+
+

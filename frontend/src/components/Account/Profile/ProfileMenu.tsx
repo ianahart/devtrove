@@ -4,7 +4,7 @@ import { BsPencil } from 'react-icons/bs';
 import MenuItem from '../MenuItem';
 import MenuContainer from '../MenuContainer';
 const ProfileMenu = () => {
-  const [activeTab, setActiveTab] = useState('edit-profile');
+  const [activeTab, setActiveTab] = useState('edit');
 
   const handleSetActiveTab = (tab: string) => {
     setActiveTab(tab);

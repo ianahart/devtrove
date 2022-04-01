@@ -12,7 +12,12 @@ const MainMenu = () => {
   };
 
   return (
-    <Box className="account-main-menu" bg="#000" borderRight="1px solid #444447">
+    <Box
+      height="auto"
+      className="account-main-menu"
+      bg="#000"
+      borderRight="1px solid #444447"
+    >
       <Image
         margin="0.5rem"
         height="40px"

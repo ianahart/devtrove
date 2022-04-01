@@ -10,6 +10,17 @@ export type InputEntryType = {
   };
 };
 
+export type DevIcon = {
+  id: number;
+  name: string;
+  snippet: string;
+};
+
+export type TAvatar<T> = {
+  data: T | Blob | null;
+  url: string | null;
+};
+
 export type ButtonEntryType = {
   backgroundColor: string;
   minWidth: string[];

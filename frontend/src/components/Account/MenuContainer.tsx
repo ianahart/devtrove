@@ -10,6 +10,7 @@ const MenuContainer = ({ children, title }: IMenuContainerProps): JSX.Element =>
   return (
     <>
       <UnorderedList
+        height="auto"
         listStyleType="none"
         margin="0"
         className="account-menu"
