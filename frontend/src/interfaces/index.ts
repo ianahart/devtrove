@@ -1,6 +1,6 @@
 import { IconType } from 'react-icons';
 import { DevIcon, InputEntryType, ButtonEntryType, TAvatar } from '../types';
-
+import { LanguageCrud } from '../types/index';
 export interface IFileUploaderProps {
   saveAvatar: (file: TAvatar<File>) => void;
   avatar: TAvatar<File>;
@@ -17,6 +17,14 @@ export interface IAccountInnerMenuItemProps extends IMenuItemProps {
   activeTab: string;
   menu?: string;
   handleSetActiveTab: (a: string) => void;
+}
+
+export interface ILanguageProps {
+  addLanguage: LanguageCrud;
+  removeLanguage: LanguageCrud;
+  formLoaded: boolean;
+  myIcons: DevIcon[];
+  icons: DevIcon[];
 }
 
 export interface ITokens {
@@ -105,6 +113,7 @@ export interface IUserAuth {
     logged_in?: boolean;
     id?: number | null;
     handle?: string | null;
+    avatar_url?: string | null;
   };
   refresh_token: ITokens['refresh_token'] | null | string;
   access_token: ITokens['access_token'] | null | string;

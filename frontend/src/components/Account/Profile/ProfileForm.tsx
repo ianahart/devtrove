@@ -1,9 +1,10 @@
-import { Box, Button, Heading, Icon, Text } from '@chakra-ui/react';
-import { useState, useContext } from 'react';
+import { Box, Button, Heading, Icon, useToast, Text } from '@chakra-ui/react';
+import { useState, useCallback, useContext, useEffect } from 'react';
 import { AiOutlineCloseCircle, AiOutlineTwitter, AiOutlineGithub } from 'react-icons/ai';
 import axios, { AxiosError } from 'axios';
 import { http } from '../../../helpers';
 import FormInput from '../../Forms/FormInput';
+import { getStorage, devIcons } from '../../../helpers';
 import FileUploader from '../../Forms/FileUploader';
 import { TAvatar } from '../../../types';
 import { IProfileForm, IGlobalContext } from '../../../interfaces';
@@ -14,6 +15,7 @@ import Languages from './Languages';
 import { DevIcon } from '../../../types/index';
 
 const ProfileForm = () => {
+  const toast = useToast();
   const initialForm = {
     email: { name: 'email', value: '', error: '' },
     handle: { name: 'handle', value: '', error: '' },
@@ -27,17 +29,29 @@ const ProfileForm = () => {
     twitter: { name: 'twitter', value: '', error: '' },
   };
   const { userAuth } = useContext(GlobalContext) as IGlobalContext;
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [formLoaded, setFormLoaded] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [avatar, setAvatar] = useState<TAvatar<File>>({ data: null, url: null });
   const [languages, setLanguages] = useState<DevIcon[]>([]);
+  const [icons, setIcons] = useState<DevIcon[]>(devIcons);
   const [form, setForm] = useState(initialForm);
   const [avatarError, setAvatarError] = useState({ msg: '', active: false });
   const saveAvatar = (fileObj: TAvatar<File>) => {
     setAvatar(fileObj);
   };
 
-  const addLanguage = (language: DevIcon) => {
+  const handleAvatarError = (error: string, active: boolean) => {
+    setAvatarError({ msg: error, active });
+  };
+
+  const handleClearAvatar = (avatar: TAvatar<File>, error: string, active: boolean) => {
+    setAvatar(avatar);
+    handleAvatarError(error, active);
+  };
+
+  const addLanguage = (language: DevIcon, icons: DevIcon[]) => {
     setLanguages((prevState) => [...prevState, language]);
+    setIcons([...icons]);
   };
 
   const removeLanguage = (selectedLanguage: DevIcon) => {
@@ -45,10 +59,7 @@ const ProfileForm = () => {
       (language) => language.id !== selectedLanguage.id
     );
     setLanguages(filteredLanguages);
-  };
-
-  const handleAvatarError = (error: string, active: boolean) => {
-    setAvatarError({ msg: error, active });
+    setIcons([...icons, selectedLanguage]);
   };
 
   const applyValidationMessages = <T extends Array<object | []>>(data: T) => {
@@ -57,6 +68,8 @@ const ProfileForm = () => {
       .filter((error) => Object.keys(error).length > 0)
       .forEach((error, index) => {
         const [key, value] = Object.entries(error)[0];
+        if (key === 'handle') {
+        }
         if (key === 'avatar') {
           handleAvatarError(value[0], true);
         } else {
@@ -76,7 +89,9 @@ const ProfileForm = () => {
   };
 
   const pullFormValues = (form: IProfileForm) => {
-    const formValues: { [key: string]: string } = {};
+    const formValues: { [key: string]: string | null } = {};
+    formValues['refresh_token'] = userAuth.refresh_token;
+
     for (const [key, field] of Object.entries({ ...form })) {
       formValues[key] = field.value;
     }
@@ -106,25 +121,18 @@ const ProfileForm = () => {
   const handleOnSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     try {
       event.preventDefault();
-      if (avatarError.active) return;
+      if (avatarError.active) {
+        return;
+      }
 
       const formData = prepareFormData();
       const clearedForm: IProfileForm = Object.assign({}, form);
       clearPrevErrors();
 
-      const response = await http.patch<IUpdateUserRequest>(
-        `account/${userAuth.user.id}/`,
-        formData,
-        {
-          headers: { 'content-type': 'multipart/form-data' },
-        }
-      );
-      if (response.status === 200) {
-        console.log(response);
-        setIsLoaded(true);
-      }
+      await http.patch<IUpdateUserRequest>(`account/${userAuth.user.id}/`, formData, {
+        headers: { 'content-type': 'multipart/form-data' },
+      });
     } catch (e: unknown | AxiosError) {
-      setIsLoaded(false);
       if (axios.isAxiosError(e)) {
         console.log(e);
         console.log(e.response);
@@ -132,10 +140,71 @@ const ProfileForm = () => {
       }
     }
   };
-  const handleClearAvatar = (avatar: TAvatar<File>, error: string, active: boolean) => {
-    setAvatar(avatar);
-    handleAvatarError(error, active);
-  };
+  const populateForm = useCallback(
+    (data: IUpdateUserRequest) => {
+      const { avatar_url, languages, ...fields } = data;
+      setAvatar({ data: null, url: avatar_url ?? null });
+      setLanguages([...(languages as DevIcon[])]);
+
+      const syncForm = {} as IProfileForm;
+      for (let field in fields) {
+        const key = field as keyof IProfileForm;
+
+        syncForm[key] = {
+          name: field,
+          value: fields[key] ?? '',
+          error: '',
+        };
+      }
+      setForm(syncForm);
+      //console.log(icons, languages);
+      if (languages) {
+        const exclude: string[] = [];
+        for (const icon of [...icons]) {
+          const filtered = [...languages].filter((myIcon) => myIcon.name === icon.name);
+          const matches = filtered.map((myIcon) => myIcon.name);
+          if (matches.length) {
+            exclude.push(...matches);
+          }
+        }
+        const keepIcons = [...icons].filter((icon) => !exclude.includes(icon.name));
+        setIcons(keepIcons);
+      }
+    },
+    [icons]
+  );
+
+  const fetchFormData = useCallback(async () => {
+    try {
+      const token = getStorage()?.access_token;
+      const userId = getStorage()?.user?.id;
+
+      const options = {
+        headers: {
+          Authorization: 'Bearer ' + token ? token : ' ',
+        },
+      };
+      const response = await http.get<IUpdateUserRequest>(
+        `account/${userId ? userId : 0}/`,
+        options
+      );
+      if (response.status === 200) {
+        setFormLoaded(true);
+        populateForm(response.data);
+      }
+    } catch (e: unknown | AxiosError) {
+      if (axios.isAxiosError(e)) {
+        console.log(e.response);
+        setError(e.response?.data?.error);
+      }
+    }
+  }, [populateForm]);
+
+  useEffect(() => {
+    if (!formLoaded) {
+      fetchFormData();
+    }
+  }, [formLoaded, fetchFormData]);
 
   return (
     <>
@@ -153,6 +222,24 @@ const ProfileForm = () => {
         >
           All profile information is completely optional and will not effect your
           experience on the site.
+        </Text>
+        <Text
+          fontWeight="100"
+          color="text.primary"
+          lineHeight="1.6"
+          mt="1rem"
+          width="300px"
+          fontSize="14px"
+        >
+          If you{' '}
+          <Box as="span" color="purple.secondary">
+            do not
+          </Box>{' '}
+          want to change a field please leave it{' '}
+          <Box as="span" color="purple.secondary">
+            blank
+          </Box>
+          .
         </Text>
       </Box>
       <Box maxWidth={['100%', '100%', '980px']} margin="0 auto">
@@ -283,7 +370,9 @@ const ProfileForm = () => {
           </Box>
           <Box my="3rem">
             <Languages
+              formLoaded={formLoaded}
               myIcons={languages}
+              icons={icons}
               removeLanguage={removeLanguage}
               addLanguage={addLanguage}
             />
@@ -343,6 +432,15 @@ const ProfileForm = () => {
 
           <Box my="1rem">
             <Button
+              onClick={() =>
+                toast({
+                  title: 'Profile Updated.',
+                  description: "We've saved your recent changes.",
+                  status: 'success',
+                  duration: 9000,
+                  isClosable: true,
+                })
+              }
               _hover={{ backgroundColor: '#C42CB0' }}
               type="submit"
               width="120px"

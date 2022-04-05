@@ -79,6 +79,7 @@ class TokenObtainPairView(generics.ListCreateAPIView):
                             'logged_in': True,
                            'handle': user.handle,
                             'id': user.id,
+                            'avatar_url': user.avatar_url,
                             }
                         })
             except  Exception as e:

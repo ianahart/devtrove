@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { nanoid } from 'nanoid';
 import { IUserAuth } from '../interfaces';
 
 export const http = axios.create({
@@ -26,19 +27,19 @@ export const wipeUser: IUserAuth = {
 };
 
 export const devIcons = [
-  { id: 1, name: 'JavaScript', snippet: 'devicon-javascript-plain colored' },
-  { id: 2, name: 'Swift', snippet: 'devicon-swift-plain colored' },
-  { id: 3, name: 'C', snippet: 'devicon-c-plain colored' },
-  { id: 4, name: 'Kotlin', snippet: 'devicon-kotlin-plain colored' },
-  { id: 5, name: 'php', snippet: 'devicon-php-plain colored' },
-  { id: 6, name: 'css', snippet: 'devicon-css3-plain colored' },
-  { id: 7, name: 'Java', snippet: 'devicon-java-plain colored' },
-  { id: 8, name: 'Ruby', snippet: 'devicon-ruby-plain colored' },
-  { id: 9, name: 'Rust', snippet: 'devicon-rust-plain' },
-  { id: 10, name: 'Golang', snippet: 'devicon-go-original-wordmark colored' },
-  { id: 11, name: 'Python', snippet: 'devicon-python-plain colored' },
-  { id: 12, name: 'C#', snippet: 'devicon-csharp-plain colored' },
-  { id: 13, name: 'Docker', snippet: 'devicon-docker-plain colored' },
-  { id: 14, name: 'C++', snippet: 'devicon-cplusplus-plain colored' },
-  { id: 15, name: 'Kubernetes', snippet: 'devicon-kubernetes-plain colored' },
+  { id: nanoid(), name: 'JavaScript', snippet: 'devicon-javascript-plain colored' },
+  { id: nanoid(), name: 'Swift', snippet: 'devicon-swift-plain colored' },
+  { id: nanoid(), name: 'C', snippet: 'devicon-c-plain colored' },
+  { id: nanoid(), name: 'Kotlin', snippet: 'devicon-kotlin-plain colored' },
+  { id: nanoid(), name: 'php', snippet: 'devicon-php-plain colored' },
+  { id: nanoid(), name: 'css', snippet: 'devicon-css3-plain colored' },
+  { id: nanoid(), name: 'Java', snippet: 'devicon-java-plain colored' },
+  { id: nanoid(), name: 'Ruby', snippet: 'devicon-ruby-plain colored' },
+  { id: nanoid(), name: 'Rust', snippet: 'devicon-rust-plain' },
+  { id: nanoid(), name: 'Golang', snippet: 'devicon-go-original-wordmark colored' },
+  { id: nanoid(), name: 'Python', snippet: 'devicon-python-plain colored' },
+  { id: nanoid(), name: 'C#', snippet: 'devicon-csharp-plain colored' },
+  { id: nanoid(), name: 'Docker', snippet: 'devicon-docker-plain colored' },
+  { id: nanoid(), name: 'C++', snippet: 'devicon-cplusplus-plain colored' },
+  { id: nanoid(), name: 'Kubernetes', snippet: 'devicon-kubernetes-plain colored' },
 ];

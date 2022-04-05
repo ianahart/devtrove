@@ -1,30 +1,17 @@
 import { Box, Icon, Text } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
-import { devIcons } from '../../../helpers/index';
 import { DevIcon } from '../../../types';
-
-type LanguageCrud = (icon: DevIcon) => void;
-
-interface ILanguageProps {
-  addLanguage: LanguageCrud;
-  removeLanguage: LanguageCrud;
-
-  myIcons: DevIcon[];
-}
-
-const Languages = ({ myIcons, addLanguage, removeLanguage }: ILanguageProps) => {
-  const [icons, setIcons] = useState(devIcons);
-
+import { http } from '../../../helpers';
+import { ILanguageProps } from '../../../interfaces';
+const Languages = ({ myIcons, icons, addLanguage, removeLanguage }: ILanguageProps) => {
   const handleAddLanguage = (selected: DevIcon) => {
     const filteredIcons = [...icons].filter((icon) => icon.id !== selected.id);
-    setIcons(filteredIcons);
-    addLanguage(selected);
+    addLanguage(selected, filteredIcons);
   };
 
   const handleRemoveLanguage = (selected: DevIcon) => {
-    removeLanguage(selected);
-    setIcons([...icons, selected]);
+    removeLanguage(selected, icons);
   };
 
   return (
@@ -32,13 +19,14 @@ const Languages = ({ myIcons, addLanguage, removeLanguage }: ILanguageProps) => 
       <Text color="#FFF">Technologies:</Text>
       {myIcons.length <= 0 ? (
         <Text textAlign="center" color="purple.primary">
-          Select Languages to show on your profile.
+          Select Language(s) to show on your profile.
         </Text>
       ) : (
         <Box
           display="flex"
           borderColor="purple.primary"
-          flex="wrap"
+          width="100%"
+          flexWrap="wrap"
           layerStyle="userIconContainer"
         >
           {myIcons.map((icon) => {
@@ -50,7 +38,6 @@ const Languages = ({ myIcons, addLanguage, removeLanguage }: ILanguageProps) => 
                 borderRadius="8px"
                 borderColor="#000"
                 m="1rem 0.5rem 1rem 0.5rem"
-                minWidth="50px"
                 padding="3px"
                 display="flex"
                 alignItems="center"

@@ -1,29 +1,36 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from account.permissions import AccountPermission
-from language.serializers import LanguageCreateSerializer
-from .serializers import UserSerializer, UserUpdateFormSerializer, UserPhotoSerializer
-from account.models import CustomUser
 from rest_framework.permissions import IsAuthenticated
 import json
 
+from account.permissions import AccountPermission
+from language.serializers import LanguageCreateSerializer, LanguageSerializer
+from .serializers import UserSerializer, UserUpdateFormSerializer, UserPhotoSerializer
+from account.models import CustomUser
+
+
+#class ProfileAPIView(APIView):
+#     queryset = CustomUser.objects.all()
+#     permission_classes = [IsAuthenticated, ]
+#
+#    def get(self, request, pk=None)
+#
 class DetailAPIView(APIView):
     queryset = CustomUser.objects.all()
     permission_classes = [IsAuthenticated, AccountPermission, ]
     parser_classes = [ MultiPartParser, FormParser, ]
 
     def get(self, request, pk=None):
-        if request.user.id != pk:
-            return Response(
-        {'message': 'Forbidden action'},
-        status=status.HTTP_403_FORBIDDEN)
         user = CustomUser.objects.get(pk=pk)
+        if user:
+            self.check_object_permissions(request, user)
 
         if user:
-            user_serializers = UserSerializer(user)
-            return Response(user_serializers.data, status=status.HTTP_200_OK)
+            userSerializer = UserSerializer(user)
+            return Response(userSerializer.data, status=status.HTTP_200_OK)
         else:
             return Response(
                 {'message': 'User does not exist.'},
@@ -33,35 +40,47 @@ class DetailAPIView(APIView):
 
     def patch(self, request, pk=None):
 
-        # permissions
-        #serializing/validation
-        # actual updated/s3
-        print(request.user)
+        account = get_object_or_404(CustomUser, pk=pk)
+        self.check_object_permissions(request, account)
+        context = {'request': self.request}
 
-        # if request.user.id !== pk return 401
-        # check if request.data is not empty return 400 if is
-        formSerializer = UserUpdateFormSerializer(
+        formSerializer = UserUpdateFormSerializer(context=context,
         data=json.loads(request.data['form'])
         )
 
         photoSerializer = UserPhotoSerializer(data=request.data)
 
         langSerializer = LanguageCreateSerializer(
-        data=json.loads(request.data['languages']), 
+        data=json.loads(request.data['languages']),
         many=True
         )
-
         serializers = [photoSerializer, langSerializer, formSerializer]
-
         if all([serializer.is_valid() for serializer in serializers]):
             try:
-                result = formSerializer.update(validated_data=formSerializer.data, pk=pk)
+                file = photoSerializer.validated_data
+                refresh_token = json.loads(request.data['form'])['refresh_token']
+                if file is None:
+                    raise Exception
+                has_email_changed = formSerializer.update(
+                                languages=langSerializer.data,
+                                file=file['avatar'] if 'avatar' in file else None,
+                                refresh_token=refresh_token,
+                                validated_data=formSerializer.data,
+                                pk=pk)
+                if has_email_changed:
+                    return Response({
+                            'message': 'Email changed. Logging out',
+                            'dir': 'no refresh'
+                            },
+                    status=status.HTTP_401_UNAUTHORIZED
+                    )
+
+
                 return Response(
                     {'message': 'Updating user.'}, 
                     status=status.HTTP_200_OK)
 
             except Exception as e:
-                print(e)
                 return Response({
                                 'message' : 'Internal Server Error. Something went wrong.',
                                 'errors' : str(e)
@@ -75,6 +94,7 @@ class DetailAPIView(APIView):
                     'errors': errors
                 }, status=status.HTTP_400_BAD_REQUEST
             )
+
 
 
 

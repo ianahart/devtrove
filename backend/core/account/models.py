@@ -59,6 +59,34 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 
+    def update_user(self, pk: int, avatar_url=None, avatar_fn=None, **kwargs):
+        try:
+            account = self.get_user(pk=pk)
+            if avatar_url is not None and avatar_fn is not None:
+                kwargs['validated_data']['avatar_url'] = avatar_url
+                kwargs['validated_data']['avatar_file'] = avatar_fn
+
+            email_changed = False
+            for key, val in kwargs['validated_data'].items():
+                if val is None:
+                    val = None
+                    setattr(account, key, val)
+                elif len(val) > 0 or val != '':
+                    if key == 'email' and account is not None:
+                        if val != account.email:
+                            email_changed = True
+                    setattr(account, key, val)
+            if account is not None:
+                if email_changed:
+                    account.logged_in = False
+                account.save()
+                account.refresh_from_db()
+                return email_changed
+            else:
+                raise TypeError
+        except Exception as e:
+            print('accountmodels.py update')
+
 class CustomUser(AbstractUser, PermissionsMixin):
     username = None
     logged_in = models.BooleanField(default=False)
@@ -75,7 +103,14 @@ class CustomUser(AbstractUser, PermissionsMixin):
     first_name = models.CharField(max_length=200, blank=True, null=True)
     last_name = models.CharField(max_length=200, blank=True, null=True)
     slug = models.CharField(max_length=200, blank=True, null=True)
-    handle = models.CharField(max_length=100, unique=True, blank=True, null=True)
+    handle = models.CharField(
+                            max_length=100, 
+                            unique=True, blank=True, 
+                            null=True,
+                           error_messages={'unique': 
+                                            'A user with this handle already exists.'
+                                              }
+)
     email = models.EmailField(_(
                             'email address'),
                               unique=True,

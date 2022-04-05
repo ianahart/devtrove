@@ -10,10 +10,13 @@ export type InputEntryType = {
   };
 };
 
+export type LanguageCrud = (icon: DevIcon, languages: DevIcon[]) => void;
+
 export type DevIcon = {
-  id: number;
+  id: number | string;
   name: string;
   snippet: string;
+  user_id?: number;
 };
 
 export type TAvatar<T> = {

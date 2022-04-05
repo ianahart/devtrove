@@ -1,34 +1,51 @@
 from typing import OrderedDict
 from rest_framework import serializers, status
+from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 import re
+import json
+
+from language.serializers import LanguageSerializer
 from .models import CustomUser
-from .validators import CustomValidator
+from language.models import Language
+from .services.file_upload import FileUpload
+from .validators import CustomValidator, CustomAccountValidator
+
 
 class UserSerializer(serializers.ModelSerializer):
+    languages = LanguageSerializer(many=True)
+
     class Meta:
         model = CustomUser
         fields = ('logged_in',
-                  'last_login',
                   'first_name',
                   'id',
                   'last_name',
+                  'github',
+                  'languages',
                   'avatar_file',
                   'avatar_url',
-                  'created_at',
-                  'updated_at',
-                'handle',
+                  'website',
+                  'twitter',
+                  'job_title',
+                  'company',
+                  'bio',
+                  'email',
+                  'handle'
                   )
+
 
 class CreateUserSerializer(serializers.ModelSerializer):
     confirmpassword = serializers.CharField()
+
     class Meta:
         model = CustomUser
-        fields = ('email','password',  'handle', 'confirmpassword')
+        fields = ('email', 'password',  'handle', 'confirmpassword')
         extra_kwargs = {'password': {'write_only': True}}
 
     def validate_email(self, value):
         if CustomUser.objects.user_exists(email=value):
-            raise serializers.ValidationError('A user with that email already exists.')
+            raise serializers.ValidationError(
+                'A user with that email already exists.')
         else:
             return value
 
@@ -58,7 +75,8 @@ class CreateUserSerializer(serializers.ModelSerializer):
                 if len(missing) == 1:
                     msg += f'1 {req} character.'
                     break
-                msg += f'1 {req}, ' if index < len(missing) - 1 else f'and 1 {req} character.'
+                msg += f'1 {req}, ' if index < len(missing) - \
+                    1 else f'and 1 {req} character.'
 
             raise serializers.ValidationError(msg)
 
@@ -69,7 +87,8 @@ class CreateUserSerializer(serializers.ModelSerializer):
             cleaned_data[field] = value.replace(' ', '').strip()
 
         compare_fields = ['password', 'confirmpassword']
-        passwords = [value for field, value in data.items() if field in compare_fields]
+        passwords = [value for field,
+                     value in data.items() if field in compare_fields]
         if passwords[0] != passwords[1]:
             raise serializers.ValidationError(
                 {
@@ -94,19 +113,24 @@ class CreateUserSerializer(serializers.ModelSerializer):
 
 class UserPhotoSerializer(serializers.Serializer):
     avatar = serializers.ImageField(required=False)
+
     class Meta:
         model = CustomUser
         fields = ('avatar', )
 
+    def validate(self, data):
+        if 'avatar' in data:
+            if data['avatar'].size > 1500000:
+                raise serializers.ValidationError(
+                    'Your avatar must be under 1.5MB.')
 
-    def validate_avatar(self, data):
-        if (data):
-            if data.size > 1500000:
-                raise serializers.ValidationError('Your avatar must be under 1.5MB.')
         return data
 
 
 class UserUpdateFormSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(required=False, allow_blank=True)
+    handle = serializers.CharField(required=False, allow_blank=True)
+
     class Meta:
         model = CustomUser
         fields = ('email',
@@ -121,29 +145,80 @@ class UserUpdateFormSerializer(serializers.ModelSerializer):
                   'twitter',
                   )
 
+    def validate_handle(self, value):
+        user = self.context['request'].user
+        validator = CustomAccountValidator()
+        return validator.validate(user, value, 'handle')
+
+    def validate_email(self, value):
+        user = self.context['request'].user
+        validator = CustomAccountValidator()
+        return validator.validate(user, value, 'email',)
+
+    def validate_first_name(self, value):
+        return value.title()
+
+    def validate_last_name(self, value):
+        return value.title()
+
+    def validate_company(self, value):
+        return value.title()
+
+    def validate_job_title(self, value):
+        return value.title()
+
     def validate(self, data):
-        to_validate = ['handle', 'last_name', 'first_name', 'bio', 'job_title', 'company']
+        to_validate = ['handle', 'last_name',
+                       'first_name', 'bio', 'job_title', 'company']
+        format_exclude = ['bio', 'job_title', 'company']
         for key, value in data.items():
             if key in to_validate and value is not None:
                 pattern = re.compile(r"^[a-zA-Z0-9,\s+.]*$")
                 matched = re.fullmatch(pattern, value)
-
                 if not matched:
                     raise CustomValidator(
                         'cannot contain special characters',
                         key,
                         status_code=status.HTTP_400_BAD_REQUEST
                     )
+        fields = dict()
+        for key, value in data.items():
+            if key not in format_exclude:
+                fields[key] = value.strip().replace(' ', '')
+            else:
+                fields[key] = value
+        return OrderedDict(fields.items())
 
-        return OrderedDict(
-            [
-              (key, value.strip().replace(' ', '')) for key, value in data.items()
-            ])
-    def update(self, **validated_data):
-        print('UPDATE RAN')
-        print(validated_data, '      VALIDATED_DATA UPDATE()')
-        return validated_data
+    def update(self, pk: int, file, refresh_token, languages,  **validated_data):
 
+        user = CustomUser.objects.get_user(pk=pk)   
 
+        file_upload = FileUpload(file, 'avatars')
+        languages = json.loads(json.dumps(languages.copy()))
+        for lang in languages:
+            lang['user_id'] = pk
 
+        if user:
+            Language.objects \
+                .delete_language(langs=languages, pk=pk, cur_langs=user.languages.all())
 
+            Language.objects \
+                .update_language(langs=languages, pk=pk, cur_langs=user.languages.all())
+
+        result = file_upload.put_object(user)
+        if result is None:
+            result = {'avatar_fn': None, 'avatar_url': None}
+        email_changed = CustomUser.objects.update_user(pk=pk,
+                                                       avatar_fn=result['avatar_fn'],
+                                                       avatar_url=result['avatar_url'],
+                                                       **validated_data
+                                                       )
+        try:
+            if user and email_changed:
+                token = RefreshToken(refresh_token)
+                token.blacklist()
+                return True
+            else:
+                return False
+        except TokenError as e:
+            return True

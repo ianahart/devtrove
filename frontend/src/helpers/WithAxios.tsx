@@ -35,12 +35,18 @@ const WithAxios: React.FC<IProps> = ({ children }): JSX.Element => {
         return res;
       },
       async (error) => {
+        console.log(error.response);
         const originalRequest = error.config;
         const notAuthenticated =
           error.response?.data?.code === 'bad_authorization_header' ||
           error.response?.data?.detail?.toLowerCase() ===
             'authentication credentials were not provided.';
         if (error.response?.status === 401 && notAuthenticated) {
+          setLoaded(true);
+        } else if (
+          error.response?.status === 401 &&
+          error.response?.data?.dir === 'no refresh'
+        ) {
           setLoaded(true);
         } else if (
           error.response.status === 401 &&
@@ -82,7 +88,9 @@ const WithAxios: React.FC<IProps> = ({ children }): JSX.Element => {
   }, [setUserAuth, logout, setLoaded]);
   useEffect(() => {
     if (isLoaded) {
+      console.log('Are you running? You shouldnt be... WithAxios.tsx');
       navigate('/');
+      setLoaded(false);
     }
   }, [navigate, isLoaded]);
   return children;

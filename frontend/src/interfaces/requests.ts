@@ -16,8 +16,10 @@ export interface IUpdateUserRequest {
   company?: string;
   bio?: string;
   website?: string;
+  id?: number;
   github?: string;
   twitter?: string;
+  avatar_url?: string;
   avatar?: File;
   languages?: DevIcon[];
 }

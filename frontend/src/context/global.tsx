@@ -15,6 +15,7 @@ const GlobalContextProvider: React.FC<React.ReactNode> = ({ children }) => {
           logged_in: false,
           handle: '',
           id: null,
+          avatar_url: '',
         },
   };
   const [isModalOpen, setIsModalOpen] = useState(false);

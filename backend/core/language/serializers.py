@@ -1,6 +1,15 @@
 from rest_framework import serializers
 from .models import Language
 
+
+class LanguageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Language
+        fields = ('snippet', 'id', 'name', 'user_id')
+    def validate(self, data):
+        if data is not None:
+            return data
+
 class LanguageCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Language
@@ -8,6 +17,6 @@ class LanguageCreateSerializer(serializers.ModelSerializer):
 
 
     def validate(self, data):
-        print('LanguageCreateSerializer in languages dir validate: ', data)
-        return data
+        if data is not None:
+            return data
 
