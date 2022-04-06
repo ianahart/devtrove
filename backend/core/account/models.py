@@ -1,8 +1,10 @@
 from django.core.exceptions import ObjectDoesNotExist
-from django.db import models
+from django.db import models, DataError
 from django.utils import timezone
 from django.contrib.auth.models import BaseUserManager, AbstractUser, PermissionsMixin
 from django.utils.translation import gettext_lazy as _
+import logging
+logger = logging.getLogger('django')
 
 class CustomUserManager(BaseUserManager):
 
@@ -83,9 +85,9 @@ class CustomUserManager(BaseUserManager):
                 account.refresh_from_db()
                 return email_changed
             else:
-                raise TypeError
-        except Exception as e:
-            print('accountmodels.py update')
+                raise DataError
+        except DataError as e:
+            logger.error(msg='Failed updating the user')
 
 class CustomUser(AbstractUser, PermissionsMixin):
     username = None
@@ -104,10 +106,10 @@ class CustomUser(AbstractUser, PermissionsMixin):
     last_name = models.CharField(max_length=200, blank=True, null=True)
     slug = models.CharField(max_length=200, blank=True, null=True)
     handle = models.CharField(
-                            max_length=100, 
-                            unique=True, blank=True, 
+                            max_length=100,
+                            unique=True, blank=True,
                             null=True,
-                           error_messages={'unique': 
+                           error_messages={'unique':
                                             'A user with this handle already exists.'
                                               }
 )
@@ -116,7 +118,7 @@ class CustomUser(AbstractUser, PermissionsMixin):
                               unique=True,
                               blank=True,
                               null=True,
-                              error_messages={'unique': 
+                              error_messages={'unique':
                                   'A user with this email already exists.'
                               }
                               )

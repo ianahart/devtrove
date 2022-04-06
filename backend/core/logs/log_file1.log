@@ -1,0 +1,29 @@
+ERROR 2022-04-06 12:06:59,729 77 views.py views 24356 123145470185472 Problems with the login system
+ERROR 2022-04-06 12:06:59,729 241 log.py log 24356 123145470185472 Internal Server Error: /api/v1/auth/login/
+ERROR 2022-04-06 12:06:59,730 187 basehttp.py basehttp 24356 123145470185472 "POST /api/v1/auth/login/ HTTP/1.1" 500 17
+ERROR 2022-04-06 12:18:05,899 55 file_upload.py file_upload 25532 123145545605120 Avatar file could not be read
+ERROR 2022-04-06 12:18:06,089 241 log.py log 25532 123145545605120 Internal Server Error: /api/v1/account/43/
+ERROR 2022-04-06 12:18:06,089 187 basehttp.py basehttp 25532 123145545605120 "PATCH /api/v1/account/43/ HTTP/1.1" 500 239
+ERROR 2022-04-06 12:20:14,186 241 log.py log 25581 123145357299712 Internal Server Error: /api/v1/account/43/
+ERROR 2022-04-06 12:20:14,186 187 basehttp.py basehttp 25581 123145357299712 "PATCH /api/v1/account/43/ HTTP/1.1" 500 171
+ERROR 2022-04-06 12:20:56,402 241 log.py log 25841 123145372778496 Internal Server Error: /api/v1/account/43/
+ERROR 2022-04-06 12:20:56,403 187 basehttp.py basehttp 25841 123145372778496 "PATCH /api/v1/account/43/ HTTP/1.1" 500 171
+ERROR 2022-04-06 12:21:14,785 241 log.py log 26873 123145459007488 Internal Server Error: /api/v1/account/43/
+ERROR 2022-04-06 12:21:14,785 187 basehttp.py basehttp 26873 123145459007488 "PATCH /api/v1/account/43/ HTTP/1.1" 500 171
+ERROR 2022-04-06 12:22:35,671 241 log.py log 26873 123145459007488 Internal Server Error: /api/v1/account/43/
+ERROR 2022-04-06 12:22:35,672 187 basehttp.py basehttp 26873 123145459007488 "PATCH /api/v1/account/43/ HTTP/1.1" 500 171
+ERROR 2022-04-06 12:26:00,404 73 file_upload.py file_upload 26969 123145477894144 Failed deleting avatar file from AWS S3
+ERROR 2022-04-06 12:26:00,785 241 log.py log 26969 123145477894144 Internal Server Error: /api/v1/account/43/
+ERROR 2022-04-06 12:26:00,786 187 basehttp.py basehttp 26969 123145477894144 "PATCH /api/v1/account/43/ HTTP/1.1" 500 171
+ERROR 2022-04-06 12:30:57,527 241 log.py log 27221 123145403666432 Internal Server Error: /api/v1/account/43/
+ERROR 2022-04-06 12:30:57,528 187 basehttp.py basehttp 27221 123145403666432 "PATCH /api/v1/account/43/ HTTP/1.1" 500 171
+ERROR 2022-04-06 12:31:49,556 241 log.py log 27221 123145403666432 Internal Server Error: /api/v1/account/43/
+ERROR 2022-04-06 12:31:49,556 187 basehttp.py basehttp 27221 123145403666432 "PATCH /api/v1/account/43/ HTTP/1.1" 500 171
+ERROR 2022-04-06 12:32:46,578 47 file_upload.py file_upload 27483 123145457233920 Failed uploading avatar file to AWS S3
+ERROR 2022-04-06 12:36:20,434 73 file_upload.py file_upload 27513 123145377267712 Failed deleting avatar file from AWS S3
+ERROR 2022-04-06 12:36:38,915 73 file_upload.py file_upload 27513 123145377267712 Failed deleting avatar file from AWS S3
+ERROR 2022-04-06 12:40:50,951 91 models.py models 27695 123145345073152 Failed updating the user
+ERROR 2022-04-06 12:43:34,644 24 models.py models 27783 123145339240448 Failed updating user's languages
+ERROR 2022-04-06 12:46:14,817 24 models.py models 27844 123145342070784 Failed updating user's languages
+ERROR 2022-04-06 12:46:14,817 91 models.py models 27844 123145342070784 Failed updating the user
+ERROR 2022-04-06 12:48:33,469 41 models.py models 27909 123145537925120 Failed to delete a user's language(s)

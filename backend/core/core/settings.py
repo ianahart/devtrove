@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 import environ
+import os
 from datetime import timedelta
 # Initialise environment variables
 from pathlib import Path
@@ -27,9 +28,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = []
 
 # Amazon S3
 AWS_ACCESS_KEY_ID=env('AWS_ACCESS_KEY_ID')
@@ -156,7 +156,54 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000"
 ]
 
-# REST framework
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+        'formatters':{
+            'verbose': {
+                'format': '%(levelname)s %(asctime)s %(lineno)s %(filename)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+         'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
+
+    'handlers': {
+            'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
+        },
+        'file': {
+            'level': 'ERROR',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR,'logs/log_file1.log'),
+            'formatter': 'verbose',
+            'maxBytes': 1024*1024*5, # 5 MB
+            'backupCount': 5,
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file', 'console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}
+
+if DEBUG == 'True':
+    # make all loggers use the console.
+    for logger in LOGGING['loggers']:
+        LOGGING['loggers'][logger]['handlers'] = ['console']
+elif DEBUG== 'False':
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+    for logger in LOGGING['loggers']:
+        LOGGING['loggers'][logger]['handlers'] = ['file']
+
+
+#REST framework
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',

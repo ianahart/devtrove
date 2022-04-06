@@ -10,6 +10,9 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from account.serializers import CreateUserSerializer, UserSerializer
+import logging
+logger = logging.getLogger('django')
+
 
 class RegisterView(generics.ListCreateAPIView):
     """
@@ -62,6 +65,9 @@ class TokenObtainPairView(generics.ListCreateAPIView):
     http_method_names = ['post']
     authentication_classes = []
 
+
+
+
     def create(self, request):
         context = {'request': request.user}
         serializer = LoginSerializer(data=request.data, context=context)
@@ -82,8 +88,9 @@ class TokenObtainPairView(generics.ListCreateAPIView):
                             'avatar_url': user.avatar_url,
                             }
                         })
-            except  Exception as e:
-                print(e)
+            except Exception:
+                logger.error(msg='Problems with the login system')
+
                 return Response({
                                 'email': 'Unauthorized, please create an account.'
                                 }, status=status.HTTP_401_UNAUTHORIZED)

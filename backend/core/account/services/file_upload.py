@@ -1,8 +1,10 @@
 from core import settings
 import boto3
-from botocore.exceptions import ClientError
 from datetime import datetime
 from random import randint
+import logging
+logger = logging.getLogger('django')
+
 # pyright: reportGeneralTypeIssues=false
 
 class FileUpload():
@@ -40,15 +42,15 @@ class FileUpload():
 
             avatar_url = f"https://{self.bucket_name}.s3.{self.region_name}.amazonaws.com/{path}"
             return {'avatar_url': avatar_url, 'avatar_fn': path}
-        except ClientError:
-            print('file_upload.py Failed uploading file to S3')
+        except OSError:
+            logger.error(msg='Failed uploading avatar file to AWS S3')
 
     def __decode_file(self):
         try:
             file = self.file.read()
             return file
         except OSError:
-            print('file_upload.py: File could not be read.')
+            logger.error(msg='Avatar file could not be read')
 
 
     def __make_path(self):
@@ -63,10 +65,11 @@ class FileUpload():
 
     def delete_object(self, avatar_fn: str):
         try:
+            raise OSError
             self.s3.Object(self.bucket_name, avatar_fn).delete()
 
-        except ClientError:
-            print('file_upload.py delete s3')
+        except OSError:
+            logger.error(msg='Failed deleting avatar file from AWS S3')
 
 
 

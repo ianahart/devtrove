@@ -2,7 +2,8 @@ from django.db import models
 from django.utils import timezone
 from django.db import DataError
 from account.models import CustomUser
-
+import logging
+logger = logging.getLogger('django')
 
 
 class LanguageManager(models.Manager):
@@ -17,8 +18,9 @@ class LanguageManager(models.Manager):
                 else:
                     instance = self.model(**lang_dict)
                     instance.save()
-        except DataError:
-            print('language/serializers.py')
+        except DataError as e:
+            logger.error(msg="Failed updating user's languages")
+
 
 
     def delete_language(self, langs, pk: int, cur_langs):
@@ -35,7 +37,7 @@ class LanguageManager(models.Manager):
                 if cur_lang.name in to_remove:
                     cur_lang.delete()
         except DataError:
-            print('language/serializers.py')
+            logger.error(msg="Failed to delete a user's language(s)")
 
 
 
