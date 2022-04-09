@@ -7,6 +7,25 @@ export interface IFileUploaderProps {
   handleAvatarError: (error: string, active: boolean) => void;
 }
 
+export interface IPost {
+  author: string;
+  cover_image: string;
+  details_url: string;
+  id: number;
+  min_to_read: string;
+  published_date: string;
+  tags: string[];
+  title: string;
+}
+
+export interface IPostProps {
+  post: IPost;
+}
+
+export interface IPostsProps {
+  posts: IPost[];
+}
+
 export interface IMenuItemProps {
   to: string;
   linkText: string;
@@ -137,13 +156,6 @@ export interface IGlobalContext {
 export interface IInputTheme {
   variants: {
     inputEntry: InputEntryType;
-  };
-}
-
-export interface IButtonTheme {
-  baseStyle: { _focus: { boxShadow: string } };
-  variants: {
-    entryButton: ButtonEntryType;
   };
 }
 

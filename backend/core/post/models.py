@@ -1,11 +1,39 @@
-from django.db import models
+from os import lseek
+from django.db import models, DatabaseError
 from django.utils import timezone
+from datetime import timedelta, datetime
+import logging
+logger = logging.getLogger('django')
+
+class PostManager(models.Manager):
+    def create(self):
+        pass
+
+    def get_posts(self):
+        try:
+            time_threshold = datetime.now(tz=timezone.utc) - timedelta(days=30)
+            posts = self.all() \
+            .filter(created_at__gte=time_threshold)[0:20]
+
+            if posts:
+                return posts
+
+            raise DatabaseError
+        except DatabaseError:
+            logger.error(msg='Unable to retrieve scraped posts from the database.')
 
 class Post(models.Model):
+
+    objects: PostManager = PostManager()
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)
-    url= models.URLField(max_length=200, blank=True, null=True)
     title = models.CharField(max_length=250, blank=True, null=True)
     author = models.CharField(max_length=250, blank=True, null=True)
-    cover_image = models.URLField(max_length=200, blank=True, null=True)
-    published_date = models.DateTimeField(default=timezone.now)
+    cover_image = models.URLField(max_length=500, blank=True, null=True)
+    details_url = models.URLField(max_length=400, blank=True, null=True)
+    tags = models.JSONField(blank=True, null=True)
+    published_date = models.CharField(max_length=100, blank=True, null=True)
+    min_to_read = models.CharField(max_length=50, blank=True, null=True)
+
+    def __str__(self) -> str:
+        return self.title

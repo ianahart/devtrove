@@ -7,7 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 import json
 
 from account.permissions import AccountPermission
-from language.serializers import LanguageCreateSerializer, LanguageSerializer
+from language.serializers import LanguageCreateSerializer
 from .serializers import UserSerializer, UserUpdateFormSerializer, UserPhotoSerializer
 from account.models import CustomUser
 

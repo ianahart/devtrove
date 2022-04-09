@@ -1,10 +1,15 @@
 import { ITokens, IUser } from '.';
 import { DevIcon } from '../types';
+import { IPost } from '.';
 export interface IRegisterRequest {
   email: string;
   username: string;
   password: string;
   confirmpassword: string;
+}
+
+export interface IPostRequest {
+  data: IPost[];
 }
 
 export interface IUpdateUserRequest {

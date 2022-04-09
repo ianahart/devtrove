@@ -1,6 +1,4 @@
-import { IButtonTheme } from '../../interfaces';
-
-export const Button: IButtonTheme = {
+export const Button = {
   baseStyle: { _focus: { boxShadow: 'none' } },
   variants: {
     entryButton: {
@@ -12,6 +10,15 @@ export const Button: IButtonTheme = {
       color: '#FFF',
       _hover: {
         backgroundColor: '#5A3D5C',
+      },
+    },
+    secondaryButton: {
+      backgroundColor: '#0066FF',
+      minWidth: ['120px', '120px', '200px'],
+      cursor: 'pointer',
+      color: '#FFF',
+      _hover: {
+        backgroundColor: '#0066FF',
       },
     },
   },

@@ -1,0 +1,7 @@
+{
+  "venvPath": "/Library/Frameworks/Python.framework/Versions/3.10/bin",
+  "venv": "myenv",
+  "reportOptionalSubscript": false,
+  "reportOptionalMemberAccess": false,
+  "python.analysis.typeCheckingMode": "basic"
+}

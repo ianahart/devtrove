@@ -20,11 +20,12 @@ const WithAxios: React.FC<IProps> = ({ children }): JSX.Element => {
         if (getStorage()?.access_token) {
           // @ts-ignore
           config.headers.Authorization = `Bearer ${getStorage()?.access_token}`;
-        } else {
-          // @ts-ignore
-          config.headers.Authorization = 'Bearer ';
         }
-
+        //                else {
+        //          // @ts-ignore
+        //          config.headers.Authorization = 'Bearer ';
+        //        }
+        //
         return config;
       },
       (error) => Promise.reject(error)
