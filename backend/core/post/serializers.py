@@ -13,6 +13,7 @@ class PostListSerializer(serializers.ModelSerializer):
         model = Post
         fields = ('title',
                   'id',
+                  'slug',
                   'author',
                   'author_pic',
                   'cover_image',
@@ -53,6 +54,7 @@ class PostCreateSerializer(serializers.ModelSerializer):
                     scraper.parse_cover_photo()
 
                     cover['cover_image'] = scraper.get_cover_photo()
+
                     rows.append(
                         Post(title=cover['title'],
                         tags=cover['tags'],
@@ -62,7 +64,7 @@ class PostCreateSerializer(serializers.ModelSerializer):
                         details_url=cover['details_url'],
                         published_date=cover['published_date'],
                         author_pic=cover['author_pic'],
-                        slug= cover['details_url'].split('/dev.to/')[0]))
+                        slug=cover['slug']))
 
 
             else:

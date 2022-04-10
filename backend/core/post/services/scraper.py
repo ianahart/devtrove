@@ -83,6 +83,8 @@ class Scraper ():
                 tag = child.find(class_='crayons-story__tags')
                 tags = [tag.text for tag in list(tag.children)]
                 details_url = details_url['href']
+                index = details_url.rfind('/')
+                slug = details_url[index:]
                 cover = {
                     'title':title,
                     'tags': tags,
@@ -92,6 +94,7 @@ class Scraper ():
                     'cover_image': None,
                     'author_pic': author_pic['src'],
                     'details_url': f'https://www.dev.to{details_url}',
+                    'slug': slug
 
                 }
                 covers.append(self.format(cover))

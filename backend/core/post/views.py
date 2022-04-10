@@ -11,6 +11,7 @@ class ListCreateAPIView(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly, ]
     def get(self, request):
         try:
+
             posts = Post.objects.get_posts()
             serializer = PostListSerializer(posts, many=True)
             if serializer.data:
