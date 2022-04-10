@@ -61,14 +61,16 @@ class PostCreateSerializer(serializers.ModelSerializer):
                         cover_image=cover['cover_image'],
                         details_url=cover['details_url'],
                         published_date=cover['published_date'],
-                        author_pic=cover['author_pic']))
+                        author_pic=cover['author_pic'],
+                        slug= cover['details_url'].split('/dev.to/')[0]))
+
 
             else:
                 raise ValueError
 
             Post.objects.bulk_create(rows)
             return validated_data
-        except (TypeError, ValueError) as e:
+        except (KeyError, ValueError) as e:
             logger.error(msg='Unable to save scraped articles.')
 
 

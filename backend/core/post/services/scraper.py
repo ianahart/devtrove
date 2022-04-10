@@ -91,7 +91,8 @@ class Scraper ():
                     'published_date': published_date,
                     'cover_image': None,
                     'author_pic': author_pic['src'],
-                    'details_url': f'https://www.dev.to{details_url}'
+                    'details_url': f'https://www.dev.to{details_url}',
+
                 }
                 covers.append(self.format(cover))
             return covers

@@ -16,7 +16,7 @@ class ListCreateAPIView(APIView):
             if serializer.data:
                 return Response(serializer.data, status=status.HTTP_200_OK)
             return Response({
-                                'message': 'No results found.',
+                                'error': 'No results found.',
                             }, status.HTTP_404_NOT_FOUND)
         except Exception as e:
             print(e)

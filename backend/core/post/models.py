@@ -33,6 +33,7 @@ class Post(models.Model):
     title = models.CharField(max_length=250, blank=True, null=True)
     author = models.CharField(max_length=250, blank=True, null=True)
     cover_image = models.URLField(max_length=500, blank=True, null=True)
+    slug = models.TextField(max_length=300, blank=True, null=True)
     details_url = models.URLField(max_length=400, blank=True, null=True)
     author_pic = models.URLField(max_length=400, blank=True, null=True)
     tags = models.JSONField(blank=True, null=True)
