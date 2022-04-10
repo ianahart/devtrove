@@ -14,6 +14,7 @@ class PostListSerializer(serializers.ModelSerializer):
         fields = ('title',
                   'id',
                   'author',
+                  'author_pic',
                   'cover_image',
                   'published_date',
                   'details_url',
@@ -59,7 +60,8 @@ class PostCreateSerializer(serializers.ModelSerializer):
                         min_to_read=cover['min_to_read'],
                         cover_image=cover['cover_image'],
                         details_url=cover['details_url'],
-                        published_date=cover['published_date']))
+                        published_date=cover['published_date'],
+                        author_pic=cover['author_pic']))
 
             else:
                 raise ValueError

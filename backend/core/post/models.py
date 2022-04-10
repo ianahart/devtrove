@@ -34,6 +34,7 @@ class Post(models.Model):
     author = models.CharField(max_length=250, blank=True, null=True)
     cover_image = models.URLField(max_length=500, blank=True, null=True)
     details_url = models.URLField(max_length=400, blank=True, null=True)
+    author_pic = models.URLField(max_length=400, blank=True, null=True)
     tags = models.JSONField(blank=True, null=True)
     published_date = models.CharField(max_length=100, blank=True, null=True)
     min_to_read = models.CharField(max_length=50, blank=True, null=True)

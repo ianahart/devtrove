@@ -76,7 +76,9 @@ class Scraper ():
                 author = child.find(class_='profile-preview-card').button.text
                 title = child.find(class_='crayons-story__title').text
                 min_to_read = child.find(class_='crayons-story__save').small.text
+
                 details_url = child.find(class_='crayons-story__title').a
+                author_pic = child.find(class_='crayons-story__author-pic').a.img
 
                 tag = child.find(class_='crayons-story__tags')
                 tags = [tag.text for tag in list(tag.children)]
@@ -88,6 +90,7 @@ class Scraper ():
                     'min_to_read': min_to_read,
                     'published_date': published_date,
                     'cover_image': None,
+                    'author_pic': author_pic['src'],
                     'details_url': f'https://www.dev.to{details_url}'
                 }
                 covers.append(self.format(cover))
