@@ -1,7 +1,7 @@
-from os import lseek
 from django.db import models, DatabaseError
 from django.utils import timezone
 from datetime import timedelta, datetime
+import calendar
 import logging
 logger = logging.getLogger('django')
 
@@ -11,8 +11,11 @@ class PostManager(models.Manager):
 
     def get_posts(self):
         try:
-            time_threshold = datetime.now(tz=timezone.utc) - timedelta(days=30)
-            posts = self.all() \
+            now = datetime.now(tz=timezone.utc)
+            days = calendar.monthrange(now.year, now.month)[1]
+
+            time_threshold = now - timedelta(days=days)
+            posts = self.all().order_by('-created_at') \
             .filter(created_at__gte=time_threshold)[0:20]
 
             if posts:
