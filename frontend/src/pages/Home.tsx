@@ -1,9 +1,10 @@
-import { Box, Button, Heading, Spinner, Text } from '@chakra-ui/react';
+import { Box, Button, Heading } from '@chakra-ui/react';
 import axios, { AxiosError } from 'axios';
 import { useCallback, useEffect, useState } from 'react';
 import { http } from '../helpers';
 import { IPost } from '../interfaces';
 import Posts from '../components/Posts/';
+import Spinner from '../components/Mixed/Spinner';
 
 const Home = (): JSX.Element => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -51,19 +52,11 @@ const Home = (): JSX.Element => {
           alignItems="center"
           display="flex"
           bg="rgba(244, 241, 242, 0.31)"
+          position="relative"
           justifyContent="center"
           height="100vh"
         >
-          <Spinner
-            thickness="4px"
-            speed="0.65s"
-            emptyColor="gray.200"
-            color="blue.500"
-            size="xl"
-          />
-          <Text mt="1rem" color="purple.primary">
-            Loading Articles...
-          </Text>
+          <Spinner text="Loading Articles..." />
         </Box>
       )}
 

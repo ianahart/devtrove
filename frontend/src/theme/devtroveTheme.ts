@@ -37,5 +37,8 @@ export const devtroveTheme = extendTheme({
     blue: {
       primary: '#0066FF',
     },
+    cover: {
+      primary: 'rgba(54, 54, 54, 0.8)',
+    },
   },
 });
