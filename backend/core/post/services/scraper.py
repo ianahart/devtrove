@@ -1,4 +1,5 @@
-from bs4.element import NavigableString, ResultSet
+from bs4.element import NavigableString, Tag, ResultSet
+from typing import Union
 import requests
 from bs4 import BeautifulSoup
 import logging
@@ -6,6 +7,7 @@ logger = logging.getLogger('django')
 
 class Scraper ():
     cover_photo: str | ResultSet
+    snippet = ''
 
     def __init__(self,  content, limit = 20):
         self.__content = content
@@ -15,10 +17,39 @@ class Scraper ():
     def get_covers(self):
         return self.content
 
-    def get_cover_photo(self) -> str | ResultSet:
-        return self.cover_photo
 
-    def parse_cover_photo(self) -> None:
+    def get_details(self):
+        return self.snippet, self.cover_photo
+
+
+    def collect_details(self):
+        try:
+            self.__parse_snippet()
+            self.__parse_cover_photo()
+        except Exception as e:
+            logger.warn('Unable to retrieve cover_photo and first paragraph of details.')
+
+    def __parse_snippet(self):
+        try:
+            self.snippet = self.soup.find(class_='crayons-article__main')
+            if isinstance(self.snippet, Tag):
+                snippet = self.snippet.div.p
+                if not snippet:
+                    snippet = ''
+                else:
+                    snippet = snippet.get_text()
+                exists = snippet[3:-4] if snippet else ''
+                if not exists:
+                    raise ValueError
+                self.snippet = snippet
+            else:
+                raise ValueError
+        except ValueError as e:
+            self.snippet = ''
+            logger.error('Unable to scrape first paragraph of details page.')
+
+
+    def __parse_cover_photo(self) -> None:
         try:
             self.content = self.soup.article
             if not self.content:
@@ -41,7 +72,6 @@ class Scraper ():
                 self.cover_photo = text_node.split(target)[1].replace('"', '')
         except (TypeError, ValueError) as e:
                logger.error(msg='Unable to scrape cover photo for dev article.')
-               print(str(e))
 
     def parse_covers(self):
         try:
@@ -53,10 +83,9 @@ class Scraper ():
                      self.content = self.__parse_cover_children(children)
         except Exception as e:
             logger.error(msg='Unable to scrape covers for dev articles.')
-            print(e)
 
     def format(self, cover: dict):
-        exclude, formatted = ['details_url', 'cover_image'], {}
+        exclude, formatted = ['details_url',  'snippet', 'cover_image'], {}
         for key, value in cover.items():
             if isinstance(value, list):
                 formatted[key] = [item for item in value if item != '\n']
@@ -92,6 +121,7 @@ class Scraper ():
                     'min_to_read': min_to_read,
                     'published_date': published_date,
                     'cover_image': None,
+                    'snippet': None,
                     'author_pic': author_pic['src'],
                     'details_url': f'https://www.dev.to{details_url}',
                     'slug': slug
@@ -101,5 +131,4 @@ class Scraper ():
             return covers
         except ValueError as e:
             logger.error(msg='Unable to find children of the dev cover element.')
-            print(e)
             return None

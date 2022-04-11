@@ -5,6 +5,7 @@ import { http } from '../../helpers';
 import { IPost } from '../../interfaces';
 import { useParams } from 'react-router-dom';
 import DetailContent from './DetailContent';
+import Spinner from '../Mixed/Spinner';
 const Detail = () => {
   let params = useParams();
   const [error, setError] = useState('');
@@ -29,7 +30,8 @@ const Detail = () => {
   }, [fetchPost]);
 
   return (
-    <Box height="100%" minH="100vh" color="#FFF">
+    <Box position="relative" height="100%" minH="100vh" color="#FFF">
+      {!post && <Spinner text="Loading Article..." />}
       <Box display="flex" flexDir="row" flexShrink="0">
         <Box
           flexGrow="1"
@@ -46,7 +48,8 @@ const Detail = () => {
         <Box
           flexGrow="2"
           width="100%"
-          height="100vh"
+          height="100%"
+          minH="100vh"
           border="1px solid #403d40"
           color="#FFF"
           textAlign="center"

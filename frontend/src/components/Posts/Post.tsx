@@ -14,7 +14,7 @@ const Post = ({ post }: IPostProps) => {
       flexDir="column"
       borderRadius="8px"
       padding="0.5rem"
-      backgroundColor="#000"
+      backgroundColor="cover.primary"
       boxShadow="lg"
       maxW="300px"
       width="100%"

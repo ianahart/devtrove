@@ -8,13 +8,14 @@ from .services.scraper import Scraper
 logger = logging.getLogger('django')
 
 
-class PostListSerializer(serializers.ModelSerializer):
+class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ('title',
                   'id',
                   'slug',
                   'author',
+                  'snippet',
                   'author_pic',
                   'cover_image',
                   'published_date',
@@ -51,9 +52,10 @@ class PostCreateSerializer(serializers.ModelSerializer):
                     page = requests.post(details_page)
 
                     scraper = Scraper(page.text)
-                    scraper.parse_cover_photo()
-
-                    cover['cover_image'] = scraper.get_cover_photo()
+                    scraper.collect_details()
+                    snippet, cover_image = scraper.get_details()
+                    cover['cover_image'] = str(cover_image)
+                    cover['snippet'] = str(snippet)
 
                     rows.append(
                         Post(title=cover['title'],
@@ -61,6 +63,7 @@ class PostCreateSerializer(serializers.ModelSerializer):
                         author=cover['author'],
                         min_to_read=cover['min_to_read'],
                         cover_image=cover['cover_image'],
+                        snippet=cover['snippet'],
                         details_url=cover['details_url'],
                         published_date=cover['published_date'],
                         author_pic=cover['author_pic'],

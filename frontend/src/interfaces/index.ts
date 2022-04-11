@@ -15,6 +15,7 @@ export interface IActionsProps {
 export interface IPost {
   author: string;
   cover_image: string;
+  snippet: string;
   details_url: string;
   id: number;
   min_to_read: string;

@@ -33,6 +33,7 @@ const UserMenu = () => {
       ref={menuRef}
       p="0.25rem"
       position="absolute"
+      zIndex="2"
       top={[0, '70px', '70px']}
       right={[0, '35px', '35px']}
       height={['100vh', '120px', '120px']}

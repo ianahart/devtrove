@@ -9,6 +9,16 @@ class PostManager(models.Manager):
     def create(self):
         pass
 
+    def get_post(self, pk: int):
+        try:
+            post = self.model.objects.all().filter(pk=pk).first()
+            if post is None:
+                raise DatabaseError
+            return post
+        except DatabaseError:
+            logger.error(msg="Unable to retrieve a single post for details page.")
+
+
     def get_posts(self):
         try:
             now = datetime.now(tz=timezone.utc)
@@ -33,6 +43,7 @@ class Post(models.Model):
     title = models.CharField(max_length=250, blank=True, null=True)
     author = models.CharField(max_length=250, blank=True, null=True)
     cover_image = models.URLField(max_length=500, blank=True, null=True)
+    snippet = models.TextField(max_length=600, blank=True, null=True)
     slug = models.TextField(max_length=300, blank=True, null=True)
     details_url = models.URLField(max_length=400, blank=True, null=True)
     author_pic = models.URLField(max_length=400, blank=True, null=True)
