@@ -13,4 +13,8 @@ export const layerStyles = {
     height: '100%',
     width: '100%',
   },
+  actionIcon: {
+    cursor: 'pointer',
+    fontSize: '1.6rem',
+  },
 };

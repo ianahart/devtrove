@@ -7,6 +7,11 @@ export interface IFileUploaderProps {
   handleAvatarError: (error: string, active: boolean) => void;
 }
 
+export interface IActionsProps {
+  id: number;
+  slug: string;
+}
+
 export interface IPost {
   author: string;
   cover_image: string;
@@ -16,6 +21,7 @@ export interface IPost {
   published_date: string;
   tags: string[];
   title: string;
+  slug: string;
 }
 
 export interface IPostProps {

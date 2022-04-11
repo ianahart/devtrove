@@ -1,4 +1,4 @@
-import { Box, Button, Heading } from '@chakra-ui/react';
+import { Box, Button, Heading, Spinner, Text } from '@chakra-ui/react';
 import axios, { AxiosError } from 'axios';
 import { useCallback, useEffect, useState } from 'react';
 import { http } from '../helpers';
@@ -29,11 +29,7 @@ const Home = (): JSX.Element => {
     try {
       const response = await http.get<IPost[]>('/posts/');
       if (response.status === 200) {
-        if (response.data.length === 0) {
-          setError('All posts are currently loaded');
-        } else {
-          setPosts(response.data);
-        }
+        setPosts(response.data);
       }
     } catch (e: unknown | AxiosError) {
       if (axios.isAxiosError(e)) {
@@ -49,12 +45,34 @@ const Home = (): JSX.Element => {
 
   return (
     <Box height="100%" minH="100vh">
+      {posts.length === 0 && !error.length && (
+        <Box
+          flexDir="column"
+          alignItems="center"
+          display="flex"
+          bg="rgba(244, 241, 242, 0.31)"
+          justifyContent="center"
+          height="100vh"
+        >
+          <Spinner
+            thickness="4px"
+            speed="0.65s"
+            emptyColor="gray.200"
+            color="blue.500"
+            size="xl"
+          />
+          <Text mt="1rem" color="purple.primary">
+            Loading Articles...
+          </Text>
+        </Box>
+      )}
+
       <Box display="flex" justifyContent="center" my="3rem">
         <Button onClick={handleOnClick} variant="secondaryButton">
           Scrape
         </Button>
       </Box>
-      {error.length ? (
+      {error.length > 0 && (
         <Heading
           textAlign="center"
           as="h2"
@@ -64,9 +82,8 @@ const Home = (): JSX.Element => {
         >
           There are no posts currently.
         </Heading>
-      ) : (
-        <Posts posts={posts} />
       )}
+      {posts.length && <Posts posts={posts} />}
     </Box>
   );
 };

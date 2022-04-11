@@ -1,11 +1,17 @@
-import { Box, Heading, Image, Link, Text } from '@chakra-ui/react';
+import { Box, Heading, Icon, Image, Link, Text } from '@chakra-ui/react';
 import { IPostProps } from '../../interfaces';
+import { AiOutlinePicture } from 'react-icons/ai';
+import Actions from './Actions';
+import Tags from './Tags';
 const Post = ({ post }: IPostProps) => {
   return (
     <Box
       as="article"
       border="1px solid"
-      borderColor="text.primary"
+      borderColor="text.secondary"
+      display="flex"
+      justifyContent="space-between"
+      flexDir="column"
       borderRadius="8px"
       padding="0.5rem"
       backgroundColor="#000"
@@ -13,6 +19,7 @@ const Post = ({ post }: IPostProps) => {
       maxW="300px"
       width="100%"
       minH="300px"
+      flex="auto"
       justifySelf="center"
     >
       <Link textAlign="center" color="#FFF" href={post.details_url}>
@@ -38,18 +45,18 @@ const Post = ({ post }: IPostProps) => {
         {post.cover_image !== '[]' ? (
           <Image src={post.cover_image} alt={post.author} />
         ) : (
-          <></>
+          <Icon
+            as={AiOutlinePicture}
+            height="120px"
+            width="100%"
+            color="purple.secondary"
+          />
         )}
       </Box>
-      <Box justifyContent="space-around" flexWrap="wrap" display="flex">
-        {post.tags.map((tag, index) => {
-          return (
-            <Text mx="0.3rem" key={index} color="#FFF">
-              {tag}
-            </Text>
-          );
-        })}
-      </Box>
+      <Tags post={post} />
+      <Box bg="text.secondary" height="2px" width="100%" m="auto auto 0 auto"></Box>
+
+      <Actions id={post.id} slug={post.slug} />
     </Box>
   );
 };

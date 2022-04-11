@@ -5,7 +5,6 @@ import Register from './pages/Register';
 import Profile from './pages/Auth/Profile';
 import Navigation from './components/Navigation/';
 import Footer from './components/Footer/';
-import './App.css';
 import BasicModal from './components/Mixed/BasicModal';
 import WithAxios from './helpers/WithAxios';
 import LoginForm from './components/Forms/LoginForm';
@@ -17,6 +16,9 @@ import ProfileMenu from './components/Account/Profile/ProfileMenu';
 import SettingsMenu from './components/Account/Settings/SettingsMenu';
 import General from './components/Account/Settings/General';
 import User from './components/Account/Settings/User';
+import Detail from './components/Posts/Detail';
+import './App.css';
+
 const App = () => {
   return (
     <Router>
@@ -101,6 +103,14 @@ const App = () => {
                   />
                 </Route>
               </Route>
+              <Route
+                path=":id/:slug"
+                element={
+                  <RequireAuth>
+                    <Detail />
+                  </RequireAuth>
+                }
+              />
             </Routes>
           </Box>
           <Footer name="DevTrove" year={2022} />
