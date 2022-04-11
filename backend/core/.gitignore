@@ -6,11 +6,11 @@ venv/
 __pycache__/
 
 instance/
-logs/
+logs/*
 .pytest_cache/
 .coverage
 htmlcov/
-
+/logs/*
 commands.txt
 
 .env
