@@ -10,7 +10,6 @@ logs/*
 .pytest_cache/
 .coverage
 htmlcov/
-/logs/*
 commands.txt
 
 .env
