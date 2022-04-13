@@ -28,7 +28,7 @@ const App = () => {
             <Navigation />
           </Box>
           <Box className="site-content">
-            <BasicModal>
+            <BasicModal resetForm={undefined}>
               <LoginForm />
             </BasicModal>
             <Routes>
@@ -103,14 +103,7 @@ const App = () => {
                   />
                 </Route>
               </Route>
-              <Route
-                path=":id/:slug"
-                element={
-                  <RequireAuth>
-                    <Detail />
-                  </RequireAuth>
-                }
-              />
+              <Route path=":id/:slug" element={<Detail />} />
             </Routes>
           </Box>
           <Footer name="DevTrove" year={2022} />

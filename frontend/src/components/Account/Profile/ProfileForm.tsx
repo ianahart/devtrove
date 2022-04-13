@@ -134,8 +134,7 @@ const ProfileForm = () => {
       });
     } catch (e: unknown | AxiosError) {
       if (axios.isAxiosError(e)) {
-        console.log(e);
-        console.log(e.response);
+
         applyValidationMessages(e.response?.data?.errors);
       }
     }
@@ -157,7 +156,7 @@ const ProfileForm = () => {
         };
       }
       setForm(syncForm);
-      //console.log(icons, languages);
+
       if (languages) {
         const exclude: string[] = [];
         for (const icon of [...icons]) {
@@ -194,7 +193,7 @@ const ProfileForm = () => {
       }
     } catch (e: unknown | AxiosError) {
       if (axios.isAxiosError(e)) {
-        console.log(e.response);
+
         setError(e.response?.data?.error);
       }
     }

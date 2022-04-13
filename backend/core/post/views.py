@@ -53,10 +53,6 @@ class DetailAPIView(APIView):
                                 'error': 'No results found.',
                             }, status.HTTP_404_NOT_FOUND)
 
-
-
-
-            
         except BadRequest:
             return Response(
                 {'message': 'Something went wrong'},

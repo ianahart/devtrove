@@ -1,6 +1,6 @@
 import { ITokens, IUser } from '.';
 import { DevIcon } from '../types';
-import { IPost } from '.';
+import { IPost, IComment } from '.';
 export interface IRegisterRequest {
   email: string;
   username: string;
@@ -10,6 +10,13 @@ export interface IRegisterRequest {
 
 export interface IPostRequest {
   data: IPost[];
+}
+
+export interface ICommentsRequest {
+  message?: string;
+  page: number;
+  has_next_page: boolean;
+  comments: IComment[];
 }
 
 export interface IUpdateUserRequest {

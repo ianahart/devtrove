@@ -36,7 +36,7 @@ const WithAxios: React.FC<IProps> = ({ children }): JSX.Element => {
         return res;
       },
       async (error) => {
-        console.log(error.response);
+
         const originalRequest = error.config;
         const notAuthenticated =
           error.response?.data?.code === 'bad_authorization_header' ||

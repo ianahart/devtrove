@@ -80,17 +80,19 @@ const LoginForm: React.FC = () => {
 
   return (
     <form onSubmit={handleOnSubmit} style={{ width: '100%' }}>
-      <Box mt="-5rem">
-        <Heading color="#FFF" textAlign="center" as="h3">
-          Login
-        </Heading>
+      <Box>
         <Box
-          mt="0.5rem"
           mb="2rem"
           display="flex"
+          height="100%"
           justifyContent="center"
+          flexDir="column"
           alignItems="center"
         >
+          <Heading mb="1.5rem" color="#FFF" textAlign="center" as="h3">
+            Login
+          </Heading>
+
           <Text color="#FFF" mr="0.25rem">
             New To DevTrove?
           </Text>
@@ -110,7 +112,6 @@ const LoginForm: React.FC = () => {
         );
       })}
       <FormInput
-        id={form.email.name}
         name={form.email.name}
         label="Email"
         error={form.email.error}
@@ -119,7 +120,6 @@ const LoginForm: React.FC = () => {
         captureInput={captureInput}
       />
       <FormInput
-        id={form.password.name}
         name={form.password.name}
         label="Password:"
         error={form.password.error}

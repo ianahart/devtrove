@@ -11,6 +11,12 @@ from .services.file_upload import FileUpload
 from .validators import CustomValidator, CustomAccountValidator
 
 
+
+class UserCommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ('id', 'email', 'handle', 'avatar_url', )
+
 class UserSerializer(serializers.ModelSerializer):
     languages = LanguageSerializer(many=True)
 

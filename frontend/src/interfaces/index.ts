@@ -1,15 +1,44 @@
 import { IconType } from 'react-icons';
 import { DevIcon, InputEntryType, ButtonEntryType, TAvatar } from '../types';
 import { LanguageCrud } from '../types/index';
+import { PlacementWithLogical } from '@chakra-ui/react';
 export interface IFileUploaderProps {
   saveAvatar: (file: TAvatar<File>) => void;
   avatar: TAvatar<File>;
   handleAvatarError: (error: string, active: boolean) => void;
 }
 
+export interface ICommentUser {
+  avatar_url: string;
+  email: string;
+  handle: string;
+  id: number;
+}
+
+export interface IComment {
+  code_snippet: string;
+  created_at: string;
+  language: string;
+  id: number;
+  post_id: number;
+  readable_date: string;
+  text: string;
+  user: ICommentUser;
+}
+
 export interface IActionsProps {
   id: number;
   slug: string;
+}
+
+export interface ILanguageSelectProps {
+  handleSelectLanguage: (language: string) => void;
+}
+
+export interface ISelectLanguage {
+  id: number;
+  value: string;
+  alias: string;
 }
 
 export interface IPost {
@@ -94,9 +123,21 @@ export interface IFooterProps {
   year: number;
 }
 
+export interface ICommentFormProps {
+  post: IPost;
+  codeField: IFormField;
+  commentField: IFormField;
+  commentError: string;
+  language: string;
+  clearCommentError: () => void;
+  addComment: () => void;
+  handleSelectLanguage: (a: string) => void;
+  captureInput: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+}
+
 export interface IFormInputProps {
   label: string;
-  id: string;
+  id?: string;
   helperText?: string;
   type: string;
   name: string;
@@ -104,6 +145,13 @@ export interface IFormInputProps {
   value: string;
   active?: boolean;
   captureInput: (name: string, value: string) => void;
+}
+
+export interface IActionProps {
+  icon: IconType;
+  label: string;
+  placement: PlacementWithLogical | undefined;
+  color: string;
 }
 
 export interface IFormTextareaProps {
@@ -126,6 +174,7 @@ export interface ILogoProps {
 
 export interface IBasicModalProps {
   children?: React.ReactNode;
+  resetForm?: () => void;
 }
 
 export interface IUser {

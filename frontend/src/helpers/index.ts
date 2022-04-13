@@ -26,6 +26,26 @@ export const wipeUser: IUserAuth = {
   },
 };
 
+export const selectLanguages = [
+  { id: nanoid(), value: 'shell', alias: 'Shell' },
+  { id: nanoid(), value: 'scss', alias: 'SCSS' },
+  { id: nanoid(), value: 'sql', alias: 'SQL' },
+  { id: nanoid(), value: 'rust', alias: 'Rust' },
+  { id: nanoid(), value: 'python', alias: 'Python' },
+  { id: nanoid(), value: 'php', alias: 'PHP' },
+  { id: nanoid(), value: 'perl', alias: 'Perl' },
+  { id: nanoid(), value: 'kotlin', alias: 'Kotlin' },
+  { id: nanoid(), value: 'javascript', alias: 'JavaScript' },
+  { id: nanoid(), value: 'java', alias: 'Java' },
+  { id: nanoid(), value: 'json', alias: 'JSON' },
+  { id: nanoid(), value: 'html', alias: 'HTML' },
+  { id: nanoid(), value: 'go', alias: 'Go' },
+  { id: nanoid(), value: 'elixir', alias: 'Elixir' },
+  { id: nanoid(), value: 'cpp', alias: 'C++' },
+  { id: nanoid(), value: 'csharp', alias: 'C#' },
+  { id: nanoid(), value: 'css', alias: 'CSS' },
+];
+
 export const devIcons = [
   { id: nanoid(), name: 'JavaScript', snippet: 'devicon-javascript-plain colored' },
   { id: nanoid(), name: 'Swift', snippet: 'devicon-swift-plain colored' },

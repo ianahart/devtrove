@@ -34,7 +34,6 @@ const Home = (): JSX.Element => {
       }
     } catch (e: unknown | AxiosError) {
       if (axios.isAxiosError(e)) {
-        console.log(e.response);
         setError(e.response?.data.error);
       }
     }
