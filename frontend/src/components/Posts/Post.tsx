@@ -4,6 +4,7 @@ import { AiOutlinePicture } from 'react-icons/ai';
 import Actions from './Actions';
 import Tags from './Tags';
 const Post = ({ post }: IPostProps) => {
+  console.log(post);
   return (
     <Box
       as="article"
@@ -22,6 +23,16 @@ const Post = ({ post }: IPostProps) => {
       flex="auto"
       justifySelf="center"
     >
+      <Image
+        mb="0.25rem"
+        width="30px"
+        height="30px"
+        borderRadius="50%"
+        boxShadow="lg"
+        src={post.logo}
+        alt={post.title}
+      />
+
       <Link textAlign="center" color="#FFF" href={post.details_url}>
         <Heading as="h3" fontSize="22px">
           {post.title}

@@ -13,21 +13,40 @@ class Scraper ():
         self.__content = content
         self.__limit = limit
         self.soup = BeautifulSoup(content, 'html.parser')
+        self.logo = ''
 
     def get_covers(self):
         return self.content
 
 
     def get_details(self):
-        return self.snippet, self.cover_photo
+        return self.snippet, self.cover_photo, self.logo
 
 
     def collect_details(self):
         try:
             self.__parse_snippet()
             self.__parse_cover_photo()
+            self.__parse_logo()
         except Exception as e:
-            logger.warn('Unable to retrieve cover_photo and first paragraph of details.')
+            logger.error('Unable to retrieve cover_photo and first paragraph of details.')
+
+
+
+    def __parse_logo(self):
+        try:
+            self.logo = self.soup.head.find(type='image/x-icon')
+
+            if not isinstance(self.logo, NavigableString):
+                if hasattr(self.logo, 'href'):
+                    self.logo = self.logo.get('href')
+                else:
+                    self.logo = ''
+            else:
+                self.logo = ''
+        except ValueError:
+            logger.error('Unable to retrieve logo for article\'s website.')
+
 
     def __parse_snippet(self):
         try:
@@ -44,7 +63,7 @@ class Scraper ():
                 self.snippet = snippet
             else:
                 raise ValueError
-        except ValueError as e:
+        except ValueError:
             self.snippet = ''
             logger.error('Unable to scrape first paragraph of details page.')
 

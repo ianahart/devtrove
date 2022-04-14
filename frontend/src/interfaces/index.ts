@@ -47,6 +47,7 @@ export interface IPost {
   snippet: string;
   details_url: string;
   id: number;
+  logo: string;
   min_to_read: string;
   published_date: string;
   tags: string[];

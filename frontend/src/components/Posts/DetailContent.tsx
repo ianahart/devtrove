@@ -31,10 +31,7 @@ const DetailContent = ({ post }: IPostProps) => {
             )}
           </Box>
           <Box alignItems="center" display="flex">
-            <Icon fontSize="40px" as={FaDev} />
-            <Text alignSelf="flex-end" fontSize="1.2rem" mx="1rem">
-              DevTo
-            </Text>
+            <Image src={post.logo} alt={post.title} />
           </Box>
           <Box m="2rem auto 1.5rem auto" textAlign="center">
             <Heading fontSize="1.75rem" as="h2">

@@ -16,6 +16,7 @@ class PostSerializer(serializers.ModelSerializer):
                   'slug',
                   'author',
                   'snippet',
+                  'logo',
                   'author_pic',
                   'cover_image',
                   'published_date',
@@ -53,13 +54,15 @@ class PostCreateSerializer(serializers.ModelSerializer):
 
                     scraper = Scraper(page.text)
                     scraper.collect_details()
-                    snippet, cover_image = scraper.get_details()
+                    snippet, cover_image, logo = scraper.get_details()
                     cover['cover_image'] = str(cover_image)
                     cover['snippet'] = str(snippet)
+                    cover['logo'] = str(logo)
 
                     rows.append(
                         Post(title=cover['title'],
                         tags=cover['tags'],
+                        logo=cover['logo'],
                         author=cover['author'],
                         min_to_read=cover['min_to_read'],
                         cover_image=cover['cover_image'],

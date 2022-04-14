@@ -42,6 +42,8 @@ class Post(models.Model):
     updated_at = models.DateTimeField(default=timezone.now)
     title = models.CharField(max_length=250, blank=True, null=True)
     author = models.CharField(max_length=250, blank=True, null=True)
+    upvotes = models.IntegerField(blank=True, null=True, default=0)
+    logo = models.URLField(max_length=350, blank=True, null=True)
     cover_image = models.URLField(max_length=500, blank=True, null=True)
     snippet = models.TextField(max_length=600, blank=True, null=True)
     slug = models.TextField(max_length=300, blank=True, null=True)
