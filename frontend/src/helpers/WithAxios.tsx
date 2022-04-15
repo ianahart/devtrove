@@ -36,7 +36,6 @@ const WithAxios: React.FC<IProps> = ({ children }): JSX.Element => {
         return res;
       },
       async (error) => {
-
         const originalRequest = error.config;
         const notAuthenticated =
           error.response?.data?.code === 'bad_authorization_header' ||
@@ -90,7 +89,7 @@ const WithAxios: React.FC<IProps> = ({ children }): JSX.Element => {
   useEffect(() => {
     if (isLoaded) {
       console.log('Are you running? You shouldnt be... WithAxios.tsx');
-      navigate('/');
+      navigate('/login');
       setLoaded(false);
     }
   }, [navigate, isLoaded]);

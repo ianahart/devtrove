@@ -43,9 +43,11 @@ const Navigation = () => {
       );
     else {
       return (
-        <Button onClick={openModal} color="text.secondary" bg="light.primary">
-          Come aboard
-        </Button>
+        <Link to="/login" as={RouterLink}>
+          <Button onClick={openModal} color="text.secondary" bg="light.primary">
+            Come aboard
+          </Button>
+        </Link>
       );
     }
   };

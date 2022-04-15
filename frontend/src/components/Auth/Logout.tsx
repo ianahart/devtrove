@@ -30,7 +30,7 @@ const Logout = () => {
       );
       if (response.status === 200) {
         logout();
-        navigate('/');
+        navigate('/login');
       }
     } catch (e: unknown | AxiosError) {
       if (axios.isAxiosError(e) && e.response) {

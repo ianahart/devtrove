@@ -17,6 +17,7 @@ import SettingsMenu from './components/Account/Settings/SettingsMenu';
 import General from './components/Account/Settings/General';
 import User from './components/Account/Settings/User';
 import Detail from './components/Posts/Detail';
+import Login from './pages/Login';
 import './App.css';
 
 const App = () => {
@@ -28,11 +29,14 @@ const App = () => {
             <Navigation />
           </Box>
           <Box className="site-content">
+            //{' '}
             <BasicModal resetForm={undefined}>
-              <LoginForm />
+              // <LoginForm />
+              //{' '}
             </BasicModal>
             <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route
                 path="/:username/profile"

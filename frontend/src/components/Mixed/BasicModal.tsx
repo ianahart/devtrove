@@ -5,6 +5,7 @@ import {
   ModalCloseButton,
   ModalBody,
 } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import { IBasicModalProps } from '../../interfaces';
 import { GlobalContext } from '../../context/global';
@@ -14,13 +15,19 @@ const BasicModal: React.FC<IBasicModalProps> = ({
   children,
   resetForm,
 }: IBasicModalProps): JSX.Element => {
-  const { closeModal, isModalOpen } = useContext(GlobalContext) as IGlobalContext;
+  const { userAuth, closeModal, isModalOpen } = useContext(
+    GlobalContext
+  ) as IGlobalContext;
+  const navigate = useNavigate();
 
   const handleOnClose = () => {
     if (resetForm) {
       resetForm();
     }
     closeModal();
+    if (!userAuth.user.logged_in) {
+      navigate('/');
+    }
   };
 
   return (
