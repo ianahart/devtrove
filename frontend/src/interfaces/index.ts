@@ -18,6 +18,7 @@ export interface ICommentUser {
 export interface IComment {
   code_snippet: string;
   created_at: string;
+  edited: boolean;
   language: string;
   id: number;
   post_id: number;
@@ -139,8 +140,10 @@ export interface ICommentFormProps {
   commentField: IFormField;
   commentError: string;
   language: string;
+  writeMode: string;
   clearCommentError: () => void;
   addComment: () => void;
+  editComment: () => void;
   handleSelectLanguage: (a: string) => void;
   captureInput: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 }

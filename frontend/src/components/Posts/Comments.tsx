@@ -11,14 +11,15 @@ interface ICommentProps {
   comments: IComment[];
   handlePagination: () => void;
   handleCommentOperation: () => void;
+  syncEdit: (id: number) => void;
 }
 const Comments = ({
   post,
   comments,
   commentsLoaded,
-
   handleCommentOperation,
   handlePagination,
+  syncEdit,
 }: ICommentProps) => {
   const { openModal, userAuth } = useContext(GlobalContext) as IGlobalContext;
   const commentModalText = comments.length
@@ -50,6 +51,7 @@ const Comments = ({
           return (
             <Comment
               handleCommentOperation={handleCommentOperation}
+              syncEdit={syncEdit}
               key={comment.id}
               comment={comment}
             />

@@ -16,6 +16,8 @@ const CommentForm = ({
   post,
   codeField,
   commentError,
+  writeMode,
+  editComment,
   clearCommentError,
   commentField,
   language,
@@ -34,7 +36,12 @@ const CommentForm = ({
   };
   const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    addComment();
+
+    if (writeMode === 'add') {
+      addComment();
+    } else {
+      editComment();
+    }
   };
 
   return (
@@ -162,7 +169,7 @@ const CommentForm = ({
               mt="1.5rem"
               color="#FFF"
             >
-              Add Comment
+              {writeMode === 'add' ? 'Add Comment' : 'Edit Comment'}
             </Button>
           </Box>
         </form>

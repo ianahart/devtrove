@@ -52,6 +52,25 @@ class CommentManager(models.Manager):
 
 
 
+    def update_comment(self, pk:int, validated_data):
+        try:
+            data = validated_data['validated_data']
+            comment = Comment.objects.all() \
+            .filter(user_id=data['user'].id) \
+            .filter(post_id=data['post'].id) \
+            .filter(id=pk).first()
+
+            data['edited'] = True 
+            for key, value in data.items():
+                setattr(comment, key, value)
+
+            if comment:
+                comment.save()
+        except DatabaseError:
+            logger.error('Unable to update/edit a comment for specified user.')
+
+
+
     def create_comment(self, **kwargs):
         try:
             dict = {}

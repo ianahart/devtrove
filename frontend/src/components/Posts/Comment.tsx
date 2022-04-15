@@ -18,12 +18,14 @@ import ProfilePicture from '../Account/ProfilePicture';
 import { IGlobalContext } from '../../interfaces';
 import { GlobalContext } from '../../context/global';
 import CommentCodeBlock from './CommentCodeBlock';
+import { FiEdit3 } from 'react-icons/fi';
 interface ISingleCommentProps {
   comment: IComment;
   handleCommentOperation: () => void;
+  syncEdit: (id: number) => void;
 }
 
-const Comment = ({ comment, handleCommentOperation }: ISingleCommentProps) => {
+const Comment = ({ comment, handleCommentOperation, syncEdit }: ISingleCommentProps) => {
   const [error, setError] = useState('');
   const { userAuth } = useContext(GlobalContext) as IGlobalContext;
   const handleOnClick = () => {
@@ -42,6 +44,11 @@ const Comment = ({ comment, handleCommentOperation }: ISingleCommentProps) => {
     }
   };
 
+  const handleEditComment = (e: React.SyntheticEvent) => {
+    e.stopPropagation();
+    syncEdit(comment.id);
+  };
+
   const commentActions = () => {
     if (!userAuth.user.logged_in) {
       return <Box></Box>;
@@ -51,6 +58,11 @@ const Comment = ({ comment, handleCommentOperation }: ISingleCommentProps) => {
           <MenuItem _hover={{ background: '#313135' }}>
             <Icon as={BsTrash} color="purple.secondary" fontSize="0.9rem" mr="0.4rem" />{' '}
             <Text>Remove</Text>
+          </MenuItem>
+
+          <MenuItem onClick={handleEditComment} _hover={{ background: '#313135' }}>
+            <Icon as={FiEdit3} color="purple.secondary" fontSize="0.9rem" mr="0.4rem" />{' '}
+            <Text>Edit</Text>
           </MenuItem>
         </Box>
       );
@@ -79,6 +91,11 @@ const Comment = ({ comment, handleCommentOperation }: ISingleCommentProps) => {
               {comment.user.handle ? comment.user.handle : 'No Name'}
             </Text>
             <Text>{comment.readable_date}</Text>
+            {comment.edited && (
+              <Text textAlign="left" color="text.primary">
+                (edited)
+              </Text>
+            )}
           </Box>
         </Box>
         {userAuth.user.logged_in && (
@@ -118,7 +135,10 @@ const Comment = ({ comment, handleCommentOperation }: ISingleCommentProps) => {
           </Box>
         )}
         <Box cursor="pointer" onClick={handleOnClick} my="1rem">
-          <Icon as={GiSwordBrandish} color="text.primary" fontSize="25px" />
+          <Icon ml="1rem" as={GiSwordBrandish} color="text.primary" fontSize="25px" />
+          <Text fontWeight="bold" mt="-0.3rem" ml="1rem" color="text.primary">
+            1
+          </Text>
         </Box>
       </Box>
     </Box>

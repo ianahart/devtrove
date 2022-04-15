@@ -16,15 +16,15 @@ import { GlobalContext } from '../../context/global';
 const Detail = () => {
   let params = useParams();
   const toast = useToast();
-  const { userAuth, closeModal } = useContext(GlobalContext) as IGlobalContext;
+  const { userAuth, openModal, closeModal } = useContext(GlobalContext) as IGlobalContext;
   const [error, setError] = useState('');
   const [post, setPost] = useState<IPost>();
-
+  const [writeMode, setWriteMode] = useState('add');
   const [comments, setComments] = useState<IComment[]>([]);
   const [commentsLoaded, setCommentsLoaded] = useState(false);
   const [offset, setOffset] = useState(3);
   const [page, setPage] = useState(1);
-
+  const [editCommentId, setEditCommentId] = useState<number | null>(null);
   const [commentError, setCommentError] = useState('');
   const [commentField, setCommentField] = useState<IFormField>({
     name: 'comment',
@@ -46,6 +46,7 @@ const Detail = () => {
     const resetCodeField = Object.assign({}, { name: 'code', value: '', error: '' });
     setCommentField(resetCommentField);
     setCodeField(resetCodeField);
+    setEditCommentId(null);
   };
 
   const captureInput = (input: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -96,7 +97,50 @@ const Detail = () => {
           title: 'Comment added.',
           description: 'Remember to be respectful.',
           status: 'success',
-          duration: 6000,
+          duration: 3000,
+          isClosable: true,
+        });
+      }
+    } catch (e: unknown | AxiosError) {
+      if (axios.isAxiosError(e)) {
+        applyCommentErrors(e.response?.data.error);
+      }
+    }
+  };
+
+  const syncEdit = (id: number) => {
+    const comment = [...comments].find((comment) => comment.id === id);
+    if (!comment) return;
+    setEditCommentId(comment.id);
+    setCommentField((prevState) => ({ ...prevState, value: comment.text }));
+    setCodeField((prevState) => ({ ...prevState, value: comment.code_snippet }));
+    setWriteMode('edit');
+    openModal();
+  };
+
+  const editComment = async () => {
+    try {
+      clearCommentError();
+      if (codeField.value.trim().length === 0 && commentField.value.trim().length === 0) {
+        return;
+      }
+      const response = await http.put(`/comments/${editCommentId}/`, {
+        user: userAuth.user.id,
+        post: params.id,
+        code_snippet: codeField.value,
+        text: commentField.value,
+        language: language,
+        id: editCommentId,
+      });
+      if (response.status === 200) {
+        handleCommentOperation();
+        resetForm();
+        closeModal();
+        toast({
+          title: 'Comment Edited.',
+          description: 'Remember to be respectful.',
+          status: 'success',
+          duration: 3000,
           isClosable: true,
         });
       }
@@ -214,6 +258,8 @@ const Detail = () => {
               <CommentForm
                 codeField={codeField}
                 commentError={commentError}
+                writeMode={writeMode}
+                editComment={editComment}
                 clearCommentError={clearCommentError}
                 captureInput={captureInput}
                 addComment={addComment}
@@ -239,6 +285,7 @@ const Detail = () => {
             {post !== null && (
               <Comments
                 comments={comments}
+                syncEdit={syncEdit}
                 commentsLoaded={commentsLoaded}
                 handlePagination={handlePagination}
                 handleCommentOperation={handleCommentOperation}

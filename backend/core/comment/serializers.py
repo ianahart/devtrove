@@ -17,6 +17,7 @@ class CommentSerializer(serializers.ModelSerializer):
                   'language',
                   'code_snippet',
                   'post_id',
+                  'edited',
                   'readable_date',
                   'created_at',
                   'text', )
@@ -24,6 +25,40 @@ class CommentSerializer(serializers.ModelSerializer):
 
     def get_readable_date(self, obj):
         return obj.get_readable_date()
+
+
+
+
+
+
+class CommentUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ( 'id' ,'user',  'post','language','code_snippet','text', )
+
+
+    def validate(self, data):
+        to_validate = []
+        for field in data:
+            if field in ['code_snippet', 'text']:
+                to_validate.append(data[field])
+
+        if not any(len(val) > 0 for val in to_validate):
+            raise serializers.ValidationError(
+                dict(field=['You need to write something to edit a comment.'])
+            )
+
+        return data
+
+
+    def update(self, pk:int, **validated_data):
+       return Comment.objects.update_comment(pk, validated_data=validated_data)
+
+
+
+
+
+
 
 
 

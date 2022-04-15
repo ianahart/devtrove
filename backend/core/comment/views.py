@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.views import APIView
 from account.permissions import AccountPermission
-from .serializers import CommentCreateSerializer, CommentSerializer
+from .serializers import CommentCreateSerializer, CommentSerializer, CommentUpdateSerializer
 from .models import Comment
 
 
@@ -32,6 +32,36 @@ class DetailAPIView(APIView):
                                 )
 
 
+
+    def put(self, request, pk=None):
+        try:
+            comment = Comment.objects.get(pk=pk)
+            if comment:
+                self.check_object_permissions(request, comment.user)
+            serializer = CommentUpdateSerializer(data=request.data)
+            if serializer.is_valid():
+                validated_data = serializer.validated_data
+                serializer.update(pk, validated_data=validated_data)
+
+                return Response({
+                            'message': 'Comment was edited.'
+                            },
+                            status=status.HTTP_200_OK
+                            )
+            else:
+                return Response(
+                    {'message': 'Make sure you have filled out a field.',
+                     'error': serializer.errors
+                    },
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+        except PermissionDenied:
+            return Response({
+                        'message': 'Cannot delete another user comment'
+                        },
+                        status=status.HTTP_403_FORBIDDEN
+                    )
 
 
 class ListCreateAPIView(APIView):
@@ -103,7 +133,7 @@ class ListCreateAPIView(APIView):
                     }, status=status.HTTP_201_CREATED)
             else:
                 return Response(
-                    {'message': 'Something went wrong, make suring you have filled out a field.',
+                    {'message': 'Something went wrong, make sure you have filled out a field.',
                      'error': create_serializer.errors
                     },
                     status=status.HTTP_400_BAD_REQUEST
