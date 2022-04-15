@@ -3,8 +3,8 @@ import { IPostProps } from '../../interfaces';
 import { AiOutlinePicture } from 'react-icons/ai';
 import Actions from './Actions';
 import Tags from './Tags';
-const Post = ({ post }: IPostProps) => {
-  console.log(post);
+
+const Post = ({ post, updatePostUpvote }: IPostProps) => {
   return (
     <Box
       as="article"
@@ -67,7 +67,14 @@ const Post = ({ post }: IPostProps) => {
       <Tags post={post} />
       <Box bg="text.secondary" height="2px" width="100%" m="auto auto 0 auto"></Box>
 
-      <Actions id={post.id} slug={post.slug} />
+      <Actions
+        updatePostUpvote={updatePostUpvote}
+        upvotes_count={post.upvotes_count}
+        cur_user_voted={post.cur_user_voted}
+        comments_count={post.comments_count}
+        id={post.id}
+        slug={post.slug}
+      />
     </Box>
   );
 };

@@ -29,6 +29,10 @@ export interface IComment {
 export interface IActionsProps {
   id: number;
   slug: string;
+  updatePostUpvote?: (id: number, dir: string) => void | undefined;
+  comments_count: number;
+  upvotes_count: number;
+  cur_user_voted: boolean;
 }
 
 export interface ILanguageSelectProps {
@@ -46,6 +50,9 @@ export interface IPost {
   cover_image: string;
   snippet: string;
   details_url: string;
+  comments_count: number;
+  upvotes_count: number;
+  cur_user_voted: boolean;
   id: number;
   logo: string;
   min_to_read: string;
@@ -57,10 +64,12 @@ export interface IPost {
 
 export interface IPostProps {
   post: IPost;
+  updatePostUpvote?: (id: number, dir: string) => void | undefined;
 }
 
 export interface IPostsProps {
   posts: IPost[];
+  updatePostUpvote: (id: number, dir: string) => void;
 }
 
 export interface IMenuItemProps {

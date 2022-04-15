@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'comment',
     'post',
     'language',
+    'upvote',
 ]
 
 AUTH_USER_MODEL = 'account.CustomUser'

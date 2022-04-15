@@ -26,6 +26,28 @@ const Home = (): JSX.Element => {
     }
   };
 
+  const preformUpdate = (post: IPost, id: number, dir: string) => {
+    if (post.id === id) {
+      if (dir === 'upvote') {
+        post.cur_user_voted = true;
+        console.log('upvote');
+        post.upvotes_count = post.upvotes_count + 1;
+      } else if (dir === 'downvote') {
+        console.log('downvote');
+        post.cur_user_voted = false;
+        post.upvotes_count = post.upvotes_count === 0 ? 0 : post.upvotes_count - 1;
+      }
+    }
+    return post;
+  };
+
+  const updatePostUpvote = (id: number, dir: string) => {
+    const updated = [...posts].map((post) => {
+      return preformUpdate(post, id, dir);
+    });
+    setPosts(updated);
+  };
+
   const fetchPosts = useCallback(async () => {
     try {
       const response = await http.get<IPost[]>('/posts/');
@@ -75,7 +97,7 @@ const Home = (): JSX.Element => {
           There are no posts currently.
         </Heading>
       )}
-      {posts.length && <Posts posts={posts} />}
+      {posts.length && <Posts updatePostUpvote={updatePostUpvote} posts={posts} />}
     </Box>
   );
 };

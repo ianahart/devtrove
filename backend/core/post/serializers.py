@@ -9,10 +9,17 @@ logger = logging.getLogger('django')
 
 
 class PostSerializer(serializers.ModelSerializer):
+    comments_count = serializers.IntegerField()
+    upvotes_count = serializers.IntegerField()
+    cur_user_voted = serializers.BooleanField()
+
     class Meta:
         model = Post
         fields = ('title',
                   'id',
+                 'comments_count',
+                 'upvotes_count',
+                  'cur_user_voted',
                   'slug',
                   'author',
                   'snippet',

@@ -9,7 +9,7 @@ import {
   MenuItem,
 } from '@chakra-ui/react';
 import { useContext, useState } from 'react';
-import { BiUpvote } from 'react-icons/bi';
+import { GiSwordBrandish } from 'react-icons/gi';
 import { BsFlagFill, BsTrash, BsThreeDotsVertical } from 'react-icons/bs';
 import axios, { AxiosError } from 'axios';
 import { IComment } from '../../interfaces';
@@ -118,7 +118,7 @@ const Comment = ({ comment, handleCommentOperation }: ISingleCommentProps) => {
           </Box>
         )}
         <Box cursor="pointer" onClick={handleOnClick} my="1rem">
-          <Icon as={BiUpvote} color="text.primary" fontSize="25px" />
+          <Icon as={GiSwordBrandish} color="text.primary" fontSize="25px" />
         </Box>
       </Box>
     </Box>

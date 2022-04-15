@@ -16,6 +16,7 @@ const Comments = ({
   post,
   comments,
   commentsLoaded,
+
   handleCommentOperation,
   handlePagination,
 }: ICommentProps) => {
@@ -25,16 +26,26 @@ const Comments = ({
     : 'Start a discussion';
   return (
     <Box>
-      <Box py="0.5rem" fontSize="1rem" display="flex" alignItems="center">
-        <Text mx="0.5rem">122 Upvotes</Text>
-        <Text mx="0.5rem">16 Comments</Text>
-      </Box>
+      {post && (
+        <Box py="0.5rem" fontSize="1rem" display="flex" alignItems="center">
+          <Text mx="0.5rem">{post.comments_count} Comments</Text>
+        </Box>
+      )}
       <Box width="300px" margin="0 auto">
-        {post ? <Actions id={post.id} slug={post.slug} /> : <Box></Box>}
+        {post ? (
+          <Actions
+            cur_user_voted={post.cur_user_voted}
+            upvotes_count={post.upvotes_count}
+            comments_count={post.comments_count}
+            id={post.id}
+            slug={post.slug}
+          />
+        ) : (
+          <Box></Box>
+        )}
       </Box>
 
       <Box>
-        <Text color="#FFF">Comments</Text>
         {comments.map((comment) => {
           return (
             <Comment
@@ -52,6 +63,7 @@ const Comments = ({
           width="40px"
         />
         <Box
+          mb="1rem"
           cursor="pointer"
           textAlign="left"
           bg="#2a2c2a"

@@ -30,7 +30,6 @@ class CommentManager(models.Manager):
                     'page': 1,
                     'has_next_page':has_next_page
                 }
-
             cur_page = params['page']
             offset = params['offset']
 
@@ -39,7 +38,6 @@ class CommentManager(models.Manager):
 
             cur_page = int(cur_page) + 1
             cur_page_p =  p.page(cur_page)
-            print(cur_page_p.end_index())
             if p.page(cur_page):
                 has_next_page = True if cur_page_p.has_next() else False
 
@@ -111,7 +109,7 @@ class Comment(models.Model):
     user = models.ForeignKey(
         'account.CustomUser', on_delete=models.CASCADE, related_name='user')
     post = models.ForeignKey(
-        'post.Post', on_delete=models.CASCADE, related_name='post')
+        'post.Post', on_delete=models.CASCADE, related_name='comments')
     edited = models.BooleanField(default=False, null=True, blank=True)
     text = models.CharField(max_length=150, null=True, blank=True)
     flagged = models.BooleanField(default=False, null=True, blank=True)

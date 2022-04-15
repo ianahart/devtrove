@@ -13,8 +13,9 @@ class ListCreateAPIView(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly, ]
     def get(self, request):
         try:
-
-            posts = Post.objects.get_posts()
+            posts = Post.objects.get_posts(
+                request.user.is_authenticated,
+                                           request.user)
             serializer = PostSerializer(posts, many=True)
             if serializer.data:
                 return Response(serializer.data, status=status.HTTP_200_OK)
@@ -36,6 +37,7 @@ class ListCreateAPIView(APIView):
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
+            print(e)
             return Response({
                             'message': 'Something went wrong'
                             },status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -45,7 +47,9 @@ class DetailAPIView(APIView):
         try:
             if pk is None:
                 raise BadRequest
-            post = Post.objects.get_post(pk=pk)
+            post = Post.objects.get_post(pk=pk,
+                                         is_authenticated=request.user.is_authenticated,
+                                         user=request.user)
             serializer = PostSerializer(post)
             if serializer.data:
                 return Response(serializer.data, status=status.HTTP_200_OK)

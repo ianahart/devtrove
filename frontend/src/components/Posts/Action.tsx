@@ -8,9 +8,9 @@ const Action = ({ icon, label, placement, color }: IActionProps) => {
         flexDir="column"
         alignItems="center"
         width="30px"
-        height="34px"
         justifyContent="center"
         borderRadius="8px"
+        height="auto"
         _hover={{ bg: `${color}` }}
         as="span"
       >

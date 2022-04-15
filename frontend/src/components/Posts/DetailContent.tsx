@@ -1,5 +1,4 @@
 import { Box, Heading, Icon, Image, Link, Text } from '@chakra-ui/react';
-import { FaDev } from 'react-icons/fa';
 import { AiOutlinePicture } from 'react-icons/ai';
 import { IPostProps } from '../../interfaces';
 import Tags from './Tags';

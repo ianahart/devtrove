@@ -9,17 +9,30 @@ class PostManager(models.Manager):
     def create(self):
         pass
 
-    def get_post(self, pk: int):
+
+    def __get_total_counts(self, post, is_authenticated: bool, user=None):
+        post.comments_count = post.comments.count()
+        post.upvotes_count =  post.post_upvotes.count()
+        post.cur_user_voted = False
+
+        if is_authenticated:
+            upvote = post.post_upvotes.filter(user_id=user.id).first()
+            post.cur_user_voted = True if upvote is not None else False
+
+        return post
+
+    def get_post(self, pk: int, is_authenticated: bool, user=None):
         try:
             post = self.model.objects.all().filter(pk=pk).first()
             if post is None:
                 raise DatabaseError
+            post = self.__get_total_counts(post, is_authenticated, user)
             return post
         except DatabaseError:
             logger.error(msg="Unable to retrieve a single post for details page.")
 
 
-    def get_posts(self):
+    def get_posts(self, is_authenticated: bool, user=None):
         try:
             now = datetime.now(tz=timezone.utc)
             days = calendar.monthrange(now.year, now.month)[1]
@@ -27,12 +40,15 @@ class PostManager(models.Manager):
             time_threshold = now - timedelta(days=days)
             posts = self.all().order_by('-created_at') \
             .filter(created_at__gte=time_threshold)[0:20]
+            for post in posts:
+                post = self.__get_total_counts(post, is_authenticated, user)
 
             if posts:
                 return posts
 
             raise DatabaseError
-        except DatabaseError:
+        except DatabaseError as e:
+            print(e)
             logger.error(msg='Unable to retrieve scraped posts from the database.')
 
 class Post(models.Model):
