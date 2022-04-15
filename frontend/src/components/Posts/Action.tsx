@@ -1,5 +1,5 @@
 import { Box, Icon, Tooltip } from '@chakra-ui/react';
-import { IActionProps } from '../../interfaces';
+import { IActionProps } from '../../interfaces/props';
 const Action = ({ icon, label, placement, color }: IActionProps) => {
   return (
     <Tooltip hasArrow label={label} placement={placement}>

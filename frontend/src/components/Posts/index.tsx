@@ -1,6 +1,6 @@
 import { Grid, Box } from '@chakra-ui/react';
 import Post from './Post';
-import { IPostsProps } from '../../interfaces';
+import { IPostsProps } from '../../interfaces/props';
 const Posts = ({ posts, updatePostUpvote }: IPostsProps): JSX.Element => {
   return (
     <Box margin="0 auto" p="0.5rem">

@@ -1,9 +1,7 @@
 import { Box, Icon, Text } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { DevIcon } from '../../../types';
-import { http } from '../../../helpers';
-import { ILanguageProps } from '../../../interfaces';
+import { ILanguageProps } from '../../../interfaces/props';
 const Languages = ({ myIcons, icons, addLanguage, removeLanguage }: ILanguageProps) => {
   const handleAddLanguage = (selected: DevIcon) => {
     const filteredIcons = [...icons].filter((icon) => icon.id !== selected.id);

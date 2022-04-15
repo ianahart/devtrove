@@ -1,5 +1,5 @@
 import { Box, Heading, Icon, Image, Link, Text } from '@chakra-ui/react';
-import { IPostProps } from '../../interfaces';
+import { IPostProps } from '../../interfaces/props';
 import { AiOutlinePicture } from 'react-icons/ai';
 import Actions from './Actions';
 import Tags from './Tags';

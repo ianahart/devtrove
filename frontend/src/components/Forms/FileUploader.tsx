@@ -2,7 +2,7 @@ import { Box, Icon, Image, Input } from '@chakra-ui/react';
 import { useState } from 'react';
 import { BsCamera } from 'react-icons/bs';
 import { HiUserCircle, HiOutlinePencil } from 'react-icons/hi';
-import { IFileUploaderProps } from '../../interfaces/index';
+import { IFileUploaderProps } from '../../interfaces/props';
 
 const FileUploader = ({ avatar, handleAvatarError, saveAvatar }: IFileUploaderProps) => {
   const [isDragging, setIsDragging] = useState(false);

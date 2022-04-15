@@ -1,6 +1,6 @@
 import { Box, Heading, Icon, Image, Link, Text } from '@chakra-ui/react';
 import { AiOutlinePicture } from 'react-icons/ai';
-import { IPostProps } from '../../interfaces';
+import { IPostProps } from '../../interfaces/props';
 import Tags from './Tags';
 
 const DetailContent = ({ post }: IPostProps) => {

@@ -1,6 +1,6 @@
 import { Box, Heading, Image } from '@chakra-ui/react';
 import logo from '../../images/logo.png';
-import { ILogoProps } from '../../interfaces';
+import { ILogoProps } from '../../interfaces/props';
 import '@fontsource/im-fell-english-sc';
 
 const Logo: React.FC<ILogoProps> = ({

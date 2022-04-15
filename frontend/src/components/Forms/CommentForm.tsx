@@ -4,7 +4,8 @@ import { FaDev } from 'react-icons/fa';
 import { GlobalContext } from '../../context/global';
 import LanguageSelect from '../Posts/LanguageSelect';
 import CommentCodeBlock from '../Posts/CommentCodeBlock';
-import { IGlobalContext, ICommentFormProps } from '../../interfaces';
+import { ICommentFormProps } from '../../interfaces/props';
+import { IGlobalContext } from '../../interfaces';
 import ProfilePicture from '../Account/ProfilePicture';
 
 enum Options {

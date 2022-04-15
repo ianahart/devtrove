@@ -1,6 +1,6 @@
 import { Select } from '@chakra-ui/react';
 import { selectLanguages } from '../../helpers';
-import { ILanguageSelectProps } from '../../interfaces';
+import { ILanguageSelectProps } from '../../interfaces/props';
 const LanguageSelect = ({ handleSelectLanguage }: ILanguageSelectProps) => {
   const handleOnChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     handleSelectLanguage(e.target.value);

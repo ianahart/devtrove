@@ -1,7 +1,7 @@
 import { Box, Icon, ListItem, Link } from '@chakra-ui/react';
 import { Link as RouterLink } from 'react-router-dom';
 import { FiChevronRight } from 'react-icons/fi';
-import { IAccountInnerMenuItemProps } from '../../interfaces';
+import { IAccountInnerMenuItemProps } from '../../interfaces/props';
 
 const MenuItem = ({
   menu = 'parent',

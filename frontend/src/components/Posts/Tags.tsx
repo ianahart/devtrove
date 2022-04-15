@@ -1,4 +1,4 @@
-import { IPostProps } from '../../interfaces';
+import { IPostProps } from '../../interfaces/props';
 import { Box, Text } from '@chakra-ui/react';
 
 const Tags = ({ post }: IPostProps): JSX.Element => {

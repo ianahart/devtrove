@@ -9,7 +9,7 @@ import { useState } from 'react';
 import axios, { AxiosError } from 'axios';
 import Action from './Action';
 import { http } from '../../helpers';
-import { IActionsProps } from '../../interfaces';
+import { IActionsProps } from '../../interfaces/props';
 import { IGlobalContext } from '../../interfaces';
 import { GlobalContext } from '../../context/global';
 

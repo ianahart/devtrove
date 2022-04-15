@@ -7,7 +7,7 @@ import {
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
-import { IBasicModalProps } from '../../interfaces';
+import { IBasicModalProps } from '../../interfaces/props';
 import { GlobalContext } from '../../context/global';
 import { IGlobalContext } from '../../interfaces';
 

@@ -8,7 +8,7 @@ import {
   Icon,
 } from '@chakra-ui/react';
 import { GiPirateHook } from 'react-icons/gi';
-import { IFormInputProps } from '../../interfaces';
+import { IFormInputProps } from '../../interfaces/props';
 
 const FormInput = ({
   label,

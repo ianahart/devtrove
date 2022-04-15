@@ -1,5 +1,5 @@
 import { Box, Text } from '@chakra-ui/react';
-import { IFooterProps } from '../../interfaces';
+import { IFooterProps } from '../../interfaces/props';
 
 const Footer: React.FC<IFooterProps> = ({ name, year }: IFooterProps): JSX.Element => {
   return (

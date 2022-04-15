@@ -7,7 +7,7 @@ import {
   Icon,
 } from '@chakra-ui/react';
 import { GiPirateHook } from 'react-icons/gi';
-import { IFormTextareaProps } from '../../interfaces';
+import { IFormTextareaProps } from '../../interfaces/props';
 
 const FormTextarea = ({
   label,

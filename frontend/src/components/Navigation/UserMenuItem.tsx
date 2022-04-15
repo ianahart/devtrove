@@ -1,7 +1,7 @@
 import { Icon, ListItem, Link } from '@chakra-ui/react';
 import { useContext } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { IMenuItemProps } from '../../interfaces';
+import { IMenuItemProps } from '../../interfaces/props';
 import { IGlobalContext } from '../../interfaces';
 import { GlobalContext } from '../../context/global';
 const UserMenuItem = ({ linkText, to, icon }: IMenuItemProps) => {
