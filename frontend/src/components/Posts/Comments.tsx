@@ -2,20 +2,15 @@ import { Box, Button, Text } from '@chakra-ui/react';
 import { useContext } from 'react';
 import Comment from './Comment';
 import { GlobalContext } from '../../context/global';
-import { IComment, IPost, IGlobalContext } from '../../interfaces';
+import { IGlobalContext } from '../../interfaces';
+import { ICommentProps } from '../../interfaces/props';
 import Actions from './Actions';
 import ProfilePicture from '../Account/ProfilePicture';
-interface ICommentProps {
-  post: IPost;
-  commentsLoaded: boolean;
-  comments: IComment[];
-  handlePagination: () => void;
-  handleCommentOperation: () => void;
-  syncEdit: (id: number) => void;
-}
 const Comments = ({
   post,
   comments,
+  likeComment,
+  unlikeComment,
   commentsLoaded,
   handleCommentOperation,
   handlePagination,
@@ -50,6 +45,8 @@ const Comments = ({
         {comments.map((comment) => {
           return (
             <Comment
+              likeComment={likeComment}
+              unlikeComment={unlikeComment}
               handleCommentOperation={handleCommentOperation}
               syncEdit={syncEdit}
               key={comment.id}

@@ -19,6 +19,12 @@ export type DevIcon = {
   user_id?: number;
 };
 
+export type Like = {
+  comment: number;
+  user: number;
+  post: number;
+};
+
 export type TAvatar<T> = {
   data: T | Blob | null;
   url: string | null;

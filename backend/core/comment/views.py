@@ -72,7 +72,8 @@ class ListCreateAPIView(APIView):
 
     def get(self, request):
         try:
-            queryset = Comment.objects.get_comments(params=request.query_params)
+            queryset = Comment.objects.get_comments(params=request.query_params,
+                                                    user_id=request.user.id)
             serializer = CommentSerializer(queryset['comments'], many=True)
 
 

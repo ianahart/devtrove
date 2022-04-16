@@ -1,8 +1,27 @@
 import { IconType } from 'react-icons';
 import { DevIcon, InputEntryType, ButtonEntryType, TAvatar } from '../types';
-import { LanguageCrud } from '../types/index';
+import { LanguageCrud, Like } from '../types/index';
 import { PlacementWithLogical } from '@chakra-ui/react';
-import { IPost, IFormField } from '.';
+import { IPost, IFormField, IComment } from '.';
+
+export interface ICommentProps {
+  post: IPost;
+  commentsLoaded: boolean;
+  comments: IComment[];
+  handlePagination: () => void;
+  handleCommentOperation: () => void;
+  likeComment: (a: Like) => void;
+  unlikeComment: (a: number) => void;
+  syncEdit: (id: number) => void;
+}
+
+export interface ISingleCommentProps {
+  comment: IComment;
+  handleCommentOperation: () => void;
+  syncEdit: (id: number) => void;
+  likeComment: (a: Like) => void;
+  unlikeComment: (a: number) => void;
+}
 
 export interface IFileUploaderProps {
   saveAvatar: (file: TAvatar<File>) => void;

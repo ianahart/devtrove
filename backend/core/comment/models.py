@@ -11,7 +11,7 @@ class CommentManager(models.Manager):
 
 
 
-    def get_comments(self, params):
+    def get_comments(self,  params, user_id=None):
         try:
             post_id = params['post']
             missing_params, has_next_page = False, False
@@ -30,6 +30,20 @@ class CommentManager(models.Manager):
                     'page': 1,
                     'has_next_page':has_next_page
                 }
+            for instance in queryset:
+                instance.likes_count = instance.likes.all().count()
+                if user_id is not None:
+                    cur_user_liked = instance.likes.all() \
+                    .filter(user_id=user_id) \
+                    .filter(comment_id=instance.id).first()
+                    if cur_user_liked is not None:
+                        instance.cur_user_liked = True
+                    else:
+                        instance.cur_user_liked = False
+                else:
+                    instance.cur_user_liked = False
+
+
             cur_page = params['page']
             offset = params['offset']
 
@@ -40,6 +54,7 @@ class CommentManager(models.Manager):
             cur_page_p =  p.page(cur_page)
             if p.page(cur_page):
                 has_next_page = True if cur_page_p.has_next() else False
+
 
             return {
                 'comments': cur_page_p.object_list,

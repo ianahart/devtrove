@@ -9,6 +9,7 @@ import BasicModal from '../Mixed/BasicModal';
 import LoginForm from '../Forms/LoginForm';
 import CommentForm from '../Forms/CommentForm';
 import Comments from './Comments';
+import { Like } from '../../types';
 import { ICommentsRequest } from '../../interfaces/requests';
 import { IPost, IGlobalContext, IComment, IFormField } from '../../interfaces';
 import { GlobalContext } from '../../context/global';
@@ -226,6 +227,38 @@ const Detail = () => {
     fetchPost();
   }, [fetchPost]);
 
+  const likeComment = async (like: Like) => {
+    try {
+      const response = await http.post(`/likes/`, like);
+      if (response.status === 201) {
+        const updatedComments = [...comments].map((comment) => {
+          if (comment.id === like.comment) {
+            comment.cur_user_liked = true;
+            comment.likes_count = comment.likes_count + 1;
+          }
+          return comment;
+        });
+        setComments(updatedComments);
+      }
+    } catch (e: unknown | AxiosError) {}
+  };
+
+  const unlikeComment = async (id: number) => {
+    try {
+      const response = await http.delete(`/likes/${id}`);
+      if (response.status === 200) {
+        const updatedComments = [...comments].map((comment) => {
+          if (comment.id === id) {
+            comment.cur_user_liked = false;
+            comment.likes_count = comment.likes_count - 1;
+          }
+          return comment;
+        });
+        setComments(updatedComments);
+      }
+    } catch (e: unknown | AxiosError) {}
+  };
+
   return (
     <Box position="relative" height="100%" minH="100vh" color="#FFF">
       {!post && <Spinner text="Loading Article..." />}
@@ -285,6 +318,8 @@ const Detail = () => {
             {post !== null && (
               <Comments
                 comments={comments}
+                likeComment={likeComment}
+                unlikeComment={unlikeComment}
                 syncEdit={syncEdit}
                 commentsLoaded={commentsLoaded}
                 handlePagination={handlePagination}

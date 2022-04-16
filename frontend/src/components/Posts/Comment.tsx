@@ -3,6 +3,7 @@ import {
   Icon,
   IconButton,
   Text,
+  Tooltip,
   Menu,
   MenuButton,
   MenuList,
@@ -12,25 +13,23 @@ import { useContext, useState } from 'react';
 import { GiSwordBrandish } from 'react-icons/gi';
 import { BsFlagFill, BsTrash, BsThreeDotsVertical } from 'react-icons/bs';
 import axios, { AxiosError } from 'axios';
-import { IComment } from '../../interfaces';
 import { http } from '../../helpers';
 import ProfilePicture from '../Account/ProfilePicture';
 import { IGlobalContext } from '../../interfaces';
+import { ISingleCommentProps } from '../../interfaces/props';
 import { GlobalContext } from '../../context/global';
 import CommentCodeBlock from './CommentCodeBlock';
 import { FiEdit3 } from 'react-icons/fi';
-interface ISingleCommentProps {
-  comment: IComment;
-  handleCommentOperation: () => void;
-  syncEdit: (id: number) => void;
-}
 
-const Comment = ({ comment, handleCommentOperation, syncEdit }: ISingleCommentProps) => {
+const Comment = ({
+  comment,
+  likeComment,
+  unlikeComment,
+  handleCommentOperation,
+  syncEdit,
+}: ISingleCommentProps) => {
   const [error, setError] = useState('');
   const { userAuth } = useContext(GlobalContext) as IGlobalContext;
-  const handleOnClick = () => {
-    console.log(` Comment.tsx | upvoting comment ${comment.id}`);
-  };
   const deleteComment = async () => {
     try {
       const response = await http.delete(`/comments/${comment.id}/`);
@@ -67,12 +66,29 @@ const Comment = ({ comment, handleCommentOperation, syncEdit }: ISingleCommentPr
         </Box>
       );
     }
+
     return (
       <MenuItem _hover={{ background: '#313135' }}>
         <Icon as={BsFlagFill} color="purple.secondary" fontSize="0.9rem" mr="0.4rem" />
         <Text> Flag</Text>
       </MenuItem>
     );
+  };
+
+  const handleLike = (e: React.SyntheticEvent) => {
+    e.stopPropagation();
+    if (comment.cur_user_liked) {
+      unlikeComment(comment.id);
+      return;
+    } else {
+      if (userAuth.user.id) {
+        likeComment({
+          user: userAuth.user.id,
+          comment: comment.id,
+          post: comment.post_id,
+        });
+      }
+    }
   };
 
   return (
@@ -134,12 +150,26 @@ const Comment = ({ comment, handleCommentOperation, syncEdit }: ISingleCommentPr
             {comment.text}
           </Box>
         )}
-        <Box cursor="pointer" onClick={handleOnClick} my="1rem">
-          <Icon ml="1rem" as={GiSwordBrandish} color="text.primary" fontSize="25px" />
-          <Text fontWeight="bold" mt="-0.3rem" ml="1rem" color="text.primary">
-            1
-          </Text>
-        </Box>
+        <Tooltip placement="top-end" label="React to comment" aria-label="a tooltip">
+          <Box width="100px" onClick={handleLike} cursor="pointer" my="1rem">
+            <Box as="span">
+              <Icon
+                borderRadius="50%"
+                padding="0.3rem"
+                backgroundColor={`${
+                  comment.cur_user_liked ? 'rgba(25, 135, 84, 0.5)' : 'transparent'
+                }`}
+                ml="1rem"
+                as={GiSwordBrandish}
+                color="text.primary"
+                fontSize="30px"
+              />
+            </Box>
+            <Text fontWeight="bold" mt="-0.3rem" ml="1.7rem" color="text.primary">
+              {comment.likes_count > 0 ? comment.likes_count : ''}
+            </Text>
+          </Box>
+        </Tooltip>
       </Box>
     </Box>
   );

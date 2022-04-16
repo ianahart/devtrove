@@ -9,11 +9,16 @@ from .models import Comment
 
 class CommentSerializer(serializers.ModelSerializer):
     user = UserCommentSerializer()
+    likes_count = serializers.IntegerField()
+    cur_user_liked = serializers.BooleanField()
     readable_date = serializers.SerializerMethodField()
+
     class Meta:
         model = Comment
         fields = ('id',
                   'user',
+                  'likes_count',
+                  'cur_user_liked',
                   'language',
                   'code_snippet',
                   'post_id',

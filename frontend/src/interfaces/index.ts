@@ -11,6 +11,8 @@ export interface IComment {
   code_snippet: string;
   created_at: string;
   edited: boolean;
+  cur_user_liked: boolean;
+  likes_count: number;
   language: string;
   id: number;
   post_id: number;
