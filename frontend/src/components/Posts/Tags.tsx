@@ -1,10 +1,13 @@
 import { IPostProps } from '../../interfaces/props';
 import { Box, Text } from '@chakra-ui/react';
+interface ITagsProps {
+  tags: string[];
+}
 
-const Tags = ({ post }: IPostProps): JSX.Element => {
+const Tags = ({ tags }: ITagsProps): JSX.Element => {
   return (
     <Box justifyContent="space-around" flexWrap="wrap" display="flex">
-      {post.tags.map((tag, index) => {
+      {tags.map((tag, index) => {
         return (
           <Text
             fontSize="1rem"

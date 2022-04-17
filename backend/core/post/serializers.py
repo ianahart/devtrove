@@ -12,7 +12,7 @@ class PostSerializer(serializers.ModelSerializer):
     comments_count = serializers.IntegerField()
     upvotes_count = serializers.IntegerField()
     cur_user_voted = serializers.BooleanField()
-
+    cur_user_bookmarked = serializers.BooleanField()
     class Meta:
         model = Post
         fields = ('title',
@@ -20,6 +20,7 @@ class PostSerializer(serializers.ModelSerializer):
                  'comments_count',
                  'upvotes_count',
                   'cur_user_voted',
+                  'cur_user_bookmarked',
                   'slug',
                   'author',
                   'snippet',

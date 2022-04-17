@@ -120,7 +120,8 @@ class ListCreateAPIView(APIView):
                 create_serializer.create(validated_data=create_serializer.validated_data)
                 new_comment = Comment.objects.get_comment_by_user(
                     pk=create_serializer.validated_data['user'])
-
+                new_comment.likes_count = 0
+                new_comment.cur_user_liked = False
                 if not new_comment:
                     raise ObjectDoesNotExist
 

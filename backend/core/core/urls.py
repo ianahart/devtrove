@@ -15,7 +15,8 @@ urlpatterns = [
     path('api/v1/', include(('post.urls', 'post'))),
     path('api/v1/', include(('comment.urls', 'comment'))),
     path('api/v1/', include(('upvote.urls', 'upvote'))),
-    path('api/v1/', include(('like.urls', 'like')))
+    path('api/v1/', include(('like.urls', 'like'))),
+    path('api/v1/', include(('bookmark.urls', 'bookmark')))
 ]
 
 

@@ -35,6 +35,7 @@ export interface IPost {
   comments_count: number;
   upvotes_count: number;
   cur_user_voted: boolean;
+  cur_user_bookmarked: boolean;
   id: number;
   logo: string;
   min_to_read: string;
@@ -97,22 +98,6 @@ export interface IUserAuth {
   access_token: ITokens['access_token'] | null | string;
 }
 
-export interface IGlobalContext {
-  isModalOpen: boolean;
-  isUserMenuShowing: boolean;
-  interceptorsLoaded: boolean;
-  toggleUserMenu: () => void;
-  closeUserMenu: () => void;
-  updateUser: (user: IUpdateProfileFormRequest) => void;
-  openModal: () => void;
-  closeModal: () => void;
-  stowTokens: (tokens: ITokens, user: IUser) => void;
-  logout: () => void;
-  userAuth: IUserAuth;
-  setUserAuth: (userAuth: IUserAuth) => void;
-  setInterceptorsLoaded: (loaded: boolean) => void;
-}
-
 export interface IUpdateUser {
   email?: string;
   handle?: string;
@@ -141,4 +126,30 @@ export interface ILinkTheme {
     _focus: { boxShadow: string; textDecoration: string };
     _hover: { textDecoration: 'none' };
   };
+}
+
+export interface IGlobalContext {
+  isModalOpen: boolean;
+  isUserMenuShowing: boolean;
+  interceptorsLoaded: boolean;
+  toggleUserMenu: () => void;
+  closeUserMenu: () => void;
+  updateUser: (user: IUpdateProfileFormRequest) => void;
+  openModal: () => void;
+  closeModal: () => void;
+  stowTokens: (tokens: ITokens, user: IUser) => void;
+  logout: () => void;
+  userAuth: IUserAuth;
+  setUserAuth: (userAuth: IUserAuth) => void;
+  setInterceptorsLoaded: (loaded: boolean) => void;
+}
+
+export interface IPostsContext {
+  posts: IPost[];
+  postsError: string;
+  scrape: () => void;
+  bookmark: (a: number, b: number, c: string) => void;
+  isLoaded: boolean;
+  updatePostUpvote: (a: number, b: string) => void;
+  fetchPosts: () => void;
 }

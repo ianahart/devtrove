@@ -27,9 +27,26 @@ class PostManager(models.Manager):
             if post is None:
                 raise DatabaseError
             post = self.__get_total_counts(post, is_authenticated, user)
+            post.cur_user_bookmarked = self.__is_bookmarked(post, is_authenticated, user)
             return post
         except DatabaseError:
             logger.error(msg="Unable to retrieve a single post for details page.")
+
+
+    def __is_bookmarked(self, post, is_authenticated, user):
+        try:
+            cur_user_bookmarked = None
+
+            if user and is_authenticated:
+                cur_user_bookmarked = post.bookmarks.all() \
+                .filter(post_id=post.id, user_id=user.id).first()
+            return True if cur_user_bookmarked is not None else False
+
+
+        except DatabaseError:
+            logger.error('Unable to determine if post is bookmarked by cur user.')
+            return False
+
 
 
     def get_posts(self, is_authenticated: bool, user=None):
@@ -42,7 +59,7 @@ class PostManager(models.Manager):
             .filter(created_at__gte=time_threshold)[0:20]
             for post in posts:
                 post = self.__get_total_counts(post, is_authenticated, user)
-
+                post.cur_user_bookmarked = self.__is_bookmarked(post, is_authenticated, user)
             if posts:
                 return posts
 

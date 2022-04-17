@@ -1,4 +1,4 @@
-import { Box, Link } from '@chakra-ui/react';
+import { Box, Link, useToast } from '@chakra-ui/react';
 import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
@@ -10,19 +10,24 @@ import axios, { AxiosError } from 'axios';
 import Action from './Action';
 import { http } from '../../helpers';
 import { IActionsProps } from '../../interfaces/props';
-import { IGlobalContext } from '../../interfaces';
+import { IPostsContext, IGlobalContext } from '../../interfaces';
 import { GlobalContext } from '../../context/global';
+import { PostsContext } from '../../context/posts';
 
 const Actions = ({
   id,
   cur_user_voted,
+  cur_user_bookmarked,
   upvotes_count,
   updatePostUpvote,
+  updateDetailBookmark,
   slug,
   comments_count,
 }: IActionsProps) => {
   const navigate = useNavigate();
   const { openModal, userAuth } = useContext(GlobalContext) as IGlobalContext;
+  const { bookmark } = useContext(PostsContext) as IPostsContext;
+  const toast = useToast();
   const [error, setError] = useState('');
   const location = useLocation();
 
@@ -57,7 +62,6 @@ const Actions = ({
       }
     }
   };
-
   const upVote = async () => {
     try {
       const response = await http.post('/upvotes/', {
@@ -75,12 +79,26 @@ const Actions = ({
     }
   };
 
-  const toggleBookmark = () => {
+  const toggleBookmark = (e: React.SyntheticEvent) => {
+    e.stopPropagation();
     if (!userAuth.user.logged_in) {
       return;
     }
-
-    console.log(`Toggling bookmark of post: ${id}`);
+    console.log(cur_user_bookmarked);
+    if (!userAuth.user.id) return;
+    if (userAuth.user.id) {
+      if (!cur_user_bookmarked) {
+        if (updateDetailBookmark) {
+          updateDetailBookmark(true);
+        }
+        bookmark(id, userAuth.user.id, 'bookmark');
+      } else {
+        if (updateDetailBookmark) {
+          updateDetailBookmark(false);
+        }
+        bookmark(id, userAuth.user.id, 'unbookmark');
+      }
+    }
   };
 
   const handleOnClick = () => {
@@ -100,18 +118,18 @@ const Actions = ({
       justifyContent="flex-end"
       my="0.25rem"
     >
-      <Box width="100%" display="flex" justifyContent="space-between" p="0.25rem">
-        <Box
-          borderRadius="50%"
-          height="30px"
-          width="30px"
-          backgroundColor={`${cur_user_voted ? 'rgba(25, 135, 84, 0.5)' : 'transparent'}`}
-          onClick={handleVote}
-        >
-          <Action color="#198754" label="Upvote" icon={BiUpvote} placement="top-end" />
+      <Box width="100%" display="flex" justifyContent="space-between" px="0.25rem">
+        <Box borderRadius="50%" height="30px" width="30px" onClick={handleVote}>
+          <Action
+            color="#198754"
+            activeIcon={cur_user_voted}
+            label="Upvote"
+            icon={BiUpvote}
+            placement="top-end"
+          />
 
           {upvotes_count > 0 && (
-            <Box pt="0.2rem" textAlign="center" fontWeight="bold" color="text.primary">
+            <Box textAlign="center" fontWeight="bold" color="text.primary">
               {upvotes_count}
             </Box>
           )}
@@ -122,6 +140,7 @@ const Actions = ({
               <Action
                 color="#0066FF"
                 label="Comments"
+                activeIcon={false}
                 icon={ImBubble2}
                 placement="top-end"
               />
@@ -130,6 +149,7 @@ const Actions = ({
             <Link as={RouterLink} to={`${id}${slug}`}>
               <Action
                 color="#0066FF"
+                activeIcon={false}
                 label="Comments"
                 icon={ImBubble2}
                 placement="top-end"
@@ -145,6 +165,7 @@ const Actions = ({
         <Box onClick={toggleBookmark}>
           <Action
             color="#FFA500"
+            activeIcon={cur_user_bookmarked}
             label="Bookmark"
             icon={BsFillBookmarkStarFill}
             placement="top-end"

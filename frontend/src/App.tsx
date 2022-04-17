@@ -7,7 +7,6 @@ import Navigation from './components/Navigation/';
 import Footer from './components/Footer/';
 import BasicModal from './components/Mixed/BasicModal';
 import WithAxios from './helpers/WithAxios';
-import LoginForm from './components/Forms/LoginForm';
 import RequireAuth from './components/Auth/RequireAuth';
 import Account from './pages/Auth/Account';
 import ProfileForm from './components/Account/Profile/ProfileForm';
@@ -29,11 +28,7 @@ const App = () => {
             <Navigation />
           </Box>
           <Box className="site-content">
-            //{' '}
-            <BasicModal resetForm={undefined}>
-              // <LoginForm />
-              //{' '}
-            </BasicModal>
+            <BasicModal resetForm={undefined}></BasicModal>
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />

@@ -10,6 +10,7 @@ const Comments = ({
   post,
   comments,
   likeComment,
+  updateDetailBookmark,
   unlikeComment,
   commentsLoaded,
   handleCommentOperation,
@@ -20,6 +21,7 @@ const Comments = ({
   const commentModalText = comments.length
     ? 'Add to the discussion'
     : 'Start a discussion';
+
   return (
     <Box>
       {post && (
@@ -30,6 +32,8 @@ const Comments = ({
       <Box width="300px" margin="0 auto">
         {post ? (
           <Actions
+            updateDetailBookmark={updateDetailBookmark}
+            cur_user_bookmarked={post.cur_user_bookmarked}
             cur_user_voted={post.cur_user_voted}
             upvotes_count={post.upvotes_count}
             comments_count={post.comments_count}

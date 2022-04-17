@@ -69,7 +69,7 @@ const DetailContent = ({ post }: IPostProps) => {
             </Link>
           </Box>
           <Box mb="2rem">
-            <Tags post={post} />
+            <Tags tags={post.tags} />
           </Box>
         </Box>
       )}

@@ -8,6 +8,8 @@ export interface ICommentProps {
   post: IPost;
   commentsLoaded: boolean;
   comments: IComment[];
+  updateDetailBookmark: (a: boolean) => void;
+  bookmark?: (a: number, b: number, dir: string) => void | undefined;
   handlePagination: () => void;
   handleCommentOperation: () => void;
   likeComment: (a: Like) => void;
@@ -32,10 +34,13 @@ export interface IFileUploaderProps {
 export interface IActionsProps {
   id: number;
   slug: string;
+  updateDetailBookmark?: (a: boolean) => void | undefined;
   updatePostUpvote?: (id: number, dir: string) => void | undefined;
+  bookmark?: (a: number, b: number, dir: string) => void | undefined;
   comments_count: number;
   upvotes_count: number;
   cur_user_voted: boolean;
+  cur_user_bookmarked: boolean;
 }
 
 export interface ILanguageSelectProps {
@@ -45,11 +50,13 @@ export interface ILanguageSelectProps {
 export interface IPostProps {
   post: IPost;
   updatePostUpvote?: (id: number, dir: string) => void | undefined;
+  bookmark?: (a: number, b: number, dir: string) => void | undefined;
 }
 
 export interface IPostsProps {
   posts: IPost[];
   updatePostUpvote: (id: number, dir: string) => void;
+  bookmark: (a: number, b: number, dir: string) => void;
 }
 
 export interface IMenuItemProps {
@@ -108,6 +115,7 @@ export interface IActionProps {
   label: string;
   placement: PlacementWithLogical | undefined;
   color: string;
+  activeIcon: boolean;
 }
 
 export interface IFormTextareaProps {

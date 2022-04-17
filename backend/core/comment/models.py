@@ -62,7 +62,7 @@ class CommentManager(models.Manager):
                 'has_next_page': has_next_page
             }
 
-        except DatabaseError:
+        except DatabaseError as e:
             logger.error('Unable to retrieve comments for a single post.')
 
 

@@ -1,73 +1,20 @@
 import { Box, Button, Heading } from '@chakra-ui/react';
-import axios, { AxiosError } from 'axios';
-import { useCallback, useEffect, useState } from 'react';
-import { http } from '../helpers';
-import { IPost } from '../interfaces';
+import { useContext, useEffect } from 'react';
+import { IPostsContext } from '../interfaces';
+import { PostsContext } from '../context/posts';
 import Posts from '../components/Posts/';
 import Spinner from '../components/Mixed/Spinner';
 
 const Home = (): JSX.Element => {
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [posts, setPosts] = useState<Array<IPost>>([]);
-  const [error, setError] = useState('');
-  const handleOnClick = async () => {
-    try {
-      const response = await http.post('/posts/', {
-        url: 'https://www.dev.to',
-      });
-      if (response.status === 201) {
-        setIsLoaded(true);
-        setPosts(response.data);
-      }
-    } catch (e: unknown | AxiosError) {
-      if (axios.isAxiosError(e)) {
-        console.log(e.response);
-      }
-    }
-  };
-
-  const preformUpdate = (post: IPost, id: number, dir: string) => {
-    if (post.id === id) {
-      if (dir === 'upvote') {
-        post.cur_user_voted = true;
-        console.log('upvote');
-        post.upvotes_count = post.upvotes_count + 1;
-      } else if (dir === 'downvote') {
-        console.log('downvote');
-        post.cur_user_voted = false;
-        post.upvotes_count = post.upvotes_count === 0 ? 0 : post.upvotes_count - 1;
-      }
-    }
-    return post;
-  };
-
-  const updatePostUpvote = (id: number, dir: string) => {
-    const updated = [...posts].map((post) => {
-      return preformUpdate(post, id, dir);
-    });
-    setPosts(updated);
-  };
-
-  const fetchPosts = useCallback(async () => {
-    try {
-      const response = await http.get<IPost[]>('/posts/');
-      if (response.status === 200) {
-        setPosts(response.data);
-      }
-    } catch (e: unknown | AxiosError) {
-      if (axios.isAxiosError(e)) {
-        setError(e.response?.data.error);
-      }
-    }
-  }, []);
-
+  const { updatePostUpvote, bookmark, scrape, postsError, fetchPosts, posts } =
+    useContext(PostsContext) as IPostsContext;
   useEffect(() => {
     fetchPosts();
   }, [fetchPosts]);
 
   return (
     <Box height="100%" minH="100vh">
-      {posts.length === 0 && !error.length && (
+      {posts.length === 0 && !postsError.length && (
         <Box
           flexDir="column"
           alignItems="center"
@@ -82,11 +29,11 @@ const Home = (): JSX.Element => {
       )}
 
       <Box display="flex" justifyContent="center" my="3rem">
-        <Button onClick={handleOnClick} variant="secondaryButton">
+        <Button onClick={scrape} variant="secondaryButton">
           Scrape
         </Button>
       </Box>
-      {error.length > 0 && (
+      {postsError.length > 0 && (
         <Heading
           textAlign="center"
           as="h2"
@@ -97,7 +44,9 @@ const Home = (): JSX.Element => {
           There are no posts currently.
         </Heading>
       )}
-      {posts.length && <Posts updatePostUpvote={updatePostUpvote} posts={posts} />}
+      {posts.length && (
+        <Posts bookmark={bookmark} updatePostUpvote={updatePostUpvote} posts={posts} />
+      )}
     </Box>
   );
 };

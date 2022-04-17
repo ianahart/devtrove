@@ -31,11 +31,10 @@ class ListCreateAPIView(APIView):
                 serializer.create(creds, validated_data=data)
 
             return Response({
-                                'message': 'succesres'
+                                'message': 'success'
                             }, status=status.HTTP_201_CREATED)
 
-        except OperationalError as e:
-            print(e, 'ERROR~!@~!@')
+        except OperationalError:
             return Response({
                         'message': 'Something went wrong. Unable like comment.'
                         },
@@ -56,7 +55,7 @@ class DetailAPIView(APIView):
             if like:
                id = like.id
                self.check_object_permissions(request, like.user)
-               like.delete() 
+               like.delete()
             return Response({
                         'message': 'Comment unliked',
                         'id': id,

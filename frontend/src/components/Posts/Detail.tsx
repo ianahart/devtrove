@@ -11,9 +11,14 @@ import CommentForm from '../Forms/CommentForm';
 import Comments from './Comments';
 import { Like } from '../../types';
 import { ICommentsRequest } from '../../interfaces/requests';
-import { IPost, IGlobalContext, IComment, IFormField } from '../../interfaces';
+import {
+  IPost,
+  IGlobalContext,
+  IPostsContext,
+  IComment,
+  IFormField,
+} from '../../interfaces';
 import { GlobalContext } from '../../context/global';
-
 const Detail = () => {
   let params = useParams();
   const toast = useToast();
@@ -38,6 +43,13 @@ const Detail = () => {
     error: '',
   });
   const [language, setLanguage] = useState('');
+
+  const updateDetailBookmark = (bookmarked: boolean) => {
+    setPost((prevState) => ({
+      ...prevState!,
+      cur_user_bookmarked: bookmarked,
+    }));
+  };
 
   const resetForm = () => {
     const resetCommentField = Object.assign(
@@ -319,6 +331,7 @@ const Detail = () => {
               <Comments
                 comments={comments}
                 likeComment={likeComment}
+                updateDetailBookmark={updateDetailBookmark}
                 unlikeComment={unlikeComment}
                 syncEdit={syncEdit}
                 commentsLoaded={commentsLoaded}

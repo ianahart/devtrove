@@ -4,7 +4,7 @@ import { AiOutlinePicture } from 'react-icons/ai';
 import Actions from './Actions';
 import Tags from './Tags';
 
-const Post = ({ post, updatePostUpvote }: IPostProps) => {
+const Post = ({ bookmark, post, updatePostUpvote }: IPostProps) => {
   return (
     <Box
       as="article"
@@ -64,11 +64,13 @@ const Post = ({ post, updatePostUpvote }: IPostProps) => {
           />
         )}
       </Box>
-      <Tags post={post} />
+      <Tags tags={post.tags} />
       <Box bg="text.secondary" height="2px" width="100%" m="auto auto 0 auto"></Box>
 
       <Actions
         updatePostUpvote={updatePostUpvote}
+        bookmark={bookmark}
+        cur_user_bookmarked={post.cur_user_bookmarked}
         upvotes_count={post.upvotes_count}
         cur_user_voted={post.cur_user_voted}
         comments_count={post.comments_count}
