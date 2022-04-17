@@ -1,5 +1,5 @@
-import { InputEntryType } from '../types';
-
+import { InputEntryType, DevIcon } from '../types';
+import { IUpdateProfileFormRequest } from './requests';
 export interface ICommentUser {
   avatar_url: string;
   email: string;
@@ -103,6 +103,7 @@ export interface IGlobalContext {
   interceptorsLoaded: boolean;
   toggleUserMenu: () => void;
   closeUserMenu: () => void;
+  updateUser: (user: IUpdateProfileFormRequest) => void;
   openModal: () => void;
   closeModal: () => void;
   stowTokens: (tokens: ITokens, user: IUser) => void;
@@ -110,6 +111,23 @@ export interface IGlobalContext {
   userAuth: IUserAuth;
   setUserAuth: (userAuth: IUserAuth) => void;
   setInterceptorsLoaded: (loaded: boolean) => void;
+}
+
+export interface IUpdateUser {
+  email?: string;
+  handle?: string;
+  last_name?: string;
+  first_name?: string;
+  job_title?: string;
+  company?: string;
+  bio?: string;
+  website?: string;
+  id?: number;
+  github?: string;
+  twitter?: string;
+  avatar_url?: string;
+  avatar?: File;
+  languages?: DevIcon[];
 }
 
 export interface IInputTheme {

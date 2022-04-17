@@ -7,12 +7,12 @@ import FormInput from '../../Forms/FormInput';
 import { getStorage, devIcons } from '../../../helpers';
 import FileUploader from '../../Forms/FileUploader';
 import { TAvatar } from '../../../types';
-import { IProfileForm, IGlobalContext } from '../../../interfaces';
-import { IUpdateUserRequest } from '../../../interfaces/requests';
+import { IProfileForm, IUpdateUser, IGlobalContext } from '../../../interfaces';
 import FormTextarea from '../../Forms/FormTextarea';
 import { GlobalContext } from '../../../context/global';
 import Languages from './Languages';
 import { DevIcon } from '../../../types/index';
+import { IUpdateProfileFormRequest } from '../../../interfaces/requests';
 
 const ProfileForm = () => {
   const toast = useToast();
@@ -28,7 +28,7 @@ const ProfileForm = () => {
     github: { name: 'github', value: '', error: '' },
     twitter: { name: 'twitter', value: '', error: '' },
   };
-  const { userAuth } = useContext(GlobalContext) as IGlobalContext;
+  const { userAuth, updateUser } = useContext(GlobalContext) as IGlobalContext;
   const [formLoaded, setFormLoaded] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [avatar, setAvatar] = useState<TAvatar<File>>({ data: null, url: null });
@@ -129,18 +129,22 @@ const ProfileForm = () => {
       const clearedForm: IProfileForm = Object.assign({}, form);
       clearPrevErrors();
 
-      await http.patch<IUpdateUserRequest>(`account/${userAuth.user.id}/`, formData, {
-        headers: { 'content-type': 'multipart/form-data' },
-      });
+      const response = await http.patch<IUpdateProfileFormRequest>(
+        `account/${userAuth.user.id}/`,
+        formData,
+        {
+          headers: { 'content-type': 'multipart/form-data' },
+        }
+      );
+      updateUser(response.data);
     } catch (e: unknown | AxiosError) {
       if (axios.isAxiosError(e)) {
-
         applyValidationMessages(e.response?.data?.errors);
       }
     }
   };
   const populateForm = useCallback(
-    (data: IUpdateUserRequest) => {
+    (data: IUpdateUser) => {
       const { avatar_url, languages, ...fields } = data;
       setAvatar({ data: null, url: avatar_url ?? null });
       setLanguages([...(languages as DevIcon[])]);
@@ -183,7 +187,7 @@ const ProfileForm = () => {
           Authorization: 'Bearer ' + token ? token : ' ',
         },
       };
-      const response = await http.get<IUpdateUserRequest>(
+      const response = await http.get<IUpdateUser>(
         `account/${userId ? userId : 0}/`,
         options
       );
@@ -193,7 +197,6 @@ const ProfileForm = () => {
       }
     } catch (e: unknown | AxiosError) {
       if (axios.isAxiosError(e)) {
-
         setError(e.response?.data?.error);
       }
     }

@@ -1,6 +1,7 @@
 import { createContext, useState } from 'react';
 import { getStorage, wipeUser } from '../helpers';
 import { IGlobalContext, ITokens, IUser, IUserAuth } from '../interfaces';
+import { IUpdateProfileFormRequest } from '../interfaces/requests';
 
 export const GlobalContext = createContext<IGlobalContext | null>(null);
 
@@ -34,6 +35,20 @@ const GlobalContextProvider: React.FC<React.ReactNode> = ({ children }) => {
     setIsUserMenuShowing(false);
   };
 
+  const updateUser = (user: IUpdateProfileFormRequest) => {
+    setUserAuth((prevState) => ({
+      ...prevState,
+      user: user.user_auth.user,
+    }));
+
+    let userLoc = JSON.parse(localStorage.getItem('user') || '{}');
+
+    if (userLoc) {
+      userLoc.user = user.user_auth.user;
+      localStorage.setItem('user', JSON.stringify(userLoc));
+    }
+  };
+
   const logout = () => {
     localStorage.removeItem('user');
     setUserAuth(Object.assign({}, wipeUser));
@@ -52,6 +67,7 @@ const GlobalContextProvider: React.FC<React.ReactNode> = ({ children }) => {
       value={{
         isUserMenuShowing,
         toggleUserMenu,
+        updateUser,
         closeUserMenu,
         setUserAuth,
         userAuth,

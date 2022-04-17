@@ -65,7 +65,6 @@ class FileUpload():
 
     def delete_object(self, avatar_fn: str):
         try:
-            raise OSError
             self.s3.Object(self.bucket_name, avatar_fn).delete()
 
         except OSError:

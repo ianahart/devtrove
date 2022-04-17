@@ -19,25 +19,19 @@ export interface ICommentsRequest {
   comments: IComment[];
 }
 
-export interface IUpdateUserRequest {
-  email?: string;
-  handle?: string;
-  last_name?: string;
-  first_name?: string;
-  job_title?: string;
-  company?: string;
-  bio?: string;
-  website?: string;
-  id?: number;
-  github?: string;
-  twitter?: string;
-  avatar_url?: string;
-  avatar?: File;
-  languages?: DevIcon[];
-}
-
 export interface ILogoutRequest {
   id: number;
+}
+
+export interface IUpdateProfileFormRequest {
+  user_auth: {
+    user: {
+      logged_in?: boolean;
+      id?: number | null;
+      handle?: string | null;
+      avatar_url?: string | null;
+    };
+  };
 }
 
 export interface ILoginRequest {

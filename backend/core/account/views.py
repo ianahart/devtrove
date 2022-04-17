@@ -75,12 +75,28 @@ class DetailAPIView(APIView):
                     status=status.HTTP_401_UNAUTHORIZED
                     )
 
+                account.refresh_from_db()
+                serializer = UserSerializer(account)
+                user = serializer.data
+
+                user_auth = {
+                    'user': {
+                        'id': user['id'],
+                        'handle':user['handle'],
+                        'logged_in': user['logged_in'],
+                        'avatar_url':user['avatar_url'],
+                    }
+                }
+
 
                 return Response(
-                    {'message': 'Updating user.'}, 
+                    {'message': 'Updating user.',
+                        'user_auth': user_auth,
+                    }, 
                     status=status.HTTP_200_OK)
 
             except Exception as e:
+                print(e)
                 return Response({
                                 'message' : 'Internal Server Error. Something went wrong.',
                                 'errors' : str(e)
