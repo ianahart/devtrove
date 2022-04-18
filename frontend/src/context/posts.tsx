@@ -50,8 +50,10 @@ const PostsContextProvider: React.FC<React.ReactNode> = ({ children }) => {
       const response = await http.get<IPost[]>('/posts/');
       if (response.status === 200) {
         setPosts(response.data);
+        setIsLoaded(true);
       }
     } catch (e: unknown | AxiosError) {
+      setIsLoaded(true);
       if (axios.isAxiosError(e)) {
         setPostsError(e.response?.data.error);
       }

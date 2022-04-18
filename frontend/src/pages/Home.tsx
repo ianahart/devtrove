@@ -1,16 +1,23 @@
 import { Box, Button, Heading } from '@chakra-ui/react';
-import { useContext, useEffect } from 'react';
+import { useCallback, useContext, useEffect } from 'react';
 import { IPostsContext } from '../interfaces';
 import { PostsContext } from '../context/posts';
 import Posts from '../components/Posts/';
 import Spinner from '../components/Mixed/Spinner';
 
 const Home = (): JSX.Element => {
-  const { updatePostUpvote, bookmark, scrape, postsError, fetchPosts, posts } =
+  const { updatePostUpvote, isLoaded, bookmark, scrape, postsError, fetchPosts, posts } =
     useContext(PostsContext) as IPostsContext;
-  useEffect(() => {
+
+  const fetch = useCallback(() => {
     fetchPosts();
   }, [fetchPosts]);
+
+  useEffect(() => {
+    if (!isLoaded) {
+      fetch();
+    }
+  }, [fetch, isLoaded]);
 
   return (
     <Box height="100%" minH="100vh">
