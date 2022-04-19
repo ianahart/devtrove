@@ -1,6 +1,6 @@
 import { ITokens, IUser } from '.';
 import { DevIcon } from '../types';
-import { IPost, IComment } from '.';
+import { IBookmark, IPost, IComment } from '.';
 export interface IRegisterRequest {
   email: string;
   username: string;
@@ -42,4 +42,10 @@ export interface ILoginRequest {
 
 export interface IAxiosError<T> {
   data: T;
+}
+
+export interface IBookmarkRequest {
+  bookmarked_posts: IBookmark[];
+  message?: string;
+  paginator: { page: number; start: number; end: number };
 }

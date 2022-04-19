@@ -25,6 +25,10 @@ const PostsContextProvider: React.FC<React.ReactNode> = ({ children }) => {
     }
   };
 
+  const clearPosts = () => {
+    setPosts([]);
+  };
+
   const preformUpdate = (post: IPost, id: number, dir: string) => {
     if (post.id === id) {
       if (dir === 'upvote') {
@@ -80,12 +84,11 @@ const PostsContextProvider: React.FC<React.ReactNode> = ({ children }) => {
           updateBookmarks(post_id, true);
         }
       } else {
-        const response = await http.delete(`/bookmarks/${post_id}`);
+        const response = await http.delete(`/bookmarks/${post_id}/?initiator=post`);
         updateBookmarks(post_id, false);
       }
     } catch (e: unknown | AxiosError) {
       if (axios.isAxiosError(e)) {
-        console.log(e.response?.data);
         setPostsError(e.response?.data.error);
       }
     }
@@ -96,6 +99,8 @@ const PostsContextProvider: React.FC<React.ReactNode> = ({ children }) => {
       value={{
         bookmark,
         isLoaded,
+        setIsLoaded,
+        clearPosts,
         postsError,
         updatePostUpvote,
         fetchPosts,

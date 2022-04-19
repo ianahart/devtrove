@@ -17,4 +17,15 @@ export const layerStyles = {
     cursor: 'pointer',
     fontSize: '1.6rem',
   },
+
+  listItemSidebar: {
+    display: 'flex',
+    alignItems: 'center',
+    marginBottom: '0.2rem',
+  },
+  paginationBtn: {
+    border: 'none',
+    backgroundColor: 'transparent',
+    color: '#FFF',
+  },
 };

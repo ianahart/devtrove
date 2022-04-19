@@ -112,10 +112,9 @@ const Actions = ({
   return (
     <Box
       flexDir="column"
-      pb="0.6rem"
       display="flex"
+      minHeight="50px"
       alignItems="center"
-      justifyContent="flex-end"
       my="0.25rem"
     >
       <Box width="100%" display="flex" justifyContent="space-between" px="0.25rem">
@@ -123,16 +122,11 @@ const Actions = ({
           <Action
             color="#198754"
             activeIcon={cur_user_voted}
+            count={upvotes_count}
             label="Upvote"
             icon={BiUpvote}
             placement="top-end"
           />
-
-          {upvotes_count > 0 && (
-            <Box textAlign="center" fontWeight="bold" color="text.primary">
-              {upvotes_count}
-            </Box>
-          )}
         </Box>
         <Box>
           {`${location.pathname}` === `/${id}${slug}` ? (
@@ -140,6 +134,7 @@ const Actions = ({
               <Action
                 color="#0066FF"
                 label="Comments"
+                count={comments_count}
                 activeIcon={false}
                 icon={ImBubble2}
                 placement="top-end"
@@ -149,6 +144,7 @@ const Actions = ({
             <Link as={RouterLink} to={`${id}${slug}`}>
               <Action
                 color="#0066FF"
+                count={comments_count}
                 activeIcon={false}
                 label="Comments"
                 icon={ImBubble2}
@@ -156,16 +152,12 @@ const Actions = ({
               />
             </Link>
           )}
-          {comments_count > 0 && (
-            <Box textAlign="center" fontWeight="bold" color="text.primary">
-              {comments_count}
-            </Box>
-          )}
         </Box>
         <Box onClick={toggleBookmark}>
           <Action
             color="#FFA500"
             activeIcon={cur_user_bookmarked}
+            count={0}
             label="Bookmark"
             icon={BsFillBookmarkStarFill}
             placement="top-end"

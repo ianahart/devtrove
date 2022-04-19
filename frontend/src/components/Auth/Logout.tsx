@@ -6,10 +6,13 @@ import axios, { AxiosError } from 'axios';
 import { http } from '../../helpers';
 import { IGlobalContext } from '../../interfaces';
 import { GlobalContext } from '../../context/global';
+import { PostsContext } from '../../context/posts';
+import { IPostsContext } from '../../interfaces';
 import { ILogoutRequest } from '../../interfaces/requests';
 const Logout = () => {
   const navigate = useNavigate();
   const { userAuth, logout } = useContext(GlobalContext) as IGlobalContext;
+  const { clearPosts, setIsLoaded } = useContext(PostsContext) as IPostsContext;
   const [error, setError] = useState('');
 
   const handleOnClick = async () => {
@@ -31,6 +34,8 @@ const Logout = () => {
       if (response.status === 200) {
         logout();
         navigate('/login');
+        clearPosts();
+        setIsLoaded(false);
       }
     } catch (e: unknown | AxiosError) {
       if (axios.isAxiosError(e) && e.response) {

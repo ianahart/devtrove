@@ -1,7 +1,10 @@
 import { Box, Button, Heading } from '@chakra-ui/react';
 import { useCallback, useContext, useEffect } from 'react';
-import { IPostsContext } from '../interfaces';
+import { IPostsContext, IGlobalContext } from '../interfaces';
+import MainSidebar from '../components/Sidebars/MainSidebar';
+import SecondarySidebar from '../components/Sidebars/SecondarySidebar';
 import { PostsContext } from '../context/posts';
+import { GlobalContext } from '../context/global';
 import Posts from '../components/Posts/';
 import Spinner from '../components/Mixed/Spinner';
 
@@ -9,6 +12,7 @@ const Home = (): JSX.Element => {
   const { updatePostUpvote, isLoaded, bookmark, scrape, postsError, fetchPosts, posts } =
     useContext(PostsContext) as IPostsContext;
 
+  const { userAuth } = useContext(GlobalContext) as IGlobalContext;
   const fetch = useCallback(() => {
     fetchPosts();
   }, [fetchPosts]);
@@ -20,7 +24,7 @@ const Home = (): JSX.Element => {
   }, [fetch, isLoaded]);
 
   return (
-    <Box height="100%" minH="100vh">
+    <Box position="relative" height="100%" minH="100vh">
       {posts.length === 0 && !postsError.length && (
         <Box
           flexDir="column"
@@ -35,7 +39,7 @@ const Home = (): JSX.Element => {
         </Box>
       )}
 
-      <Box display="flex" justifyContent="center" my="3rem">
+      <Box display="none" /*display="flex"*/ justifyContent="center" my="3rem">
         <Button onClick={scrape} variant="secondaryButton">
           Scrape
         </Button>
@@ -52,7 +56,12 @@ const Home = (): JSX.Element => {
         </Heading>
       )}
       {posts.length && (
-        <Posts bookmark={bookmark} updatePostUpvote={updatePostUpvote} posts={posts} />
+        <Box display="flex" flexDir="row" flexShrink="0">
+          <MainSidebar />
+
+          <Posts bookmark={bookmark} updatePostUpvote={updatePostUpvote} posts={posts} />
+          {userAuth.user.logged_in && <SecondarySidebar />}
+        </Box>
       )}
     </Box>
   );

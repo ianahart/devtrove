@@ -8,6 +8,25 @@ from .services.scraper import Scraper
 logger = logging.getLogger('django')
 
 
+
+class PostBookmarkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ('title',
+                  'id',
+                  'slug',
+                  'author',
+                  'snippet',
+                  'logo',
+                  'author_pic',
+                  'cover_image',
+                  'published_date',
+                  'details_url',
+                  'tags',
+                 'min_to_read'
+                  )
+
+ 
 class PostSerializer(serializers.ModelSerializer):
     comments_count = serializers.IntegerField()
     upvotes_count = serializers.IntegerField()

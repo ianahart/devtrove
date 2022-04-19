@@ -2,7 +2,12 @@ import { IconType } from 'react-icons';
 import { DevIcon, InputEntryType, ButtonEntryType, TAvatar } from '../types';
 import { LanguageCrud, Like } from '../types/index';
 import { PlacementWithLogical } from '@chakra-ui/react';
-import { IPost, IFormField, IComment } from '.';
+import { IBookmark, IPost, IFormField, IComment } from '.';
+
+export interface IBookmarkProps {
+  bookmark: IBookmark;
+  deleteBookmark: (id: number) => void;
+}
 
 export interface ICommentProps {
   post: IPost;
@@ -115,6 +120,7 @@ export interface IActionProps {
   label: string;
   placement: PlacementWithLogical | undefined;
   color: string;
+  count: number;
   activeIcon: boolean;
 }
 

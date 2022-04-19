@@ -9,6 +9,8 @@ import BasicModal from '../Mixed/BasicModal';
 import LoginForm from '../Forms/LoginForm';
 import CommentForm from '../Forms/CommentForm';
 import Comments from './Comments';
+import MainSidebar from '../Sidebars/MainSidebar';
+import SecondarySidebar from '../Sidebars/SecondarySidebar';
 import { Like } from '../../types';
 import { ICommentsRequest } from '../../interfaces/requests';
 import {
@@ -275,17 +277,7 @@ const Detail = () => {
     <Box position="relative" height="100%" minH="100vh" color="#FFF">
       {!post && <Spinner text="Loading Article..." />}
       <Box display="flex" flexDir="row" flexShrink="0">
-        <Box
-          flexGrow="1"
-          fontSize="1rem"
-          width="20rem"
-          display={['none', 'none', 'block']}
-          textAlign="center"
-          maxW="540px"
-          color="#fff"
-        >
-          sidebar1
-        </Box>
+        <MainSidebar />
         <Box
           flexGrow="2"
           width="100%"
@@ -342,16 +334,7 @@ const Detail = () => {
             )}
           </Box>
         </Box>
-        <Box
-          flexShrink="1"
-          width="20rem"
-          textAlign="center"
-          display={['none', 'none', 'block']}
-          color="#FFF"
-          fontSize="1rem"
-        >
-          sidebar2
-        </Box>
+        {userAuth.user.logged_in && <SecondarySidebar />}
       </Box>
     </Box>
   );

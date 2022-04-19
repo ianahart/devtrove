@@ -6,6 +6,25 @@ export interface ICommentUser {
   handle: string;
   id: number;
 }
+export interface IBookmark {
+  post: {
+    author: string;
+    author_pic: string;
+    cover_image: string;
+    details_url: string;
+    id: number;
+    logo: string;
+    min_to_read: string;
+    published_date: string;
+    slug: string;
+    snippet: string;
+    tags: string[];
+    title: string;
+  };
+  post_id: number;
+  id: number;
+  user_id: number;
+}
 
 export interface IComment {
   code_snippet: string;
@@ -148,7 +167,9 @@ export interface IPostsContext {
   posts: IPost[];
   postsError: string;
   scrape: () => void;
+  clearPosts: () => void;
   bookmark: (a: number, b: number, c: string) => void;
+  setIsLoaded: (loaded: boolean) => void;
   isLoaded: boolean;
   updatePostUpvote: (a: number, b: string) => void;
   fetchPosts: () => void;

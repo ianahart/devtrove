@@ -1,6 +1,6 @@
 import { Box, Icon, Tooltip } from '@chakra-ui/react';
 import { IActionProps } from '../../interfaces/props';
-const Action = ({ icon, label, placement, color, activeIcon }: IActionProps) => {
+const Action = ({ icon, count, label, placement, color, activeIcon }: IActionProps) => {
   return (
     <Tooltip hasArrow label={label} placement={placement}>
       <Box
@@ -20,6 +20,14 @@ const Action = ({ icon, label, placement, color, activeIcon }: IActionProps) => 
           color={activeIcon ? color : '#6e6e8a'}
           as={icon}
         />
+
+        {count > 0 ? (
+          <Box textAlign="center" fontWeight="bold" color="text.primary">
+            {count}
+          </Box>
+        ) : (
+          <Box></Box>
+        )}
       </Box>
     </Tooltip>
   );

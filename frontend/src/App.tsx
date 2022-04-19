@@ -16,8 +16,15 @@ import SettingsMenu from './components/Account/Settings/SettingsMenu';
 import General from './components/Account/Settings/General';
 import User from './components/Account/Settings/User';
 import Detail from './components/Posts/Detail';
+import Discussed from './pages/Discussed';
+import Popular from './pages/Popular';
+import Upvoted from './pages/Upvoted';
+import Search from './pages/Search';
+import Bookmarks from './pages/Bookmarks';
+import Newest from './pages/Newest';
 import Login from './pages/Login';
 import './App.css';
+import ReadingHistory from './pages/ReadingHistory';
 
 const App = () => {
   return (
@@ -33,6 +40,27 @@ const App = () => {
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/posts/discussed" element={<Discussed />} />
+              <Route path="/posts/newest" element={<Newest />} />
+              <Route path="/posts/upvoted" element={<Upvoted />} />
+              <Route path="/posts/search" element={<Search />} />
+              <Route path="/posts/popular" element={<Popular />} />
+              <Route
+                path="/reading-history"
+                element={
+                  <RequireAuth>
+                    <ReadingHistory />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/bookmarks"
+                element={
+                  <RequireAuth>
+                    <Bookmarks />
+                  </RequireAuth>
+                }
+              />
               <Route
                 path="/:username/profile"
                 element={
