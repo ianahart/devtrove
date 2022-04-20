@@ -1,10 +1,23 @@
-import { Box, Heading, Icon, Image, Link, Text } from '@chakra-ui/react';
+import { useContext } from 'react';
+import { Box, Heading, Image, Link, Text } from '@chakra-ui/react';
 import { IPostProps } from '../../interfaces/props';
-import { AiOutlinePicture } from 'react-icons/ai';
 import Actions from './Actions';
 import Tags from './Tags';
+import { IPostsContext, IGlobalContext } from '../../interfaces';
+import { PostsContext } from '../../context/posts';
+import { GlobalContext } from '../../context/global';
+import PostPicture from './PostPicture';
 
 const Post = ({ bookmark, post, updatePostUpvote }: IPostProps) => {
+  const { userAuth } = useContext(GlobalContext) as IGlobalContext;
+  const { addToReadHistory } = useContext(PostsContext) as IPostsContext;
+
+  const handleHistory = () => {
+    if (userAuth.user.id) {
+      addToReadHistory(userAuth.user.id, post.id, post.tags);
+    }
+  };
+
   return (
     <Box
       as="article"
@@ -33,7 +46,14 @@ const Post = ({ bookmark, post, updatePostUpvote }: IPostProps) => {
         alt={post.title}
       />
 
-      <Link textAlign="center" color="#FFF" href={post.details_url}>
+      <Link
+        isExternal
+        rel="noopener noreferrer"
+        onClick={handleHistory}
+        textAlign="center"
+        color="#FFF"
+        href={post.details_url}
+      >
         <Heading as="h3" fontSize="22px">
           {post.title}
         </Heading>
@@ -52,18 +72,7 @@ const Post = ({ bookmark, post, updatePostUpvote }: IPostProps) => {
         </Box>
         <Text mx="0.5rem">{post.min_to_read}</Text>
       </Box>
-      <Box my="1.5rem">
-        {post.cover_image !== '[]' ? (
-          <Image src={post.cover_image} alt={post.author} />
-        ) : (
-          <Icon
-            as={AiOutlinePicture}
-            height="120px"
-            width="100%"
-            color="purple.secondary"
-          />
-        )}
-      </Box>
+      <PostPicture coverImage={post.cover_image} author={post.author} />
       <Tags tags={post.tags} />
       <Box bg="text.secondary" height="2px" width="100%" m="auto auto 0 auto"></Box>
 

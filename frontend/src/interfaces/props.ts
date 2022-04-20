@@ -2,11 +2,21 @@ import { IconType } from 'react-icons';
 import { DevIcon, InputEntryType, ButtonEntryType, TAvatar } from '../types';
 import { LanguageCrud, Like } from '../types/index';
 import { PlacementWithLogical } from '@chakra-ui/react';
-import { IBookmark, IPost, IFormField, IComment } from '.';
+import { IHistoryPost, IBookmark, IPost, IFormField, IComment } from '.';
 
 export interface IBookmarkProps {
   bookmark: IBookmark;
   deleteBookmark: (id: number) => void;
+}
+
+export interface IHistoryPostProps {
+  history: IHistoryPost;
+  deleteHistory: (id: number) => void;
+}
+
+export interface IPostPictureProps {
+  coverImage: string;
+  author: string;
 }
 
 export interface ICommentProps {

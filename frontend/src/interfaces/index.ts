@@ -1,5 +1,27 @@
 import { InputEntryType, DevIcon } from '../types';
 import { IUpdateProfileFormRequest } from './requests';
+
+export interface IHistoryPost {
+  user_id: number;
+  post_id: number;
+  id: number;
+  readable_date: string;
+  post: {
+    cover_image: string;
+    author: string;
+    logo: string;
+    min_to_read: string;
+    slug: string;
+    title: string;
+  };
+}
+
+export interface IHistoryPagination {
+  read_count: number;
+  page: number;
+  has_next_page: boolean;
+}
+
 export interface ICommentUser {
   avatar_url: string;
   email: string;
@@ -169,6 +191,7 @@ export interface IPostsContext {
   scrape: () => void;
   clearPosts: () => void;
   bookmark: (a: number, b: number, c: string) => void;
+  addToReadHistory: (user: number, post: number, tags: string[]) => void;
   setIsLoaded: (loaded: boolean) => void;
   isLoaded: boolean;
   updatePostUpvote: (a: number, b: string) => void;

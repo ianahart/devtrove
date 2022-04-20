@@ -9,6 +9,18 @@ logger = logging.getLogger('django')
 
 
 
+class PostHistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = (
+            'author',
+            'title',
+            'slug',
+            'min_to_read',
+            'logo',
+            'cover_image'
+        )
+
 class PostBookmarkSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post

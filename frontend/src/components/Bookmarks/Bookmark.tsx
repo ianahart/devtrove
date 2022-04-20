@@ -1,15 +1,27 @@
+import { useContext } from 'react';
 import { Box, Heading, Icon, Image, Link, Text, Tooltip } from '@chakra-ui/react';
 import { Link as RouterLink } from 'react-router-dom';
-import { AiOutlinePicture } from 'react-icons/ai';
 import { BsBookmark } from 'react-icons/bs';
-import axios, { AxiosError } from 'axios';
-import { IBookmark } from '../../interfaces';
 import { IBookmarkProps } from '../../interfaces/props';
+import { IPostsContext, IGlobalContext } from '../../interfaces';
+import { PostsContext } from '../../context/posts';
+import { GlobalContext } from '../../context/global';
+import PostPicture from '../Posts/PostPicture';
 import Tags from '../Posts/Tags';
 
 const Bookmark = ({ deleteBookmark, bookmark }: IBookmarkProps) => {
+  const { addToReadHistory } = useContext(PostsContext) as IPostsContext;
+  const { userAuth } = useContext(GlobalContext) as IGlobalContext;
+
   const handleOnClick = (id: number) => {
     deleteBookmark(id);
+  };
+
+  const handleHistory = () => {
+    console.log('test');
+    if (userAuth.user.id) {
+      addToReadHistory(userAuth.user.id, bookmark.post.id, bookmark.post.tags);
+    }
   };
 
   return (
@@ -58,27 +70,22 @@ const Bookmark = ({ deleteBookmark, bookmark }: IBookmarkProps) => {
           <Text color="purple.tertiary">{bookmark.post.author}</Text>
         </Box>
         <Box display="flex" alignItems="center" flexDir="column">
-          <Link textAlign="center" color="#FFF" href={bookmark.post.details_url}>
+          <Link
+            isExternal
+            rel="noopener noreferrer"
+            onClick={handleHistory}
+            textAlign="center"
+            color="#FFF"
+            href={bookmark.post.details_url}
+          >
             <Heading mb="1.5rem" textAlign="center" color="#FFF" as="h3" fontSize="26px">
               {bookmark.post.title}
             </Heading>
           </Link>
-
-          {bookmark.post.cover_image !== '[]' ? (
-            <Image
-              mb="1.2rem"
-              src={bookmark.post.cover_image}
-              alt={bookmark.post.author}
-            />
-          ) : (
-            <Icon
-              as={AiOutlinePicture}
-              height="120px"
-              width="100%"
-              mb="1.2rem"
-              color="purple.secondary"
-            />
-          )}
+          <PostPicture
+            coverImage={bookmark.post.cover_image}
+            author={bookmark.post.author}
+          />
           <Link as={RouterLink} to={`/${bookmark.post.id}${bookmark.post.slug}`}>
             <Tags tags={bookmark.post.tags} />
           </Link>

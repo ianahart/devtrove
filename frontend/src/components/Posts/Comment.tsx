@@ -54,12 +54,19 @@ const Comment = ({
     } else if (userAuth.user.logged_in && userAuth.user.id === comment.user.id) {
       return (
         <Box onClick={deleteComment} cursor="pointer">
-          <MenuItem _hover={{ background: '#313135' }}>
+          <MenuItem
+            _focus={{ background: 'transparent' }}
+            _hover={{ background: '#313135' }}
+          >
             <Icon as={BsTrash} color="purple.secondary" fontSize="0.9rem" mr="0.4rem" />{' '}
             <Text>Remove</Text>
           </MenuItem>
 
-          <MenuItem onClick={handleEditComment} _hover={{ background: '#313135' }}>
+          <MenuItem
+            onClick={handleEditComment}
+            _focus={{ background: 'transparent' }}
+            _hover={{ background: '#313135' }}
+          >
             <Icon as={FiEdit3} color="purple.secondary" fontSize="0.9rem" mr="0.4rem" />{' '}
             <Text>Edit</Text>
           </MenuItem>

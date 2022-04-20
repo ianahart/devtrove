@@ -1,6 +1,6 @@
 import { ITokens, IUser } from '.';
 import { DevIcon } from '../types';
-import { IBookmark, IPost, IComment } from '.';
+import { IHistoryPost, IBookmark, IPost, IComment } from '.';
 export interface IRegisterRequest {
   email: string;
   username: string;
@@ -48,4 +48,11 @@ export interface IBookmarkRequest {
   bookmarked_posts: IBookmark[];
   message?: string;
   paginator: { page: number; start: number; end: number };
+}
+
+export interface IHistoryRequest {
+  message?: string;
+  pagination: { page: number; has_next_page: boolean };
+  previous_posts: IHistoryPost[];
+  today_posts: IHistoryPost[];
 }

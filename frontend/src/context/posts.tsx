@@ -9,6 +9,7 @@ const PostsContextProvider: React.FC<React.ReactNode> = ({ children }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [posts, setPosts] = useState<Array<IPost>>([]);
   const [postsError, setPostsError] = useState('');
+  const [historyError, setHistoryError] = useState('');
   const scrape = async () => {
     try {
       const response = await http.post('/posts/', {
@@ -20,9 +21,15 @@ const PostsContextProvider: React.FC<React.ReactNode> = ({ children }) => {
       }
     } catch (e: unknown | AxiosError) {
       if (axios.isAxiosError(e)) {
-        console.log(e.response);
+        setHistoryError(e.response?.data.error);
       }
     }
+  };
+
+  const addToReadHistory = async (user: number, post: number, tags: string[]) => {
+    try {
+      const response = await http.post('/history/', { user, post, tags });
+    } catch (e: unknown | AxiosError) {}
   };
 
   const clearPosts = () => {
@@ -101,6 +108,7 @@ const PostsContextProvider: React.FC<React.ReactNode> = ({ children }) => {
         isLoaded,
         setIsLoaded,
         clearPosts,
+        addToReadHistory,
         postsError,
         updatePostUpvote,
         fetchPosts,

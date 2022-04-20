@@ -134,7 +134,28 @@ body {
   }
 }
 
-@media (max-width: 968px) {
+.history-posts {
+  width: 100%;
+  margin: 0 auto;
+  min-width: 600px;
+  max-width: 600px;
+}
+
+@media (max-width: 1120px) {
+  .history-posts {
+    width: 500px;
+    min-width: 500px;
+  }
+}
+
+@media (max-width: 1180px) {
+  .history-posts {
+    min-width: 600px;
+    width: 600px;
+  }
+  .history-sidebar {
+    display: none;
+  }
   .main-sidebar-block {
     display: none;
   }
@@ -144,6 +165,13 @@ body {
 }
 
 @media (max-width: 768px) {
+  .history-posts {
+    width: 100%;
+    min-width: 100%;
+  }
+  .history-sidebar {
+    display: none;
+  }
   .posts-grid {
     grid-template-columns: 1fr;
   }
