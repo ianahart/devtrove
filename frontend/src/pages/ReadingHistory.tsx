@@ -23,7 +23,6 @@ const ReadingHistory = () => {
   const fetchHistory = useCallback(async () => {
     try {
       const response = await http.get<IHistoryRequest>('/history/?page=0');
-      console.log(response);
       setTodayPosts(response.data.today_posts);
       setPreviousPosts(response.data.previous_posts);
       setPagination((prevState) => ({ ...prevState, ...response.data.pagination }));
@@ -47,7 +46,6 @@ const ReadingHistory = () => {
       const response = await http.get<IHistoryRequest>(
         `/history/?page=${pagination!.page}`
       );
-      console.log(response);
       setTodayPosts((prevState) => [...prevState, ...response.data.today_posts]);
       setPreviousPosts((prevState) => [...prevState, ...response.data.previous_posts]);
       setPagination((prevState) => ({ ...prevState, ...response.data.pagination }));
