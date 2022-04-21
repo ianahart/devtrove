@@ -1,3 +1,5 @@
+import { DebouncedFunc } from 'lodash';
+
 export type InputEntryType = {
   field: {
     border: string;
@@ -29,6 +31,7 @@ export type TAvatar<T> = {
   data: T | Blob | null;
   url: string | null;
 };
+export type Debounced = () => DebouncedFunc<(search_term: string) => Promise<void>>;
 
 export type ButtonEntryType = {
   backgroundColor: string;

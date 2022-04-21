@@ -1,7 +1,15 @@
-import { Box, Heading, Icon, Link, ListItem, UnorderedList } from '@chakra-ui/react';
+import {
+  Box,
+  Heading,
+  Icon,
+  Link,
+  ListItem,
+  Text,
+  UnorderedList,
+} from '@chakra-ui/react';
 import { BsFillArrowRightSquareFill, BsFillArrowLeftSquareFill } from 'react-icons/bs';
 import { Link as RouterLink } from 'react-router-dom';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import {
   AiOutlineClockCircle,
   AiOutlineFire,
@@ -9,10 +17,13 @@ import {
   AiOutlineComment,
 } from 'react-icons/ai';
 import { BiUpvote } from 'react-icons/bi';
+import { IGlobalContext } from '../../interfaces';
+import { GlobalContext } from '../../context/global';
 
 const MainSidebar = () => {
   const [mainClass, setMainClass] = useState('main-sidebar-block');
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(true);
+  const { handleIsSearchOpen } = useContext(GlobalContext) as IGlobalContext;
   const handleOpenMenu = () => {
     setIsMenuOpen((prevState) => !prevState);
 
@@ -30,6 +41,7 @@ const MainSidebar = () => {
         position="absolute"
         cursor="pointer"
         zIndex={4}
+        left="15px"
         top="300px"
         as={isMenuOpen ? BsFillArrowRightSquareFill : BsFillArrowLeftSquareFill}
         fontSize="40px"
@@ -82,9 +94,9 @@ const MainSidebar = () => {
             </ListItem>
             <ListItem layerStyle="listItemSidebar" mb="0.2rem">
               <Icon mr="0.2rem" as={AiOutlineSearch} />
-              <Link to="/posts/search" as={RouterLink}>
+              <Text onClick={handleIsSearchOpen} role="button">
                 Search
-              </Link>
+              </Text>
             </ListItem>
           </UnorderedList>
         </Box>

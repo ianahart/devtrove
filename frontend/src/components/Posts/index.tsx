@@ -1,11 +1,12 @@
 import { Grid, Box } from '@chakra-ui/react';
 import Post from './Post';
 import { IPostsProps } from '../../interfaces/props';
+import Search from '../../components/Search';
 const Posts = ({ posts, bookmark, updatePostUpvote }: IPostsProps): JSX.Element => {
   return (
     <Box
       flexGrow="2"
-      width="100%"
+      width="300px"
       height="100%"
       minH="100vh"
       border="1px solid #403d40"
@@ -16,6 +17,7 @@ const Posts = ({ posts, bookmark, updatePostUpvote }: IPostsProps): JSX.Element 
       margin="0 auto"
       p="0.5rem"
     >
+      <Search />
       <Grid className="posts-grid">
         {posts.map((post) => {
           return (

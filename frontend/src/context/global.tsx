@@ -19,10 +19,15 @@ const GlobalContextProvider: React.FC<React.ReactNode> = ({ children }) => {
           avatar_url: '',
         },
   };
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isUserMenuShowing, setIsUserMenuShowing] = useState(false);
   const [userAuth, setUserAuth] = useState<IUserAuth>(initialAuth);
   const [interceptorsLoaded, setInterceptorsLoaded] = useState(false);
+
+  const handleIsSearchOpen = () => {
+    setIsSearchOpen((prevState) => !prevState);
+  };
 
   const closeModal = () => setIsModalOpen(false);
   const openModal = () => setIsModalOpen(true);
@@ -74,7 +79,10 @@ const GlobalContextProvider: React.FC<React.ReactNode> = ({ children }) => {
         interceptorsLoaded,
         setInterceptorsLoaded,
         logout,
+        setIsSearchOpen,
+        isSearchOpen,
         stowTokens,
+        handleIsSearchOpen,
         isModalOpen,
         openModal,
         closeModal,

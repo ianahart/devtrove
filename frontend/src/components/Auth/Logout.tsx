@@ -11,7 +11,9 @@ import { IPostsContext } from '../../interfaces';
 import { ILogoutRequest } from '../../interfaces/requests';
 const Logout = () => {
   const navigate = useNavigate();
-  const { userAuth, logout } = useContext(GlobalContext) as IGlobalContext;
+  const { setIsSearchOpen, userAuth, logout } = useContext(
+    GlobalContext
+  ) as IGlobalContext;
   const { clearPosts, setIsLoaded } = useContext(PostsContext) as IPostsContext;
   const [error, setError] = useState('');
 
@@ -36,6 +38,7 @@ const Logout = () => {
         navigate('/login');
         clearPosts();
         setIsLoaded(false);
+        setIsSearchOpen(false);
       }
     } catch (e: unknown | AxiosError) {
       if (axios.isAxiosError(e) && e.response) {

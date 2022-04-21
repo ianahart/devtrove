@@ -1,13 +1,54 @@
-from datetime import timedelta, date, datetime
 from django.core.exceptions import BadRequest
-from django.db.utils import DatabaseError
+from django.core.paginator import EmptyPage
 from rest_framework import status
-from django.utils import timezone
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.views import APIView
-from .serializers import PostCreateSerializer, PostSerializer
+from .serializers import PostCreateSerializer, PostSearchRetrieveSerializer, PostSearchCreateSerializer, PostSerializer
 from .models import Post
+
+
+
+class SearchAPIView(APIView):
+    def post(self, request):
+        try:
+
+
+            serializer = PostSearchCreateSerializer(data=request.data)
+            if serializer.is_valid():
+
+                search_results, pagination = serializer.create(serializer.data)
+                if search_results is None and pagination is None:
+                    raise BadRequest
+
+                search_results = PostSearchRetrieveSerializer(search_results, many=True)
+                return Response(
+                    {'message': 'success',
+                     'search_results': search_results.data,
+                     'pagination': pagination,
+                    },
+                    status=status.HTTP_201_CREATED
+                )
+            else:
+                return Response({
+                    'message': 'Bad request check spelling.',
+                    'error': serializer.errors
+                    }, status=status.HTTP_400_BAD_REQUEST
+                )
+        except (TypeError, EmptyPage, BadRequest, ) as e:
+            print(e)
+            if isinstance(e, BadRequest) or isinstance(e, EmptyPage):
+                return Response({
+                    'error': 'no results',
+                    'search_results': [],
+                    'pagination': {'page': 1, 'has_next_page' : False}
+                }, status=status.HTTP_400_BAD_REQUEST)
+
+            return Response(
+                {'message': 'Something went wrong.'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
 
 class ListCreateAPIView(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly, ]
@@ -36,8 +77,7 @@ class ListCreateAPIView(APIView):
                                 status=status.HTTP_201_CREATED)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        except Exception as e:
-            print(e)
+        except (AttributeError, ValueError ):
             return Response({
                             'message': 'Something went wrong'
                             },status=status.HTTP_500_INTERNAL_SERVER_ERROR)

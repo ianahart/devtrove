@@ -2,7 +2,11 @@ import { IconType } from 'react-icons';
 import { DevIcon, InputEntryType, ButtonEntryType, TAvatar } from '../types';
 import { LanguageCrud, Like } from '../types/index';
 import { PlacementWithLogical } from '@chakra-ui/react';
-import { IHistoryPost, IBookmark, IPost, IFormField, IComment } from '.';
+import { ISearchResult, IHistoryPost, IBookmark, IPost, IFormField, IComment } from '.';
+
+export interface ISearchResultProps {
+  result: ISearchResult;
+}
 
 export interface IBookmarkProps {
   bookmark: IBookmark;

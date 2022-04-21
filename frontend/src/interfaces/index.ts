@@ -1,6 +1,14 @@
 import { InputEntryType, DevIcon } from '../types';
 import { IUpdateProfileFormRequest } from './requests';
 
+export interface ISearchResult {
+  cover_image: string;
+  title: string;
+  author: string;
+  slug: string;
+  id: number;
+}
+
 export interface IHistoryPost {
   user_id: number;
   post_id: number;
@@ -172,6 +180,7 @@ export interface ILinkTheme {
 export interface IGlobalContext {
   isModalOpen: boolean;
   isUserMenuShowing: boolean;
+  isSearchOpen: boolean;
   interceptorsLoaded: boolean;
   toggleUserMenu: () => void;
   closeUserMenu: () => void;
@@ -179,10 +188,12 @@ export interface IGlobalContext {
   openModal: () => void;
   closeModal: () => void;
   stowTokens: (tokens: ITokens, user: IUser) => void;
+  setIsSearchOpen: (isSearchOpen: boolean) => void;
   logout: () => void;
   userAuth: IUserAuth;
   setUserAuth: (userAuth: IUserAuth) => void;
   setInterceptorsLoaded: (loaded: boolean) => void;
+  handleIsSearchOpen: () => void;
 }
 
 export interface IPostsContext {

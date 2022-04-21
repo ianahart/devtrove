@@ -21,6 +21,7 @@ export const layerStyles = {
   listItemSidebar: {
     display: 'flex',
     alignItems: 'center',
+    _hover: { color: '#a8a8b1' },
     marginBottom: '0.2rem',
   },
   paginationBtn: {

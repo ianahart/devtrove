@@ -43,7 +43,6 @@ const App = () => {
               <Route path="/posts/discussed" element={<Discussed />} />
               <Route path="/posts/newest" element={<Newest />} />
               <Route path="/posts/upvoted" element={<Upvoted />} />
-              <Route path="/posts/search" element={<Search />} />
               <Route path="/posts/popular" element={<Popular />} />
               <Route
                 path="/reading-history"

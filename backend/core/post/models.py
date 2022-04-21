@@ -1,14 +1,40 @@
+from django.core.paginator import Paginator
 from django.db import models, DatabaseError
+from django.db.models.query import QuerySet
 from django.utils import timezone
 from datetime import timedelta, datetime
+from typing import Any
 import calendar
 import logging
 logger = logging.getLogger('django')
-
 class PostManager(models.Manager):
+
+    def search(self, **validated_data) ->  \
+        tuple[QuerySet['Post'],dict[str, int | bool] ] | tuple[None, None]:
+        try:
+            search_term, page = validated_data['search_term'], validated_data['page']
+
+            queryset = Post.objects.all() \
+            .order_by('-id', '-created_at') \
+            .filter(title__icontains=search_term.lower())
+            if queryset.count() > 0:
+                paginator = Paginator(queryset, 2)
+
+                cur_page = paginator.page(page)
+                queryset:QuerySet[Any] = cur_page.object_list
+
+                has_next_page:bool = cur_page.has_next()
+                pagination = {'page': int(page) + 1, 'has_next_page': has_next_page}
+                return queryset, pagination
+
+            return None, None
+        except DatabaseError:
+            logger.error('Unable to search for posts in the searchbar component')
+            return None, None
+
+
     def create(self):
         pass
-
 
     def __get_total_counts(self, post, is_authenticated: bool, user=None):
         post.comments_count = post.comments.count()

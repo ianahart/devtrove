@@ -3,10 +3,40 @@ from bs4.element import NavigableString, ResultSet
 from bs4 import BeautifulSoup
 import requests
 import logging
+import re
 from .models import Post
 from .services.scraper import Scraper
 logger = logging.getLogger('django')
 
+
+
+class PostSearchRetrieveSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ('cover_image', 'author', 'slug', 'id', 'title', )
+
+
+class PostSearchCreateSerializer(serializers.ModelSerializer):
+    search_term = serializers.CharField(max_length=200)
+    page = serializers.IntegerField()
+
+    class Meta:
+        model = Post
+        fields = ('search_term', 'page', )
+
+    def validate(self, data):
+        search_term = data['search_term']
+        excludes = ['$', '{', '}', '[', ']', '<','>', '(', ')']
+
+        matched = [False if char in excludes else True for char in search_term]
+        if any(match == False for match in matched):
+            raise serializers.ValidationError(
+                    dict(search_term=['Invalid characters submitted.']))
+        return data
+
+
+    def create(self, validated_data):
+        return Post.objects.search(**validated_data)
 
 
 class PostHistorySerializer(serializers.ModelSerializer):

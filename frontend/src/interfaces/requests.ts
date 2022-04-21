@@ -1,6 +1,6 @@
 import { ITokens, IUser } from '.';
 import { DevIcon } from '../types';
-import { IHistoryPost, IBookmark, IPost, IComment } from '.';
+import { IHistoryPost, IBookmark, ISearchResult, IPost, IComment } from '.';
 export interface IRegisterRequest {
   email: string;
   username: string;
@@ -8,6 +8,11 @@ export interface IRegisterRequest {
   confirmpassword: string;
 }
 
+export interface ISearchPostRequest {
+  message?: string;
+  pagination: { page: number; has_next_page: boolean };
+  search_results: ISearchResult[];
+}
 export interface IPostRequest {
   data: IPost[];
 }

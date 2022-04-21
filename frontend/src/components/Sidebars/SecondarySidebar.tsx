@@ -9,7 +9,7 @@ import {
 import { useState } from 'react';
 const SecondarySidebar = () => {
   const [mainClass, setMainClass] = useState('secondary-sidebar-block');
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(true);
   const handleOpenMenu = () => {
     setIsMenuOpen((prevState) => !prevState);
 
@@ -25,7 +25,7 @@ const SecondarySidebar = () => {
       <Icon
         onClick={handleOpenMenu}
         position="absolute"
-        right="0"
+        right="15px"
         cursor="pointer"
         zIndex={4}
         top="300px"
