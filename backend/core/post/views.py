@@ -8,12 +8,47 @@ from .serializers import PostCreateSerializer, PostSearchRetrieveSerializer, Pos
 from .models import Post
 
 
+class DiscussedAPIView(APIView):
+    def get(self, request):
+        try:
+            return Response(
+                {'message': 'success'},
+                status=status.HTTP_200_OK
+            )
+
+        except Exception as e:
+            print(e, type(e))
+            return Response(
+                {'message': 'Something went wrong.'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+class NewestAPIView(APIView):
+    def get(self, request):
+        try:
+            newest_posts = Post.objects.get_posts(
+                request.user.is_authenticated,request.user)
+
+            serializer = PostSerializer(newest_posts, many=True)
+            if serializer.data:
+                return Response(serializer.data, status=status.HTTP_200_OK)
+
+                return Response({
+                            'message': 'success'
+                               }, status=status.HTTP_200_OK)
+            else:
+                return Response({
+                                    'message': 'No posts were found.'
+                                }, status=status.HTTP_404_NOT_FOUND)
+        except:
+            return Response({
+                               'message': 'Something went wrong.'
+                           }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 class SearchAPIView(APIView):
     def post(self, request):
         try:
-
-
             serializer = PostSearchCreateSerializer(data=request.data)
             if serializer.is_valid():
 

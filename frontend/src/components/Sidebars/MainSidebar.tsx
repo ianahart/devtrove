@@ -70,7 +70,7 @@ const MainSidebar = () => {
           >
             <ListItem layerStyle="listItemSidebar">
               <Icon mr="0.2rem" as={AiOutlineClockCircle} />
-              <Link to="posts/newest" as={RouterLink}>
+              <Link to="/posts/newest" as={RouterLink}>
                 Newest
               </Link>
             </ListItem>

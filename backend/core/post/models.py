@@ -74,7 +74,6 @@ class PostManager(models.Manager):
             return False
 
 
-
     def get_posts(self, is_authenticated: bool, user=None):
         try:
             now = datetime.now(tz=timezone.utc)

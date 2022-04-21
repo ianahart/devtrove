@@ -141,7 +141,7 @@ const Actions = ({
               />
             </Box>
           ) : (
-            <Link as={RouterLink} to={`${id}${slug}`}>
+            <Link as={RouterLink} to={`/${id}${slug}`}>
               <Action
                 color="#0066FF"
                 count={comments_count}

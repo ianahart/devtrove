@@ -111,6 +111,7 @@ const PostsContextProvider: React.FC<React.ReactNode> = ({ children }) => {
         addToReadHistory,
         postsError,
         updatePostUpvote,
+        setPosts,
         fetchPosts,
         posts,
         scrape,

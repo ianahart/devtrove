@@ -1,11 +1,57 @@
-import { Box, Text } from '@chakra-ui/react';
+import { Box, Grid, Heading } from '@chakra-ui/react';
+import axios, { AxiosError } from 'axios';
+import { useCallback, useContext, useEffect } from 'react';
+import GoBack from '../components/Mixed/GoBack';
+import { PostsContext } from '../context/posts';
+import { IPostsContext } from '../interfaces';
+import Post from '../components/Posts/Post';
+import { IPost } from '../interfaces';
+import { http } from '../helpers';
 
 const Newest = () => {
+  const { bookmark, setPosts, updatePostUpvote, posts } = useContext(
+    PostsContext
+  ) as IPostsContext;
+
+  const fetchNewest = useCallback(async () => {
+    try {
+      const response = await http.get<IPost[]>('/posts/newest/');
+      setPosts(response.data);
+    } catch (e: unknown | AxiosError) {
+      if (axios.isAxiosError(e)) {
+        console.log(e.response);
+      }
+    }
+  }, [setPosts]);
+  useEffect(() => {
+    fetchNewest();
+  }, [fetchNewest]);
   return (
     <Box>
-      <Text fontSize="32px" color="#FFF">
-        Newest Page
-      </Text>
+      <GoBack />
+      <Heading
+        fontFamily="IM Fell English SC, sans-serif"
+        my="3rem"
+        textAlign="center"
+        as="h1"
+        fontSize="36px"
+        color="text.primary"
+      >
+        Newest
+      </Heading>
+
+      <Grid className="posts-grid">
+        {posts.map((post) => {
+          return (
+            <Post
+              bookmark={bookmark}
+              updatePostUpvote={updatePostUpvote}
+              key={post.id}
+              post={post}
+            />
+          );
+        })}
+      </Grid>
     </Box>
   );
 };
