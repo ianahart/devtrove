@@ -6,16 +6,22 @@ interface IProfilePictureProps {
   height: string;
   width: string;
   avatar_url: string | null | undefined;
+  borderRadius: string;
 }
 
-const ProfilePicture = ({ avatar_url, height, width }: IProfilePictureProps) => {
+const ProfilePicture = ({
+  avatar_url,
+  height,
+  borderRadius = '50%',
+  width,
+}: IProfilePictureProps) => {
   return (
     <>
       {avatar_url ? (
         <Image
           height={height}
           width={width}
-          borderRadius="50%"
+          borderRadius={borderRadius}
           src={avatar_url as string}
         />
       ) : (

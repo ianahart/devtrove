@@ -1,4 +1,4 @@
-import { ITokens, IUser } from '.';
+import { IFullUser, ITokens, IUser } from '.';
 import { DevIcon } from '../types';
 import { IHistoryPost, IBookmark, ISearchResult, IPost, IComment } from '.';
 export interface IRegisterRequest {
@@ -60,4 +60,9 @@ export interface IHistoryRequest {
   pagination: { page: number; has_next_page: boolean };
   previous_posts: IHistoryPost[];
   today_posts: IHistoryPost[];
+}
+
+export interface IProfileRequest<T> {
+  message?: string;
+  profile: IFullUser<T>;
 }

@@ -180,7 +180,7 @@ const Detail = () => {
             title: 'All comments loaded.',
             description: 'No more comments for this post currently.',
             status: 'info',
-            duration: 6000,
+            duration: 3000,
             isClosable: true,
           });
           setCommentsLoaded(true);

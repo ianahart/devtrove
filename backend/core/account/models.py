@@ -1,12 +1,63 @@
 from django.core.exceptions import ObjectDoesNotExist
-from django.db import models, DataError
-from django.utils import timezone
+from typing import Optional
+from django.db import models, DataError, DatabaseError
 from django.contrib.auth.models import BaseUserManager, AbstractUser, PermissionsMixin
 from django.utils.translation import gettext_lazy as _
 import logging
+import json
+from django.utils import timezone
+from django.db.models import Model
+from datetime import datetime, timedelta
 logger = logging.getLogger('django')
 
 class CustomUserManager(BaseUserManager):
+
+
+    def __sort_tags(self, count_tags):
+        if len(count_tags) < 2:
+            return count_tags
+        else:
+            tags = list(count_tags.items()) \
+            if isinstance(count_tags, dict) else count_tags
+
+            pivot = tags[0]
+            smallest = [tag for tag in tags[1:] if pivot[1] <= tag[1]]
+            greatest = [tag for tag in tags[1:] if pivot[1] > tag[1]]
+
+            return self.__sort_tags(smallest) + [pivot] + self.__sort_tags(greatest)
+
+    def get_profile(self, user_id: int) -> Optional['CustomUser'] | list:
+        try:
+            cur_user = CustomUser.objects.get(pk=user_id)
+            if not cur_user:
+                raise ObjectDoesNotExist('User does not exist')
+            histories = cur_user.user_history.all() \
+            .order_by('-id').values('tags') \
+            .filter(
+                created_at__gte=datetime.now(
+                        tz=timezone.utc) - timedelta(days=365))
+
+            articles_read = histories.count()
+            tags = []
+            for history in histories:
+                for tag in json.loads(history['tags']):
+                    tags.append(tag)
+
+            count_tags = {tag: round(tags.count(tag) / len(tags) * 100) \
+                for index, tag in enumerate(tags)}
+
+            sorted_count_tags = {s[0]: s[1] for i, s in \
+                enumerate(self.__sort_tags(count_tags)) if i < 3}
+
+            cur_user.count_tags = sorted_count_tags
+            cur_user.articles_read = articles_read
+            cur_user.joined = cur_user.created_at.strftime('%B %Y')
+
+            return cur_user
+        except (DatabaseError, ObjectDoesNotExist, ) as e:
+            logger.error('Unable to retrieve user\'s profile information.')
+            return []
+
 
     def get_user(self, pk: int):
         try:

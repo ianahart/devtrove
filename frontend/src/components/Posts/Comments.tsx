@@ -61,6 +61,7 @@ const Comments = ({
       </Box>
       <Box display="flex" alignItems="center" mt="1.2rem" onClick={openModal}>
         <ProfilePicture
+          borderRadius="50%"
           avatar_url={userAuth.user.avatar_url}
           height="40px"
           width="40px"

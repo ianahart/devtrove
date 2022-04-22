@@ -126,6 +126,7 @@ const CommentForm = ({
             <Box p="0.25rem" display="flex" alignItems="center">
               <Box alignSelf="baseline">
                 <ProfilePicture
+                  borderRadius="50%"
                   avatar_url={userAuth.user.avatar_url}
                   height="40px"
                   width="40px"

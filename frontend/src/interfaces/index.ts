@@ -136,6 +136,28 @@ export interface IUser {
   handle?: string | null;
 }
 
+export interface ILanguage {
+  snippet: string;
+  id: number;
+  name: string;
+  user_id: number;
+}
+
+export interface IFullUser<T> extends IUser {
+  articles_read: number;
+  avatar_url: string;
+  bio: string;
+  company: string;
+  first_name: string;
+  count_tags: { [key: string]: number };
+  github: string;
+  job_title: string;
+  languages: ILanguage[];
+  joined: string;
+  last_name: string;
+  twitter: string;
+  website: string;
+}
 export interface IUserAuth {
   user: {
     logged_in?: boolean;

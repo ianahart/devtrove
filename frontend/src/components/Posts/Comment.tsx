@@ -104,6 +104,7 @@ const Comment = ({
         <Box display="flex" justifyContent="flex-start">
           <Box>
             <ProfilePicture
+              borderRadius="50%"
               avatar_url={comment.user.avatar_url}
               height="40px"
               width="40px"

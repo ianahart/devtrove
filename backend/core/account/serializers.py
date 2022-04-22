@@ -40,6 +40,33 @@ class UserSerializer(serializers.ModelSerializer):
                   )
 
 
+
+class UserProfileSerializer(serializers.ModelSerializer): 
+    languages = LanguageSerializer(many=True)
+    count_tags = serializers.JSONField()
+    articles_read = serializers.IntegerField()
+    joined = serializers.CharField(max_length=70)
+
+    class Meta:
+        model = CustomUser
+        fields = (
+              'first_name',
+              'id',
+              'last_name',
+              'joined',
+              'count_tags',
+              'articles_read',
+              'github',
+              'languages',
+              'avatar_url',
+              'website',
+              'twitter',
+              'job_title',
+              'company',
+              'bio',
+              'handle'
+        )
+
 class CreateUserSerializer(serializers.ModelSerializer):
     confirmpassword = serializers.CharField()
 

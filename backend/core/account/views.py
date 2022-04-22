@@ -1,3 +1,4 @@
+from django.core.exceptions import ImproperlyConfigured
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.parsers import FormParser, MultiPartParser
@@ -8,16 +9,40 @@ import json
 
 from account.permissions import AccountPermission
 from language.serializers import LanguageCreateSerializer
-from .serializers import UserSerializer, UserUpdateFormSerializer, UserPhotoSerializer
+from .serializers import UserProfileSerializer, UserSerializer, UserUpdateFormSerializer, UserPhotoSerializer
 from account.models import CustomUser
 
 
-#class ProfileAPIView(APIView):
-#     queryset = CustomUser.objects.all()
-#     permission_classes = [IsAuthenticated, ]
-#
-#    def get(self, request, pk=None)
-#
+class ProfileAPIView(APIView):
+    queryset = CustomUser.objects.all()
+    permission_classes = [IsAuthenticated, ]
+
+    def get(self, request, pk=None):
+        try:
+            if not pk:
+                raise ValueError
+
+            profile = CustomUser.objects.get_profile(user_id=pk)
+            try:
+                serializer = UserProfileSerializer(profile)
+                return Response(
+                    {'message': 'success', 'profile': serializer.data},
+                status=status.HTTP_200_OK
+            )
+
+            except (AttributeError, ImproperlyConfigured, ) as e:
+                return Response({'message': 'Bad request'},
+                                status=status.HTTP_400_BAD_REQUEST
+                                )
+
+
+        except (Exception, ValueError, ) as e:
+            return Response(
+                {'message': 'Something went wrong.'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+
 class DetailAPIView(APIView):
     queryset = CustomUser.objects.all()
     permission_classes = [IsAuthenticated, AccountPermission, ]
@@ -96,7 +121,6 @@ class DetailAPIView(APIView):
                     status=status.HTTP_200_OK)
 
             except Exception as e:
-                print(e)
                 return Response({
                                 'message' : 'Internal Server Error. Something went wrong.',
                                 'errors' : str(e)
