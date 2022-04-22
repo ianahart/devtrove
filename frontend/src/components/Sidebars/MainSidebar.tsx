@@ -10,12 +10,7 @@ import {
 import { BsFillArrowRightSquareFill, BsFillArrowLeftSquareFill } from 'react-icons/bs';
 import { Link as RouterLink } from 'react-router-dom';
 import { useContext, useState } from 'react';
-import {
-  AiOutlineClockCircle,
-  AiOutlineFire,
-  AiOutlineSearch,
-  AiOutlineComment,
-} from 'react-icons/ai';
+import { AiOutlineClockCircle, AiOutlineSearch, AiOutlineComment } from 'react-icons/ai';
 import { BiUpvote } from 'react-icons/bi';
 import { IGlobalContext } from '../../interfaces';
 import { GlobalContext } from '../../context/global';
@@ -72,12 +67,6 @@ const MainSidebar = () => {
               <Icon mr="0.2rem" as={AiOutlineClockCircle} />
               <Link to="/posts/newest" as={RouterLink}>
                 Newest
-              </Link>
-            </ListItem>
-            <ListItem layerStyle="listItemSidebar">
-              <Icon mr="0.2rem" as={AiOutlineFire} />
-              <Link to="posts/popular" as={RouterLink}>
-                Popular
               </Link>
             </ListItem>
             <ListItem layerStyle="listItemSidebar" mb="0.2rem">

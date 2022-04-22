@@ -17,7 +17,6 @@ import General from './components/Account/Settings/General';
 import User from './components/Account/Settings/User';
 import Detail from './components/Posts/Detail';
 import Discussed from './pages/Discussed';
-import Popular from './pages/Popular';
 import Upvoted from './pages/Upvoted';
 import Search from './pages/Search';
 import Bookmarks from './pages/Bookmarks';
@@ -43,7 +42,6 @@ const App = () => {
               <Route path="/posts/discussed" element={<Discussed />} />
               <Route path="/posts/newest" element={<Newest />} />
               <Route path="/posts/upvoted" element={<Upvoted />} />
-              <Route path="/posts/popular" element={<Popular />} />
               <Route
                 path="/reading-history"
                 element={

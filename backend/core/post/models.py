@@ -1,3 +1,4 @@
+from django.db.models import Count
 from django.core.paginator import Paginator
 from django.db import models, DatabaseError
 from django.db.models.query import QuerySet
@@ -8,6 +9,40 @@ import calendar
 import logging
 logger = logging.getLogger('django')
 class PostManager(models.Manager):
+
+    def most_discussed_posts(self, is_authenticated:bool, user:dict,
+                             cur_page: int=None):
+        try:
+            if not cur_page:
+                raise DatabaseError
+
+            posts = Post.objects.all() \
+            .annotate(num_comments=Count('comments__id', distinct=True)) \
+            .annotate(num_post_upvotes=Count('post_upvotes__id', distinct=True)) \
+            .order_by('-num_comments', '-num_post_upvotes')
+
+
+            if posts.count() == 0:
+                raise DatabaseError
+
+            for post in posts:
+                post = self.__get_total_counts(post, is_authenticated, user)
+                post.cur_user_bookmarked = self.__is_bookmarked(post, is_authenticated, user)
+
+            paginator = Paginator(posts, 5)
+            cur_page = int(cur_page) + 1
+
+            page = paginator.page(cur_page) 
+
+            queryset = page.object_list
+            pagination = {'page': cur_page, 'has_next': page.has_next()}
+
+            return queryset, pagination
+        except DatabaseError as e:
+            print(e)
+            logger.error('Unable to retrieve most discussed posts.')
+            return [], []
+
 
     def search(self, **validated_data) ->  \
         tuple[QuerySet['Post'],dict[str, int | bool] ] | tuple[None, None]:

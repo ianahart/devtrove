@@ -204,7 +204,7 @@ export interface IPostsContext {
   bookmark: (a: number, b: number, c: string) => void;
   addToReadHistory: (user: number, post: number, tags: string[]) => void;
   setIsLoaded: (loaded: boolean) => void;
-  setPosts: (posts: IPost[]) => void;
+  setPosts: (posts: any) => void;
   isLoaded: boolean;
   updatePostUpvote: (a: number, b: string) => void;
   fetchPosts: () => void;

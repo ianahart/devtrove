@@ -11,13 +11,27 @@ from .models import Post
 class DiscussedAPIView(APIView):
     def get(self, request):
         try:
+            posts, pagination = Post.objects.most_discussed_posts(
+                request.user.is_authenticated, request.user, request.query_params['page']
+            )
+            if len(posts) == 0 and len(pagination) == 0:
+                raise ValueError
+            serializer = PostSerializer(posts, many=True)
+
+
             return Response(
-                {'message': 'success'},
+                {
+                    'message': 'success',
+                    'posts': serializer.data,
+                    'pagination': pagination
+                },
                 status=status.HTTP_200_OK
             )
 
-        except Exception as e:
-            print(e, type(e))
+        except (Exception, ValueError, EmptyPage ) as e:
+            data = {'posts': [], 'pagination': {'page': 1, 'has_next': False}}
+            if isinstance(e, ValueError) or isinstance(e, EmptyPage):
+                return Response(data, status=status.HTTP_404_NOT_FOUND)
             return Response(
                 {'message': 'Something went wrong.'},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
