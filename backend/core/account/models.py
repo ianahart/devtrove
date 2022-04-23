@@ -6,11 +6,44 @@ from django.utils.translation import gettext_lazy as _
 import logging
 import json
 from django.utils import timezone
-from django.db.models import Model
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 logger = logging.getLogger('django')
 
 class CustomUserManager(BaseUserManager):
+
+    def __add_calendar(self, histories: dict) -> list[dict[str, int | str]]:
+        c_dates, data, blueprint = [], [], {}
+
+        for key, history in enumerate(histories):
+            if isinstance(history['created_at'], datetime):
+                ft_date = history['created_at'].strftime('%Y-%m-%d')
+                c_dates.append(ft_date)
+
+        for c_date in c_dates:
+            if c_date not in blueprint:
+                blueprint[c_date] = {'value': 1, 'day': c_date}
+            else:
+                blueprint[c_date]['value'] += 1
+
+        data = [value for _, value in blueprint.items()]
+
+        return data
+
+
+
+    def __calendar_dates(self):
+        today = datetime.today().strftime('%Y-%m-%d')
+
+        start = datetime(int(today.split('-')[0]), 1, 2, 1, 00)
+        print(start)
+        end = start + timedelta(days=364)
+
+        start = str(start).split(' ')[0]
+        end = str(end).split(' ')[0]
+
+        print(start + ' --- ' + end)
+        return {'start': start, 'end': end}
+
 
 
     def __sort_tags(self, count_tags):
@@ -26,13 +59,14 @@ class CustomUserManager(BaseUserManager):
 
             return self.__sort_tags(smallest) + [pivot] + self.__sort_tags(greatest)
 
+
     def get_profile(self, user_id: int) -> Optional['CustomUser'] | list:
         try:
             cur_user = CustomUser.objects.get(pk=user_id)
             if not cur_user:
                 raise ObjectDoesNotExist('User does not exist')
             histories = cur_user.user_history.all() \
-            .order_by('-id').values('tags') \
+            .order_by('-id').values('tags', 'created_at') \
             .filter(
                 created_at__gte=datetime.now(
                         tz=timezone.utc) - timedelta(days=365))
@@ -52,6 +86,8 @@ class CustomUserManager(BaseUserManager):
             cur_user.count_tags = sorted_count_tags
             cur_user.articles_read = articles_read
             cur_user.joined = cur_user.created_at.strftime('%B %Y')
+            cur_user.calendar = self.__add_calendar(histories)
+            cur_user.dates = self.__calendar_dates()
 
             return cur_user
         except (DatabaseError, ObjectDoesNotExist, ) as e:

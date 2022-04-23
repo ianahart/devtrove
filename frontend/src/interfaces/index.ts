@@ -143,6 +143,11 @@ export interface ILanguage {
   user_id: number;
 }
 
+export interface CalendarDatum {
+  day: string;
+  value: number;
+}
+
 export interface IFullUser<T> extends IUser {
   articles_read: number;
   avatar_url: string;
@@ -150,7 +155,9 @@ export interface IFullUser<T> extends IUser {
   company: string;
   first_name: string;
   count_tags: { [key: string]: number };
+  dates: { end: string; start: string };
   github: string;
+  calendar: CalendarDatum[];
   job_title: string;
   languages: ILanguage[];
   joined: string;

@@ -1,14 +1,56 @@
 import { Box, Heading, Icon, Text } from '@chakra-ui/react';
 import { nanoid } from 'nanoid';
+import { ResponsiveCalendarCanvas } from '@nivo/calendar';
 import { GiRibbonMedal } from 'react-icons/gi';
-interface IStatsProps<T> {
-  countTags: { [key: string]: number };
-}
-
-const Stats = ({ countTags }: IStatsProps<object>) => {
+import { IStatsProps } from '../../interfaces/props';
+const Stats = ({ countTags, articles_read, dates, calendar }: IStatsProps<object>) => {
   const medals = ['gold', 'silver', '#CD7F32'];
   return (
     <Box p="0.75rem">
+      <Box my="2rem">
+        <Heading as="h3" fontSize="18px" color="#FFF">
+          Posts read this year
+        </Heading>
+        <Text mt="0.5rem" color="purple.tertiary">
+          This graph only shows posts read during ({new Date().getFullYear()}).
+        </Text>
+        <Text mt="0.5rem" color="purple.tertiary">
+          You have read
+          <Box color="text.primary" as="span" fontWeight="bold">
+            {' '}
+            {articles_read}{' '}
+          </Box>
+          posts so far
+        </Text>
+
+        <Box id="profile-graph" height="400px" minWidth="0" width="100%">
+          <ResponsiveCalendarCanvas
+            data={calendar}
+            from={dates.start}
+            to={dates.end}
+            theme={{ textColor: '#F638DC' }}
+            emptyColor="#444447"
+            colors={['#444447', '#F638DC', '#0066FF', '#4d94ff']}
+            margin={{ top: 40, right: 40, bottom: 50, left: 40 }}
+            direction="horizontal"
+            monthBorderColor="#ffffff"
+            dayBorderWidth={2}
+            dayBorderColor="#000"
+            legends={[
+              {
+                anchor: 'bottom-right',
+                direction: 'row',
+                translateY: -40,
+                itemCount: 4,
+                itemWidth: 42,
+                itemHeight: 36,
+                itemsSpacing: 14,
+                itemDirection: 'right-to-left',
+              },
+            ]}
+          />
+        </Box>
+      </Box>
       <Box my="2rem">
         <Heading as="h3" fontSize="18px" color="#FFF">
           Top tags read this year

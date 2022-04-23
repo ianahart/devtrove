@@ -2,7 +2,22 @@ import { IconType } from 'react-icons';
 import { DevIcon, InputEntryType, ButtonEntryType, TAvatar } from '../types';
 import { LanguageCrud, Like } from '../types/index';
 import { PlacementWithLogical } from '@chakra-ui/react';
-import { ISearchResult, IHistoryPost, IBookmark, IPost, IFormField, IComment } from '.';
+import {
+  ISearchResult,
+  CalendarDatum,
+  IHistoryPost,
+  IBookmark,
+  IPost,
+  IFormField,
+  IComment,
+} from '.';
+
+export interface IStatsProps<T> {
+  countTags: { [key: string]: number };
+  calendar: CalendarDatum[];
+  dates: { start: string; end: string };
+  articles_read: number;
+}
 
 export interface ISearchResultProps {
   result: ISearchResult;

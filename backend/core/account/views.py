@@ -37,6 +37,7 @@ class ProfileAPIView(APIView):
 
 
         except (Exception, ValueError, ) as e:
+            print(e, type(e))
             return Response(
                 {'message': 'Something went wrong.'},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -117,7 +118,7 @@ class DetailAPIView(APIView):
                 return Response(
                     {'message': 'Updating user.',
                         'user_auth': user_auth,
-                    }, 
+                    },
                     status=status.HTTP_200_OK)
 
             except Exception as e:
@@ -130,7 +131,7 @@ class DetailAPIView(APIView):
             errors = [serializer.errors for serializer in serializers]
             return Response(
                 {
-                    'message' : 'Something is wrong', 
+                    'message' : 'Something is wrong',
                     'errors': errors
                 }, status=status.HTTP_400_BAD_REQUEST
             )

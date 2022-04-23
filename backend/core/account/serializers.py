@@ -46,6 +46,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
     count_tags = serializers.JSONField()
     articles_read = serializers.IntegerField()
     joined = serializers.CharField(max_length=70)
+    calendar = serializers.JSONField()
+    dates = serializers.JSONField()
 
     class Meta:
         model = CustomUser
@@ -55,6 +57,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
               'last_name',
               'joined',
               'count_tags',
+              'dates',
+              'calendar',
               'articles_read',
               'github',
               'languages',

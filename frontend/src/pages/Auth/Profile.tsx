@@ -12,19 +12,19 @@ const Profile = (): JSX.Element => {
   const [isLoaded, setIsLoaded] = useState(false);
   const { userAuth } = useContext(GlobalContext) as IGlobalContext;
   const [profile, setProfile] = useState<IFullUser<object> | null>(null);
+  const [error, setError] = useState(false);
 
   const retrieveProfile = useCallback(async () => {
     try {
       const response = await http.get<IProfileRequest<object>>(
         `/account/profile/${userAuth.user.id}/`
       );
-      console.log(response);
       setProfile(response.data.profile);
       setIsLoaded(true);
     } catch (e: unknown | AxiosError) {
       setIsLoaded(true);
       if (axios.isAxiosError(e)) {
-        console.log(e.response);
+        setError(e.response?.data.error);
       }
     }
   }, [userAuth.user.id]);

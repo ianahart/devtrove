@@ -70,7 +70,12 @@ const Main = ({ profile }: IMainProps) => {
       </Box>
       <Box>
         {activeChild === 'stats' ? (
-          <Stats countTags={profile.count_tags} />
+          <Stats
+            dates={profile.dates}
+            calendar={profile.calendar}
+            articles_read={profile.articles_read}
+            countTags={profile.count_tags}
+          />
         ) : (
           <Information profile={profile} />
         )}
