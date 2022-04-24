@@ -76,7 +76,10 @@ const WithAxios: React.FC<IProps> = ({ children }): JSX.Element => {
         }
         if (error.response.status === 403 || error.response.status === 401) {
           logout();
-          setLoaded(true);
+          if (!isLoaded) {
+            setLoaded(true);
+          }
+          return;
         }
         return Promise.reject(error);
       }
@@ -85,7 +88,7 @@ const WithAxios: React.FC<IProps> = ({ children }): JSX.Element => {
       http.interceptors.response.eject(resInterceptorId);
       http.interceptors.request.eject(reqInterceptorId);
     };
-  }, [setUserAuth, logout, setLoaded]);
+  }, [setUserAuth, isLoaded, logout, setLoaded]);
   useEffect(() => {
     if (isLoaded) {
       console.log('Are you running? You shouldnt be... WithAxios.tsx');
@@ -93,6 +96,7 @@ const WithAxios: React.FC<IProps> = ({ children }): JSX.Element => {
       setLoaded(false);
     }
   }, [navigate, isLoaded]);
+
   return children;
 };
 

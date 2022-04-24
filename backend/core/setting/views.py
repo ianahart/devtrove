@@ -13,7 +13,6 @@ class DetailAPIView(APIView):
     def patch(self, request, pk=None):
         try:
             setting = Setting.objects.get(pk=pk)
-
             if int(request.data['data']['user']) != setting.user_id:
                 raise PermissionDenied
             self.check_object_permissions(request, setting.user)
