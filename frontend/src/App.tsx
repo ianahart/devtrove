@@ -1,5 +1,8 @@
 import { Box } from '@chakra-ui/react';
+import { useEffect, useContext } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { IGlobalContext } from './interfaces';
+import { GlobalContext } from './context/global';
 import Home from './pages/Home';
 import Register from './pages/Register';
 import Profile from './pages/Auth/Profile';
@@ -24,12 +27,23 @@ import Newest from './pages/Newest';
 import Login from './pages/Login';
 import './App.css';
 import ReadingHistory from './pages/ReadingHistory';
+import { getStorage } from './helpers';
 
 const App = () => {
+  const { setTheme } = useContext(GlobalContext) as IGlobalContext;
+
+  useEffect(() => {
+    const storage = getStorage();
+    if (storage?.user) {
+      setTheme(storage.user.theme);
+    }
+  }, [setTheme]);
+
+  const { theme } = useContext(GlobalContext) as IGlobalContext;
   return (
     <Router>
       <WithAxios>
-        <Box bgColor="black.primary" className="site">
+        <Box bg={theme === 'dark' ? '#000' : '#FFF'} className="site">
           <Box>
             <Navigation />
           </Box>

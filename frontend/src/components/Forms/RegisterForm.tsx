@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Button, Heading } from '@chakra-ui/react';
 import axios, { AxiosError } from 'axios';
-import { IRegisterForm } from '../../interfaces';
+import { IGlobalContext, IRegisterForm } from '../../interfaces';
 import { IRegisterRequest, IAxiosError } from '../../interfaces/requests';
 import FormInput from './FormInput';
+import { GlobalContext } from '../../context/global';
 import { http } from '../../helpers';
 const RegisterForm = (): JSX.Element => {
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ const RegisterForm = (): JSX.Element => {
     password: { name: 'password', value: '', error: '' },
     confirmpassword: { name: 'confirmpassword', value: '', error: '' },
   };
+  const { theme } = useContext(GlobalContext) as IGlobalContext;
   const [form, setForm] = useState<IRegisterForm>(initialForm);
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -89,7 +91,7 @@ const RegisterForm = (): JSX.Element => {
   return (
     <form onSubmit={handleOnSubmit} style={{ width: '100%' }}>
       <Box mt={['1rem', '1rem', '10rem']}>
-        <Heading color="#FFF" textAlign="center" as="h3">
+        <Heading color={theme === 'dark' ? '#FFF' : '#000'} textAlign="center" as="h3">
           Create Account
         </Heading>
       </Box>

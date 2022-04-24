@@ -18,7 +18,7 @@ import { GlobalContext } from '../../context/global';
 const MainSidebar = () => {
   const [mainClass, setMainClass] = useState('main-sidebar-block');
   const [isMenuOpen, setIsMenuOpen] = useState(true);
-  const { handleIsSearchOpen } = useContext(GlobalContext) as IGlobalContext;
+  const { theme, handleIsSearchOpen } = useContext(GlobalContext) as IGlobalContext;
   const handleOpenMenu = () => {
     setIsMenuOpen((prevState) => !prevState);
 
@@ -40,9 +40,9 @@ const MainSidebar = () => {
         top="300px"
         as={isMenuOpen ? BsFillArrowRightSquareFill : BsFillArrowLeftSquareFill}
         fontSize="40px"
-        color="#FFF"
+        color={theme === 'dark' ? '#FFF' : '#000'}
         borderRadius="8px"
-        bg="#000"
+        bg={theme === 'dark' ? '#000' : '#FFF'}
       />
 
       <Box
@@ -51,7 +51,8 @@ const MainSidebar = () => {
         fontSize="1rem"
         textAlign="center"
         maxW="540px"
-        color="#fff"
+        color={theme === 'dark' ? '#fFF' : '#000'}
+        bg={theme === 'dark' ? '#000' : '#fff'}
       >
         <Box color="purple.tertiary" p="0.5rem">
           <Heading mb="0.5rem" fontWeight="400" fontSize="16px" textAlign="left" as="h4">

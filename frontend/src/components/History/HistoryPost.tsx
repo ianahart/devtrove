@@ -1,3 +1,4 @@
+import { useContext } from 'react';
 import {
   Box,
   Heading,
@@ -17,8 +18,12 @@ import { IHistoryPostProps } from '../../interfaces/props';
 import PostPicture from '../Posts/PostPicture';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { RiArticleLine } from 'react-icons/ri';
+import { IGlobalContext } from '../../interfaces/';
+import { GlobalContext } from '../../context/global';
 
 const HistoryPost = ({ deleteHistory, history }: IHistoryPostProps) => {
+  const { theme } = useContext(GlobalContext) as IGlobalContext;
+
   const handleOnClick = () => {
     deleteHistory(history.id);
   };
@@ -39,7 +44,7 @@ const HistoryPost = ({ deleteHistory, history }: IHistoryPostProps) => {
     >
       <Box mx="0.25rem" display="flex" alignItems="center">
         <Box mr="1.5rem">
-          <Text color="#FFF">{history.readable_date}</Text>
+          <Text color={theme === 'dark' ? '#FFF' : '#000'}>{history.readable_date}</Text>
           <Box position="relative" borderRadius="20px" width="175px">
             <Image
               width="40px"
@@ -59,7 +64,7 @@ const HistoryPost = ({ deleteHistory, history }: IHistoryPostProps) => {
         </Box>
         <Box alignSelf="center" display="flex" flexDir="column">
           <Link as={RouterLink} to={`/${history.post_id}${history.post.slug}`}>
-            <Heading color="#FFF" fontSize="1rem" as="h2">
+            <Heading color={theme === 'dark' ? '#FFF' : '#000'} fontSize="1rem" as="h2">
               {history.post.title}
             </Heading>
           </Link>

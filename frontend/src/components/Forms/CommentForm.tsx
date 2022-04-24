@@ -26,7 +26,7 @@ const CommentForm = ({
   addComment,
   handleSelectLanguage,
 }: ICommentFormProps) => {
-  const { userAuth } = useContext(GlobalContext) as IGlobalContext;
+  const { userAuth, theme } = useContext(GlobalContext) as IGlobalContext;
   const [view, setView] = useState(Options.Add);
   const switchView = (view: Options) => {
     setView(view);
@@ -58,7 +58,7 @@ const CommentForm = ({
             onClick={() => switchView(Options.Add)}
             fontWeight={view === Options.Add ? 'bold' : '200'}
             cursor="pointer"
-            color="#FFF"
+            color={theme === 'dark' ? '#FFF' : '#000'}
             mr="1rem"
           >
             Add
@@ -67,7 +67,7 @@ const CommentForm = ({
             onClick={() => switchView(Options.Preview)}
             fontWeight={view === Options.Preview ? 'bold' : '200'}
             cursor="pointer"
-            color="#FFF"
+            color={theme === 'dark' ? '#FFF' : '#000'}
             ml="1rem"
           >
             Preview
@@ -85,7 +85,7 @@ const CommentForm = ({
         </Box>
       ) : (
         <form onSubmit={handleOnSubmit} style={{ marginTop: '2rem' }}>
-          {commentError.length && (
+          {commentError.length > 0 && (
             <Text textAlign="center" color="purple.secondary">
               {commentError}
             </Text>
@@ -135,7 +135,7 @@ const CommentForm = ({
               <Textarea
                 _focus={{ border: 'none' }}
                 border="none"
-                color="#FFF"
+                color={theme === 'dark' ? '#FFF' : '#000'}
                 resize="none"
                 outline="none"
                 height="100%"
@@ -150,7 +150,7 @@ const CommentForm = ({
             <Textarea
               _focus={{ border: 'none' }}
               border="none"
-              color="#FFF"
+              color={theme === 'dark' ? '#FFF' : '#000'}
               resize="none"
               outline="none"
               height="100%"

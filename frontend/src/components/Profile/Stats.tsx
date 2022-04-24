@@ -1,14 +1,18 @@
 import { Box, Heading, Icon, Text } from '@chakra-ui/react';
+import { useContext } from 'react';
 import { nanoid } from 'nanoid';
+import { GlobalContext } from '../../context/global';
+import { IGlobalContext } from '../../interfaces';
 import { ResponsiveCalendarCanvas } from '@nivo/calendar';
 import { GiRibbonMedal } from 'react-icons/gi';
 import { IStatsProps } from '../../interfaces/props';
 const Stats = ({ countTags, articles_read, dates, calendar }: IStatsProps<object>) => {
+  const { theme } = useContext(GlobalContext) as IGlobalContext;
   const medals = ['gold', 'silver', '#CD7F32'];
   return (
     <Box p="0.75rem">
       <Box my="2rem">
-        <Heading as="h3" fontSize="18px" color="#FFF">
+        <Heading as="h3" fontSize="18px" color={theme === 'dark' ? '#FFF' : '#000'}>
           Posts read this year
         </Heading>
         <Text mt="0.5rem" color="purple.tertiary">
@@ -52,7 +56,7 @@ const Stats = ({ countTags, articles_read, dates, calendar }: IStatsProps<object
         </Box>
       </Box>
       <Box my="2rem">
-        <Heading as="h3" fontSize="18px" color="#FFF">
+        <Heading as="h3" fontSize="18px" color={theme === 'dark' ? '#FFF' : '#000'}>
           Top tags read this year
         </Heading>
         <Text mt="0.5rem" color="purple.tertiary">

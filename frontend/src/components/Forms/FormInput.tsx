@@ -7,9 +7,11 @@ import {
   Input,
   Icon,
 } from '@chakra-ui/react';
+import { useContext } from 'react';
 import { GiPirateHook } from 'react-icons/gi';
 import { IFormInputProps } from '../../interfaces/props';
-
+import { GlobalContext } from '../../context/global';
+import { IGlobalContext } from '../../interfaces';
 const FormInput = ({
   label,
   name,
@@ -21,6 +23,7 @@ const FormInput = ({
   value,
   captureInput,
 }: IFormInputProps) => {
+  const { theme } = useContext(GlobalContext) as IGlobalContext;
   const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     captureInput(name, value);
@@ -32,7 +35,7 @@ const FormInput = ({
         {error.length > 0 && (
           <Icon mb={2} mr="0.25rem" as={GiPirateHook} height="30px" color="red" />
         )}
-        <FormLabel color="#FFF" htmlFor={name}>
+        <FormLabel color={theme === 'dark' ? '#FFF' : '#000'} htmlFor={name}>
           {label}
         </FormLabel>
       </Box>
@@ -40,6 +43,7 @@ const FormInput = ({
         onChange={handleOnChange}
         value={value}
         name={name}
+        color={theme === 'dark' ? '#FFF' : '#000'}
         autoComplete="off"
         variant="inputEntry"
         id={id}

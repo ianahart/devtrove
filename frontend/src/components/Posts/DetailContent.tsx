@@ -1,9 +1,13 @@
+import { useContext } from 'react';
 import { Box, Heading, Icon, Image, Link, Text } from '@chakra-ui/react';
 import { AiOutlinePicture } from 'react-icons/ai';
+import { IGlobalContext } from '../../interfaces/';
+import { GlobalContext } from '../../context/global';
 import { IPostProps } from '../../interfaces/props';
 import Tags from './Tags';
 
 const DetailContent = ({ post }: IPostProps) => {
+  const { theme } = useContext(GlobalContext) as IGlobalContext;
   return (
     <>
       {post === undefined ? (
@@ -33,7 +37,11 @@ const DetailContent = ({ post }: IPostProps) => {
             <Image src={post.logo} alt={post.title} />
           </Box>
           <Box m="2rem auto 1.5rem auto" textAlign="center">
-            <Heading fontSize="1.75rem" as="h2">
+            <Heading
+              fontSize="1.75rem"
+              color={theme === 'dark' ? '#FFF' : '#000'}
+              as="h2"
+            >
               {post.title}
             </Heading>
           </Box>
@@ -50,7 +58,7 @@ const DetailContent = ({ post }: IPostProps) => {
           </Box>
           <Box textAlign="left" width="100px" m="2rem 0 0.75rem 0">
             <Text
-              textShadow="4px 3px 0px #000"
+              textShadow={theme === 'dark' ? '4px 3px 0px #000' : '0px 0px 0px'}
               fontWeight="900"
               width="100%"
               fontSize="1.1rem"
@@ -60,7 +68,7 @@ const DetailContent = ({ post }: IPostProps) => {
               Snippet
             </Text>
           </Box>
-          <Box color="#FFF" mb="2rem">
+          <Box color={theme === 'dark' ? '#FFF' : '#000'} mb="2rem">
             <Text>{post.snippet}</Text>
           </Box>
           <Box my="2rem">

@@ -11,7 +11,7 @@ import { IPostsContext } from '../../interfaces';
 import { ILogoutRequest } from '../../interfaces/requests';
 const Logout = () => {
   const navigate = useNavigate();
-  const { setIsSearchOpen, userAuth, logout } = useContext(
+  const { setTheme, setIsSearchOpen, userAuth, logout } = useContext(
     GlobalContext
   ) as IGlobalContext;
   const { clearPosts, setIsLoaded } = useContext(PostsContext) as IPostsContext;
@@ -37,6 +37,7 @@ const Logout = () => {
         logout();
         navigate('/login');
         clearPosts();
+        setTheme('dark');
         setIsLoaded(false);
         setIsSearchOpen(false);
       }

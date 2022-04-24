@@ -8,7 +8,7 @@ import { IGlobalContext } from '../../interfaces';
 import UserMenu from './UserMenu';
 
 const Navigation = () => {
-  const { isUserMenuShowing, toggleUserMenu, userAuth, openModal } = useContext(
+  const { theme, isUserMenuShowing, toggleUserMenu, userAuth, openModal } = useContext(
     GlobalContext
   ) as IGlobalContext;
 
@@ -34,6 +34,7 @@ const Navigation = () => {
     )
       return (
         <Icon
+          color={theme === 'dark' ? '#FFF' : '#000'}
           onClick={toggleUserMenu}
           cursor="pointer"
           as={FaUserCircle}

@@ -29,7 +29,7 @@ const Comment = ({
   syncEdit,
 }: ISingleCommentProps) => {
   const [error, setError] = useState('');
-  const { userAuth } = useContext(GlobalContext) as IGlobalContext;
+  const { theme, userAuth } = useContext(GlobalContext) as IGlobalContext;
   const deleteComment = async () => {
     try {
       const response = await http.delete(`/comments/${comment.id}/`);
@@ -111,10 +111,12 @@ const Comment = ({
             />
           </Box>
           <Box ml="0.5rem">
-            <Text fontWeight="bold">
+            <Text color={theme === 'dark' ? '#FFF' : '#000'} fontWeight="bold">
               {comment.user.handle ? comment.user.handle : 'No Name'}
             </Text>
-            <Text>{comment.readable_date}</Text>
+            <Text color={theme === 'dark' ? '#FFF' : '#000'}>
+              {comment.readable_date}
+            </Text>
             {comment.edited && (
               <Text textAlign="left" color="text.primary">
                 (edited)

@@ -1,22 +1,25 @@
 import { Box, Heading, Icon, Link, Text } from '@chakra-ui/react';
 import { IFullUser, ILanguage } from '../../interfaces/index';
+import { useContext } from 'react';
+import { IGlobalContext } from '../../interfaces/';
+import { GlobalContext } from '../../context/global';
 import { AiOutlineLink, AiFillGithub, AiFillTwitterCircle } from 'react-icons/ai';
 interface IInformationProps<T> {
   profile: IFullUser<T>;
 }
 
 const Information = ({ profile }: IInformationProps<object>) => {
-  console.log(profile.languages);
+  const { theme } = useContext(GlobalContext) as IGlobalContext;
   return (
     <Box width="100%" my="2rem" p="0.5rem">
-      <Heading as="h3" fontSize="18px" color="#FFF">
+      <Heading as="h3" fontSize="18px" color={theme === 'dark' ? '#FFF' : '#000'}>
         Account Details
       </Heading>
       <Text mt="0.5rem" color="purple.tertiary">
         Basic information below.
       </Text>
       <Box className="profile-field-container" display="flex" flexDir="column">
-        <Text p="0.2rem" color="#FFF">
+        <Text p="0.2rem" color={theme === 'dark' ? '#FFF' : '#000'}>
           Name:{' '}
           <Box as="span" fontWeight="bold">
             {profile.first_name} {profile.last_name}
@@ -89,7 +92,7 @@ const Information = ({ profile }: IInformationProps<object>) => {
         </Box>
       </Box>
       <Box mt="2rem">
-        <Text mb="1rem" color="#FFF">
+        <Text mb="1rem" color={theme === 'dark' ? '#FFF' : '#000'}>
           Languages:
         </Text>
         <Box width="90%" flex="wrap" display="flex">
@@ -103,7 +106,7 @@ const Information = ({ profile }: IInformationProps<object>) => {
                 alignItems="center"
               >
                 <Box mr="1rem" as="i" fontSize="24px" className={language.snippet}></Box>
-                <Text color="#FFF" fontSize="0.9rem">
+                <Text color={theme === 'dark' ? '#FFF' : '#000'} fontSize="0.9rem">
                   {language.name}
                 </Text>
               </Box>

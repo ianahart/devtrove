@@ -10,7 +10,7 @@ import GoBack from '../../components/Mixed/GoBack';
 
 const Profile = (): JSX.Element => {
   const [isLoaded, setIsLoaded] = useState(false);
-  const { userAuth } = useContext(GlobalContext) as IGlobalContext;
+  const { userAuth, theme } = useContext(GlobalContext) as IGlobalContext;
   const [profile, setProfile] = useState<IFullUser<object> | null>(null);
   const [error, setError] = useState(false);
 
@@ -36,7 +36,11 @@ const Profile = (): JSX.Element => {
   }, [retrieveProfile, isLoaded]);
 
   return (
-    <Grid gridTemplateColumns={['1fr', '1fr', '1fr 2fr 1fr']} minH="100vh" bg="#000">
+    <Grid
+      gridTemplateColumns={['1fr', '1fr', '1fr 2fr 1fr']}
+      minH="100vh"
+      bg={theme === 'dark' ? '#000' : '#FFF'}
+    >
       <Box display={['none', 'none', 'block']} minH="100vh">
         <GoBack />
       </Box>

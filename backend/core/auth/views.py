@@ -10,6 +10,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from account.serializers import CreateUserSerializer, UserSerializer
+from setting.models import Setting
 import logging
 logger = logging.getLogger('django')
 
@@ -25,7 +26,8 @@ class RegisterView(generics.ListCreateAPIView):
     def create(self, request):
         serializer = CreateUserSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.create(serializer.data)
+            user = serializer.create(serializer.data)
+            Setting.objects.create(user.id)
             return Response(
                 {'message': 'User Created.'},
                 status=status.HTTP_201_CREATED)
@@ -85,15 +87,18 @@ class TokenObtainPairView(generics.ListCreateAPIView):
                             'logged_in': True,
                            'handle': user.handle,
                             'id': user.id,
+                            'setting_id': user.user_settings.id,
+                                'theme': user.user_settings.theme.lower(),
                             'avatar_url': user.avatar_url,
                             }
                         })
-            except Exception:
+            except Exception as e:
+                print(e, type(e))
                 logger.error(msg='Problems with the login system')
 
                 return Response({
-                                'email': 'Unauthorized, please create an account.'
-                                }, status=status.HTTP_401_UNAUTHORIZED)
+                                'email': 'Please create an account.'
+                                }, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(serializer.errors,
                 status=status.HTTP_400_BAD_REQUEST)

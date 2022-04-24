@@ -28,7 +28,7 @@ const ProfileForm = () => {
     github: { name: 'github', value: '', error: '' },
     twitter: { name: 'twitter', value: '', error: '' },
   };
-  const { userAuth, updateUser } = useContext(GlobalContext) as IGlobalContext;
+  const { theme, userAuth, updateUser } = useContext(GlobalContext) as IGlobalContext;
   const [formLoaded, setFormLoaded] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [avatar, setAvatar] = useState<TAvatar<File>>({ data: null, url: null });
@@ -210,8 +210,13 @@ const ProfileForm = () => {
 
   return (
     <>
-      <Box as="header" p="0.5rem">
-        <Heading p="0.5rem" as="h3" fontSize="24px" color="#FFF">
+      <Box bg={theme === 'dark' ? '#000' : '#FFF'} as="header" p="0.5rem">
+        <Heading
+          p="0.5rem"
+          as="h3"
+          fontSize="24px"
+          color={theme === 'dark' ? '#FFF' : '#000'}
+        >
           Edit Profile
         </Heading>
         <Text
@@ -244,7 +249,12 @@ const ProfileForm = () => {
           .
         </Text>
       </Box>
-      <Box maxWidth={['100%', '100%', '980px']} margin="0 auto">
+      <Box
+        color={theme === 'dark' ? '#FFF' : '#000'}
+        bg={theme === 'dark' ? '#000' : '#FFF'}
+        maxWidth={['100%', '100%', '980px']}
+        margin="0 auto"
+      >
         <form onSubmit={handleOnSubmit} id="profileForm" encType="multipart/form-data">
           <Box my="3rem" display="flex" justifyContent="center" position="relative">
             <FileUploader
@@ -258,7 +268,7 @@ const ProfileForm = () => {
                 cursor="pointer"
                 role="button"
                 as={AiOutlineCloseCircle}
-                color="#FFF"
+                color={theme === 'dark' ? '#FFF' : '#000'}
                 height="30px"
                 width="30px"
               />

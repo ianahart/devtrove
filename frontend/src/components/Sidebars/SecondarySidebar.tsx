@@ -6,8 +6,12 @@ import {
   BsFillArrowRightSquareFill,
   BsFillArrowLeftSquareFill,
 } from 'react-icons/bs';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+import { IGlobalContext } from '../../interfaces';
+import { GlobalContext } from '../../context/global';
+
 const SecondarySidebar = () => {
+  const { theme } = useContext(GlobalContext) as IGlobalContext;
   const [mainClass, setMainClass] = useState('secondary-sidebar-block');
   const [isMenuOpen, setIsMenuOpen] = useState(true);
   const handleOpenMenu = () => {
@@ -31,9 +35,9 @@ const SecondarySidebar = () => {
         top="300px"
         as={isMenuOpen ? BsFillArrowRightSquareFill : BsFillArrowLeftSquareFill}
         fontSize="40px"
-        color="#FFF"
+        color={theme === 'dark' ? '#FFF' : '#000'}
         borderRadius="8px"
-        bg="#000"
+        bg={theme === 'dark' ? '#000' : '#FFF'}
       />
 
       <Box
@@ -41,10 +45,11 @@ const SecondarySidebar = () => {
         className={mainClass}
         textAlign="center"
         width="12rem"
-        color="#FFF"
+        color={theme === 'dark' ? '#fFF' : '#000'}
+        bg={theme === 'dark' ? '#000' : '#FFF'}
         fontSize="1rem"
       >
-        <Box color="purple.tertiary" p="0.5rem">
+        <Box bg={theme === 'dark' ? '#000' : '#fFF'} color="purple.tertiary" p="0.5rem">
           <Heading mb="0.5rem" fontWeight="400" fontSize="16px" textAlign="right" as="h4">
             Manage
           </Heading>

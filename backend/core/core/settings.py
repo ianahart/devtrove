@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'language',
     'upvote',
     'history',
+    'setting'
 ]
 
 AUTH_USER_MODEL = 'account.CustomUser'

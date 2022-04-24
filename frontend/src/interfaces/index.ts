@@ -1,5 +1,5 @@
 import { InputEntryType, DevIcon } from '../types';
-import { IUpdateProfileFormRequest } from './requests';
+import { IUpdateProfileFormRequest, IUpdateSettingRequest } from './requests';
 
 export interface ISearchResult {
   cover_image: string;
@@ -134,6 +134,8 @@ export interface IUser {
   logged_in?: boolean;
   id?: number | null;
   handle?: string | null;
+  setting_id: number;
+  theme: string;
 }
 
 export interface ILanguage {
@@ -171,6 +173,8 @@ export interface IUserAuth {
     id?: number | null;
     handle?: string | null;
     avatar_url?: string | null;
+    setting_id?: number | null;
+    theme?: string | null;
   };
   refresh_token: ITokens['refresh_token'] | null | string;
   access_token: ITokens['access_token'] | null | string;
@@ -211,13 +215,16 @@ export interface IGlobalContext {
   isUserMenuShowing: boolean;
   isSearchOpen: boolean;
   interceptorsLoaded: boolean;
+  theme: string;
   toggleUserMenu: () => void;
   closeUserMenu: () => void;
   updateUser: (user: IUpdateProfileFormRequest) => void;
+  updateSetting: (theme: IUpdateSettingRequest) => void;
   openModal: () => void;
   closeModal: () => void;
   stowTokens: (tokens: ITokens, user: IUser) => void;
   setIsSearchOpen: (isSearchOpen: boolean) => void;
+  setTheme: (theme: string) => void;
   logout: () => void;
   userAuth: IUserAuth;
   setUserAuth: (userAuth: IUserAuth) => void;

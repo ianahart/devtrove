@@ -17,7 +17,7 @@ const Comments = ({
   handlePagination,
   syncEdit,
 }: ICommentProps) => {
-  const { openModal, userAuth } = useContext(GlobalContext) as IGlobalContext;
+  const { theme, openModal, userAuth } = useContext(GlobalContext) as IGlobalContext;
   const commentModalText = comments.length
     ? 'Add to the discussion'
     : 'Start a discussion';
@@ -26,7 +26,9 @@ const Comments = ({
     <Box>
       {post && (
         <Box py="0.5rem" fontSize="1rem" display="flex" alignItems="center">
-          <Text mx="0.5rem">{post.comments_count} Comments</Text>
+          <Text color={theme === 'dark' ? '#FFF' : '#000'} mx="0.5rem">
+            {post.comments_count} Comments
+          </Text>
         </Box>
       )}
       <Box width="300px" margin="0 auto">

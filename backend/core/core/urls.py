@@ -17,7 +17,8 @@ urlpatterns = [
     path('api/v1/', include(('upvote.urls', 'upvote'))),
     path('api/v1/', include(('like.urls', 'like'))),
     path('api/v1/', include(('bookmark.urls', 'bookmark'))),
-    path('api/v1/', include(('history.urls', 'history')))
+    path('api/v1/', include(('history.urls', 'history'))),
+    path('api/v1/', include(('setting.urls', 'setting')))
 ]
 
 

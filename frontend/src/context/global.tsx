@@ -1,7 +1,7 @@
 import { createContext, useState } from 'react';
 import { getStorage, wipeUser } from '../helpers';
 import { IGlobalContext, ITokens, IUser, IUserAuth } from '../interfaces';
-import { IUpdateProfileFormRequest } from '../interfaces/requests';
+import { IUpdateProfileFormRequest, IUpdateSettingRequest } from '../interfaces/requests';
 
 export const GlobalContext = createContext<IGlobalContext | null>(null);
 
@@ -17,10 +17,13 @@ const GlobalContextProvider: React.FC<React.ReactNode> = ({ children }) => {
           handle: '',
           id: null,
           avatar_url: '',
+          setting_id: null,
+          theme: '',
         },
   };
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [theme, setTheme] = useState('dark');
   const [isUserMenuShowing, setIsUserMenuShowing] = useState(false);
   const [userAuth, setUserAuth] = useState<IUserAuth>(initialAuth);
   const [interceptorsLoaded, setInterceptorsLoaded] = useState(false);
@@ -38,6 +41,14 @@ const GlobalContextProvider: React.FC<React.ReactNode> = ({ children }) => {
 
   const closeUserMenu = () => {
     setIsUserMenuShowing(false);
+  };
+
+  const updateSetting = (data: IUpdateSettingRequest) => {
+    const user = JSON.parse(localStorage.getItem('user') ?? '');
+    if (data) {
+      user.user.theme = data.theme;
+    }
+    localStorage.setItem('user', JSON.stringify(user));
   };
 
   const updateUser = (user: IUpdateProfileFormRequest) => {
@@ -60,6 +71,7 @@ const GlobalContextProvider: React.FC<React.ReactNode> = ({ children }) => {
   };
   const stowTokens = (tokens: ITokens, user: IUser) => {
     localStorage.setItem('user', JSON.stringify({ ...tokens, user }));
+    setTheme(user.theme);
     setUserAuth((prevState) => ({
       ...prevState,
       access_token: tokens.access_token,
@@ -72,8 +84,10 @@ const GlobalContextProvider: React.FC<React.ReactNode> = ({ children }) => {
       value={{
         isUserMenuShowing,
         toggleUserMenu,
+        setTheme,
         updateUser,
         closeUserMenu,
+        updateSetting,
         setUserAuth,
         userAuth,
         interceptorsLoaded,
@@ -84,6 +98,7 @@ const GlobalContextProvider: React.FC<React.ReactNode> = ({ children }) => {
         stowTokens,
         handleIsSearchOpen,
         isModalOpen,
+        theme,
         openModal,
         closeModal,
       }}

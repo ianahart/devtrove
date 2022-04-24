@@ -17,6 +17,11 @@ export interface IPostRequest {
   data: IPost[];
 }
 
+export interface IUpdateSettingRequest {
+  message?: string;
+  theme: string;
+}
+
 export interface ICommentsRequest {
   message?: string;
   page: number;

@@ -1,4 +1,7 @@
 import { Box, Icon, ListItem, Link } from '@chakra-ui/react';
+import { useContext } from 'react';
+import { GlobalContext } from '../../context/global';
+import { IGlobalContext } from '../../interfaces';
 import { Link as RouterLink } from 'react-router-dom';
 import { FiChevronRight } from 'react-icons/fi';
 import { IAccountInnerMenuItemProps } from '../../interfaces/props';
@@ -11,7 +14,8 @@ const MenuItem = ({
   to,
   icon,
 }: IAccountInnerMenuItemProps) => {
-  const color = activeTab === to ? '#FFF' : '#8a8f9d';
+  const { theme } = useContext(GlobalContext) as IGlobalContext;
+  const color = activeTab === to ? (theme === 'dark' ? '#FFF' : '#000') : '#8a8f9d';
 
   return (
     <ListItem

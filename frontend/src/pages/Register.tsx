@@ -1,8 +1,12 @@
 import { Box } from '@chakra-ui/react';
+import { useContext } from 'react';
+import { IGlobalContext } from '../interfaces';
+import { GlobalContext } from '../context/global';
 import RegisterForm from '../components/Forms/RegisterForm';
 import registerBG from '../images/register_bg.png';
 
 const Register: React.FC = () => {
+  const { theme } = useContext(GlobalContext) as IGlobalContext;
   return (
     <Box
       display="flex"
@@ -10,7 +14,7 @@ const Register: React.FC = () => {
       height="100%"
       minH="100vh"
       justifyContent={['unset', 'unset', 'center']}
-      backgroundColor="black.primary"
+      backgroundColor={theme === 'dark' ? '#000' : '#FFF'}
     >
       <Box
         display={['none', 'none', 'block']}

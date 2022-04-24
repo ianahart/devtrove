@@ -1,10 +1,14 @@
 import { Box, Image, UnorderedList } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { BiUser } from 'react-icons/bi';
 import { FiSettings } from 'react-icons/fi';
 import MenuItem from './MenuItem';
+import { GlobalContext } from '../../context/global';
+import { IGlobalContext } from '../../interfaces';
 import logoImage from '../../images/logo.png';
+import lightLogoImage from '../../images/light-logo.png';
 const MainMenu = () => {
+  const { theme } = useContext(GlobalContext) as IGlobalContext;
   const [activeTab, setActiveTab] = useState('edit-profile');
 
   const handleSetActiveTab = (tab: string) => {
@@ -15,14 +19,14 @@ const MainMenu = () => {
     <Box
       height="auto"
       className="account-main-menu"
-      bg="#000"
+      bg={theme === 'dark' ? '#000' : '#FFF'}
       borderRight="1px solid #444447"
     >
       <Image
         margin="0.5rem"
         height="40px"
         width="40px"
-        src={logoImage}
+        src={theme === 'dark' ? logoImage : lightLogoImage}
         alt="devtrove logo of pirate with code brackets"
       />
       <UnorderedList my="2rem" listStyleType="none">

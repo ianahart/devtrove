@@ -5,6 +5,7 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { GlobalContext } from '../../context/global';
 import { IGlobalContext, ILoginForm } from '../../interfaces';
 import { ILoginRequest } from '../../interfaces/requests';
+import { getStorage } from '../../helpers';
 import FormInput from './FormInput';
 import { http } from '../../helpers';
 const LoginForm: React.FC = () => {
@@ -13,12 +14,14 @@ const LoginForm: React.FC = () => {
     password: { name: 'password', value: '', error: '' },
   };
   const navigate = useNavigate();
-  const { closeModal, stowTokens } = useContext(GlobalContext) as IGlobalContext;
+  const { setTheme, theme, isModalOpen, closeModal, stowTokens } = useContext(
+    GlobalContext
+  ) as IGlobalContext;
   const [form, setForm] = useState<ILoginForm>(initialForm);
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    if (isLoaded) {
+    if (isLoaded && !isModalOpen) {
       navigate('/');
     }
   }, [isLoaded, navigate]);
@@ -60,6 +63,10 @@ const LoginForm: React.FC = () => {
       if (response.status === 200) {
         stowTokens(response.data.tokens, response.data.user);
         setIsLoaded(true);
+
+        const storage = getStorage();
+        setTheme(storage.user.theme);
+
         closeModal();
       }
     } catch (e: unknown | AxiosError) {
@@ -79,7 +86,10 @@ const LoginForm: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleOnSubmit} style={{ width: '100%' }}>
+    <form
+      onSubmit={handleOnSubmit}
+      style={{ width: '100%', backgroundColor: `${theme === 'dark' ? '#000' : '#fff'}` }}
+    >
       <Box>
         <Box
           mb="2rem"
@@ -89,11 +99,16 @@ const LoginForm: React.FC = () => {
           flexDir="column"
           alignItems="center"
         >
-          <Heading mb="1.5rem" color="#FFF" textAlign="center" as="h3">
+          <Heading
+            mb="1.5rem"
+            color={theme === 'dark' ? '#FFF' : '#000'}
+            textAlign="center"
+            as="h3"
+          >
             Login
           </Heading>
 
-          <Text color="#FFF" mr="0.25rem">
+          <Text color={theme === 'dark' ? '#FFF' : '#000'} mr="0.25rem">
             New To DevTrove?
           </Text>
           <Link color="purple.primary" to="/register" as={RouterLink}>

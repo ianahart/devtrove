@@ -15,7 +15,7 @@ const BasicModal: React.FC<IBasicModalProps> = ({
   children,
   resetForm,
 }: IBasicModalProps): JSX.Element => {
-  const { userAuth, closeModal, isModalOpen } = useContext(
+  const { theme, userAuth, closeModal, isModalOpen } = useContext(
     GlobalContext
   ) as IGlobalContext;
   const navigate = useNavigate();
@@ -34,8 +34,12 @@ const BasicModal: React.FC<IBasicModalProps> = ({
     <>
       <Modal isOpen={isModalOpen} isCentered onClose={handleOnClose}>
         <ModalOverlay bg="rgba(225,225,225, 0.5)" />
-        <ModalContent bg="black.primary" minHeight="500px">
-          <ModalCloseButton _focus={{ outline: 'none' }} fontSize="22px" color="#FFF" />
+        <ModalContent bg={theme === 'dark' ? '#000' : '#FFF'} minHeight="500px">
+          <ModalCloseButton
+            _focus={{ outline: 'none' }}
+            fontSize="22px"
+            color={theme === 'dark' ? '#FFF' : '#000'}
+          />
           <ModalBody width="95%" margin="0 auto" p="0.5rem">
             {children}
           </ModalBody>
