@@ -4,6 +4,44 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
 from account.models import CustomUser
+import re
+
+
+
+class ChangePasswordSerializer(serializers.ModelSerializer):
+    confirmpassword = serializers.CharField()
+    refresh_token = serializers.CharField()
+    password = serializers.CharField()
+    class Meta:
+
+        model = CustomUser
+        fields = ('confirmpassword', 'password',  'refresh_token', )
+        extra_kwargs = {'password': {'write_only': True},
+            'confirmpassword': {'write_only': True}}
+
+    def validate_password(self, value):
+        pattern = re.compile(r'^(?=.*[\w])(?=.*[\W])[\w\W]{8,}$')
+        matched = re.fullmatch(pattern, value)
+        if not matched:
+            raise serializers.ValidationError('Password must contain 1 special character, 1 number, and a lowercase and uppercase letter.')
+        return value
+
+
+    def validate(self, data):
+        if data['password'] != data['confirmpassword']:
+            raise serializers.ValidationError({'confirmpassword': 'Passwords do not match.'})
+
+        return data
+
+    def update(self,user_id:int, **validated_data):
+        result = CustomUser.objects.change_password(user_id=user_id, **validated_data) 
+        if result['type'] == 'ok': 
+            token = RefreshToken(validated_data['refresh_token'])
+            user = CustomUser.objects.get(pk=user_id)
+            user.set_logged_in(False)
+            token.blacklist()
+        return result
+
 
 
 class LogoutSerializer(serializers.ModelSerializer):

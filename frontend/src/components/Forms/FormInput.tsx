@@ -28,7 +28,6 @@ const FormInput = ({
     const { name, value } = event.target;
     captureInput(name, value);
   };
-
   return (
     <FormControl mb="1rem" isInvalid={!!error.length && active}>
       <Box display="flex" alignItems="center">

@@ -6,5 +6,6 @@ urlpatterns = [
         path('auth/refresh/', TokenRefreshView.as_view()),
         path('auth/login/', views.TokenObtainPairView.as_view()),
         path('auth/logout/', views.LogoutView.as_view()),
+    path('auth/<int:pk>/change-password/', views.ChangePasswordAPIView.as_view())
 ]
 

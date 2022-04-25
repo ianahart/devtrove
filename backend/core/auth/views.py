@@ -1,18 +1,64 @@
 from rest_framework import generics
-from rest_framework.decorators import authentication_classes
+from rest_framework.exceptions import PermissionDenied
+from django.core.exceptions import BadRequest
+from rest_framework.decorators import authentication_classes, permission_classes
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 
 from account.models import CustomUser
-from .serializers import LoginSerializer, LogoutSerializer
+from .serializers import ChangePasswordSerializer, LoginSerializer, LogoutSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from account.serializers import CreateUserSerializer, UserSerializer
 from setting.models import Setting
+from account.permissions import AccountPermission
 import logging
 logger = logging.getLogger('django')
+
+
+
+class ChangePasswordAPIView(APIView):
+    permission_classes = [IsAuthenticated, AccountPermission, ]
+
+    def patch(self, request, pk=None):
+        try:
+
+            user = CustomUser.objects.get(pk=pk)
+            self.check_object_permissions(request, user)
+
+            serializer = ChangePasswordSerializer(data=request.data)
+            if serializer.is_valid():
+                result = serializer.update(user_id=pk, **serializer.data)
+                if result['type'] == 'error':
+                    raise BadRequest
+                return Response(
+                    {
+                        'message': 'success'
+                    }, status.HTTP_200_OK)
+            else:
+                return Response(
+                    {
+                        'message': 'Validation errors.',
+                        'error': serializer.errors
+                    }, status=status.HTTP_400_BAD_REQUEST)
+        except (Exception, PermissionDenied, BadRequest, ) as e:
+            print(e, type(e))
+            if isinstance(e, PermissionDenied):
+                return Response(
+                    {
+                      'errors': str(e)
+                    },status.HTTP_403_FORBIDDEN)
+            elif isinstance(e, BadRequest):
+                return Response(
+                    {
+                        'error':{'error': ['Password cannot be the same as old password.']},
+                    }, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {
+                    'message': 'Something went wrong. Unable to process request.'
+                }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class RegisterView(generics.ListCreateAPIView):
@@ -93,7 +139,6 @@ class TokenObtainPairView(generics.ListCreateAPIView):
                             }
                         })
             except Exception as e:
-                print(e, type(e))
                 logger.error(msg='Problems with the login system')
 
                 return Response({

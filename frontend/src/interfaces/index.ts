@@ -24,6 +24,11 @@ export interface IHistoryPost {
   };
 }
 
+export interface IPasswordForm {
+  newpassword: IFormField;
+  confirmpassword: IFormField;
+}
+
 export interface IHistoryPagination {
   read_count: number;
   page: number;

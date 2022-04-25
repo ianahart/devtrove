@@ -1,5 +1,6 @@
 from django.core.exceptions import ObjectDoesNotExist
 from typing import Optional
+from django.contrib.auth.hashers import check_password, make_password
 from django.db import models, DataError, DatabaseError
 from django.contrib.auth.models import BaseUserManager, AbstractUser, PermissionsMixin
 from django.utils.translation import gettext_lazy as _
@@ -10,6 +11,27 @@ from datetime import datetime, timedelta, date
 logger = logging.getLogger('django')
 
 class CustomUserManager(BaseUserManager):
+
+    def change_password(self,user_id:int=None, **validated_data) ->dict[str, str]:
+        try:
+            user = CustomUser.objects.get(pk=user_id)
+            are_same = check_password(validated_data['password'], user.password)
+            if are_same:
+                raise ValueError('Password cannot be the same as old password.')
+
+            hashed_password = make_password(validated_data['password'])
+
+            user.password = hashed_password
+            user.save()
+
+            return {'type': 'ok','message': 'Password has been changed.'}
+        except (DatabaseError, ValueError, ) as e:
+            if isinstance(e, ValueError):
+                return {'type': 'error', 'message': str(e)}
+            else:
+                return {'type': 'error', 'message': 'Something went wrong.'}
+            logger.error('Unable to change the user\'s password in settings.')
+
 
     def __add_calendar(self, histories: dict) -> list[dict[str, int | str]]:
         c_dates, data, blueprint = [], [], {}
@@ -35,13 +57,11 @@ class CustomUserManager(BaseUserManager):
         today = datetime.today().strftime('%Y-%m-%d')
 
         start = datetime(int(today.split('-')[0]), 1, 2, 1, 00)
-        print(start)
         end = start + timedelta(days=364)
 
         start = str(start).split(' ')[0]
         end = str(end).split(' ')[0]
 
-        print(start + ' --- ' + end)
         return {'start': start, 'end': end}
 
 
