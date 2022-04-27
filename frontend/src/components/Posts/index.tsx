@@ -27,7 +27,7 @@ const Posts = ({
       p="0.5rem"
     >
       <Search />
-      <Grid className="posts-grid">
+      <Grid mb="1rem" className="posts-grid">
         {posts.map((post) => {
           return (
             <Post

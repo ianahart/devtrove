@@ -10,6 +10,23 @@ import logging
 logger = logging.getLogger('django')
 class PostManager(models.Manager):
 
+    def upvoted_posts(self, is_authenticated:bool, user:dict):
+        try:
+            posts = Post.objects.all() \
+            .annotate(num_post_upvotes=Count('post_upvotes__id', distinct=True)) \
+            .order_by('-num_post_upvotes')[0:15]
+            if posts.count() == 0:
+                raise DatabaseError
+
+            for post in posts:
+                post = self.__get_total_counts(post, is_authenticated, user)
+                post.cur_user_bookmarked = self.__is_bookmarked(post, is_authenticated, user)
+
+            return posts
+        except DatabaseError:
+            logger.error('Unable to retrieve most upvoted posts.')
+            return []
+
     def most_discussed_posts(self, is_authenticated:bool, user:dict,
                              cur_page: int=None):
         try:

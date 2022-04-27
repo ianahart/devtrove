@@ -7,6 +7,29 @@ from rest_framework.views import APIView
 from .serializers import PostCreateSerializer, PostSearchRetrieveSerializer, PostSearchCreateSerializer, PostSerializer
 from .models import Post
 
+class UpVotedAPIView(APIView):
+    def get(self, request):
+        try:
+            posts = Post.objects.upvoted_posts(
+                request.user.is_authenticated, request.user
+            )
+            serializer = PostSerializer(posts, many=True)
+            return Response(
+                {
+                    'message': 'success',
+                    'posts': serializer.data,
+                },
+                status=status.HTTP_200_OK
+            )
+
+        except (Exception, ValueError, EmptyPage ) as e:
+            if isinstance(e, ValueError) or isinstance(e, EmptyPage):
+                return Response({'posts': []}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {'message': 'Something went wrong.'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
 
 class DiscussedAPIView(APIView):
     def get(self, request):
