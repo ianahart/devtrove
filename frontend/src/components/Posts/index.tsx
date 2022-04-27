@@ -1,8 +1,17 @@
-import { Grid, Box } from '@chakra-ui/react';
+import { Box, Button, Grid } from '@chakra-ui/react';
+import { useContext } from 'react';
 import Post from './Post';
 import { IPostsProps } from '../../interfaces/props';
+import { IPostsContext } from '../../interfaces';
+import { PostsContext } from '../../context/posts';
 import Search from '../../components/Search';
-const Posts = ({ posts, bookmark, updatePostUpvote }: IPostsProps): JSX.Element => {
+const Posts = ({
+  paginatePosts,
+  posts,
+  bookmark,
+  updatePostUpvote,
+}: IPostsProps): JSX.Element => {
+  const { pagination } = useContext(PostsContext) as IPostsContext;
   return (
     <Box
       flexGrow="2"
@@ -30,6 +39,13 @@ const Posts = ({ posts, bookmark, updatePostUpvote }: IPostsProps): JSX.Element 
           );
         })}
       </Grid>
+      {pagination.has_next && (
+        <Box my="2rem" display="flex" justifyContent="center">
+          <Button variant="secondaryButton" onClick={paginatePosts}>
+            Load more...
+          </Button>
+        </Box>
+      )}
     </Box>
   );
 };

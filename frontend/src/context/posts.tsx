@@ -1,15 +1,18 @@
 import { createContext, useState } from 'react';
 import axios, { AxiosError } from 'axios';
 import { IPost, IPostsContext } from '../interfaces';
+import { AllPostsRequest } from '../interfaces/requests';
 import { http } from '../helpers';
 
 export const PostsContext = createContext<IPostsContext | null>(null);
 
 const PostsContextProvider: React.FC<React.ReactNode> = ({ children }) => {
+  const paginationState = { page: 1, has_next: false };
   const [isLoaded, setIsLoaded] = useState(false);
   const [posts, setPosts] = useState<Array<IPost>>([]);
   const [postsError, setPostsError] = useState('');
   const [historyError, setHistoryError] = useState('');
+  const [pagination, setPagination] = useState(paginationState);
   const scrape = async () => {
     try {
       const response = await http.post('/posts/', {
@@ -58,9 +61,31 @@ const PostsContextProvider: React.FC<React.ReactNode> = ({ children }) => {
 
   const fetchPosts = async () => {
     try {
-      const response = await http.get<IPost[]>('/posts/');
+      const response = await http.get<AllPostsRequest>('/posts/?page=0');
       if (response.status === 200) {
-        setPosts(response.data);
+        console.log(response.data, 'initial posts');
+        setPosts(response.data.posts);
+        setPagination(response.data.pagination);
+        setIsLoaded(true);
+      }
+    } catch (e: unknown | AxiosError) {
+      setIsLoaded(true);
+      if (axios.isAxiosError(e)) {
+        setPostsError(e.response?.data.error);
+      }
+    }
+  };
+  const paginatePosts = async () => {
+    try {
+      if (!pagination.has_next) return;
+      const response = await http.get<AllPostsRequest>(`/posts/?page=${pagination.page}`);
+      if (response.status === 200) {
+        setPosts((prevState) => [...prevState, ...response.data.posts]);
+        setPagination((prevState) => ({
+          ...prevState,
+          page: response.data.pagination.page,
+          has_next: response.data.pagination.has_next,
+        }));
         setIsLoaded(true);
       }
     } catch (e: unknown | AxiosError) {
@@ -105,6 +130,7 @@ const PostsContextProvider: React.FC<React.ReactNode> = ({ children }) => {
     <PostsContext.Provider
       value={{
         bookmark,
+        paginatePosts,
         isLoaded,
         setIsLoaded,
         clearPosts,
@@ -112,6 +138,7 @@ const PostsContextProvider: React.FC<React.ReactNode> = ({ children }) => {
         postsError,
         updatePostUpvote,
         setPosts,
+        pagination,
         fetchPosts,
         posts,
         scrape,

@@ -32,7 +32,7 @@ class PostManager(models.Manager):
             paginator = Paginator(posts, 5)
             cur_page = int(cur_page) + 1
 
-            page = paginator.page(cur_page) 
+            page = paginator.page(cur_page)
 
             queryset = page.object_list
             pagination = {'page': cur_page, 'has_next': page.has_next()}
@@ -109,23 +109,24 @@ class PostManager(models.Manager):
             return False
 
 
-    def get_posts(self, is_authenticated: bool, user=None):
+    def get_posts(self, is_authenticated: bool, page: int, user=None):
         try:
-            now = datetime.now(tz=timezone.utc)
-            days = calendar.monthrange(now.year, now.month)[1]
+            objects = Post.objects.all().order_by('-id')
+            paginator = Paginator(objects, 5)
+            page = int(page) + 1
 
-            time_threshold = now - timedelta(days=days)
-            posts = self.all().order_by('-created_at') \
-            .filter(created_at__gte=time_threshold)[0:20]
-            for post in posts:
+            cur_page = paginator.page(page)
+            queryset = cur_page.object_list
+
+            for post in queryset:
                 post = self.__get_total_counts(post, is_authenticated, user)
-                post.cur_user_bookmarked = self.__is_bookmarked(post, is_authenticated, user)
-            if posts:
-                return posts
+                setattr(post, 'cur_user_bookmarked', self.__is_bookmarked(post, is_authenticated, user))
 
-            raise DatabaseError
+            pagination = {'page': page, 'has_next': cur_page.has_next()}
+            return queryset, pagination
         except DatabaseError as e:
             print(e)
+            return [], []
             logger.error(msg='Unable to retrieve scraped posts from the database.')
 
 class Post(models.Model):

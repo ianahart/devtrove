@@ -1,6 +1,13 @@
 import { IFullUser, ITokens, IUser } from '.';
 import { DevIcon } from '../types';
 import { IHistoryPost, IBookmark, ISearchResult, IPost, IComment } from '.';
+
+export interface AllPostsRequest {
+  posts: IPost[];
+  message?: string;
+  pagination: { page: number; has_next: boolean };
+}
+
 export interface IRegisterRequest {
   email: string;
   username: string;

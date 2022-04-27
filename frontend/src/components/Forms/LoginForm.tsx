@@ -24,7 +24,7 @@ const LoginForm: React.FC = () => {
     if (isLoaded && !isModalOpen) {
       navigate('/');
     }
-  }, [isLoaded, navigate]);
+  }, [isModalOpen, isLoaded, navigate]);
 
   const captureInput = (name: string, value: string) => {
     setForm((prevState) => ({

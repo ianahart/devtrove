@@ -24,6 +24,15 @@ export interface IHistoryPost {
   };
 }
 
+export interface IPasswordFormContainerProps {
+  endpoint: string;
+  refresh_token: string;
+  btnText: string;
+  title: string;
+  helperText: string;
+  extraField: boolean;
+}
+
 export interface IPasswordForm {
   newpassword: IFormField;
   confirmpassword: IFormField;
@@ -240,8 +249,10 @@ export interface IGlobalContext {
 export interface IPostsContext {
   posts: IPost[];
   postsError: string;
+  pagination: { page: number; has_next: boolean };
   scrape: () => void;
   clearPosts: () => void;
+  paginatePosts: () => void;
   bookmark: (a: number, b: number, c: string) => void;
   addToReadHistory: (user: number, post: number, tags: string[]) => void;
   setIsLoaded: (loaded: boolean) => void;

@@ -89,6 +89,7 @@ export interface IPostProps {
 
 export interface IPostsProps {
   posts: IPost[];
+  paginatePosts: () => void;
   updatePostUpvote: (id: number, dir: string) => void;
   bookmark: (a: number, b: number, dir: string) => void;
 }

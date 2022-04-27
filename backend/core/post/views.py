@@ -102,17 +102,24 @@ class SearchAPIView(APIView):
 class ListCreateAPIView(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly, ]
     def get(self, request):
+
         try:
-            posts = Post.objects.get_posts(
+            page = request.query_params['page']
+            posts, pagination = Post.objects.get_posts(
                 request.user.is_authenticated,
-                                           request.user)
+                page,request.user)
+
+            if len(posts) == 0 and len(pagination) == 0:
+                raise ValueError
+
             serializer = PostSerializer(posts, many=True)
             if serializer.data:
-                return Response(serializer.data, status=status.HTTP_200_OK)
+                return Response({'posts': serializer.data, 'pagination': pagination}, status=status.HTTP_200_OK)
             return Response({
                                 'error': 'No results found.',
                             }, status.HTTP_404_NOT_FOUND)
         except Exception as e:
+            print(e, type(e))
             return Response({
                                 'message': 'Something went wrong.',
                             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

@@ -9,8 +9,16 @@ import Posts from '../components/Posts/';
 import Spinner from '../components/Mixed/Spinner';
 
 const Home = (): JSX.Element => {
-  const { updatePostUpvote, isLoaded, bookmark, scrape, postsError, fetchPosts, posts } =
-    useContext(PostsContext) as IPostsContext;
+  const {
+    paginatePosts,
+    updatePostUpvote,
+    isLoaded,
+    bookmark,
+    scrape,
+    postsError,
+    fetchPosts,
+    posts,
+  } = useContext(PostsContext) as IPostsContext;
 
   const { userAuth } = useContext(GlobalContext) as IGlobalContext;
   const fetch = useCallback(() => {
@@ -59,7 +67,12 @@ const Home = (): JSX.Element => {
         <Box display="flex" flexDir="row" flexShrink="0">
           <MainSidebar />
 
-          <Posts bookmark={bookmark} updatePostUpvote={updatePostUpvote} posts={posts} />
+          <Posts
+            paginatePosts={paginatePosts}
+            bookmark={bookmark}
+            updatePostUpvote={updatePostUpvote}
+            posts={posts}
+          />
           {userAuth.user.logged_in && <SecondarySidebar />}
         </Box>
       )}
