@@ -11,6 +11,7 @@ import Footer from './components/Footer/';
 import BasicModal from './components/Mixed/BasicModal';
 import WithAxios from './helpers/WithAxios';
 import RequireAuth from './components/Auth/RequireAuth';
+import RequireGuest from './components/Auth/RequireGuest';
 import Account from './pages/Auth/Account';
 import ProfileForm from './components/Account/Profile/ProfileForm';
 import Security from './components/Account/Profile/Security';
@@ -25,10 +26,11 @@ import Search from './pages/Search';
 import Bookmarks from './pages/Bookmarks';
 import Newest from './pages/Newest';
 import Login from './pages/Login';
-import './App.css';
 import ReadingHistory from './pages/ReadingHistory';
+import ResetPassword from './components/Mixed/ResetPassword';
+import ForgotPassword from './components/Mixed/ForgotPassword';
+import './App.css';
 import { getStorage } from './helpers';
-
 const App = () => {
   const { setTheme } = useContext(GlobalContext) as IGlobalContext;
 
@@ -51,11 +53,41 @@ const App = () => {
             <BasicModal resetForm={undefined}></BasicModal>
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
+              <Route
+                path="/login"
+                element={
+                  <RequireGuest>
+                    <Login />
+                  </RequireGuest>
+                }
+              />
+              <Route
+                path="/register"
+                element={
+                  <RequireGuest>
+                    <Register />
+                  </RequireGuest>
+                }
+              />
               <Route path="/posts/discussed" element={<Discussed />} />
               <Route path="/posts/newest" element={<Newest />} />
               <Route path="/posts/upvoted" element={<Upvoted />} />
+              <Route
+                path="/reset-password"
+                element={
+                  <RequireGuest>
+                    <ResetPassword />
+                  </RequireGuest>
+                }
+              />
+              <Route
+                path="/forgot-password"
+                element={
+                  <RequireGuest>
+                    <ForgotPassword />
+                  </RequireGuest>
+                }
+              />
               <Route
                 path="/reading-history"
                 element={

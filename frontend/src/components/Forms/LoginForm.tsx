@@ -1,7 +1,7 @@
 import { Box, Button, Heading, Link, Text } from '@chakra-ui/react';
 import axios, { AxiosError } from 'axios';
 import { useContext, useEffect, useState } from 'react';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { Link as RouterLink, Router, useNavigate } from 'react-router-dom';
 import { GlobalContext } from '../../context/global';
 import { IGlobalContext, ILoginForm } from '../../interfaces';
 import { ILoginRequest } from '../../interfaces/requests';
@@ -142,7 +142,11 @@ const LoginForm: React.FC = () => {
         type="password"
         captureInput={captureInput}
       />
-
+      <Box color="purple.secondary" textAlign="right">
+        <Link onClick={closeModal} to="/forgot-password" as={RouterLink}>
+          Forgot password?
+        </Link>
+      </Box>
       <Box mt="2rem" display="flex" justifyContent="center">
         <Button type="submit" variant="entryButton">
           Login

@@ -4,17 +4,54 @@ from django.contrib.auth.hashers import check_password, make_password
 from django.db import models, DataError, DatabaseError
 from django.contrib.auth.models import BaseUserManager, AbstractUser, PermissionsMixin
 from django.utils.translation import gettext_lazy as _
+from django.core.mail import EmailMessage, EmailMultiAlternatives
+from django.template import Context
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.template.loader import get_template, render_to_string
+from core import settings # type: ignore
 import logging
 import json
+import os
 from django.utils import timezone
 from datetime import datetime, timedelta, date
 logger = logging.getLogger('django')
 
 class CustomUserManager(BaseUserManager):
 
+    def send_user_email(self, email:str):
+        try:
+            user = CustomUser.objects.all().filter(email=email).first()
+
+            if user is None:
+                raise ObjectDoesNotExist('That email address does not exist.')
+
+            refresh = RefreshToken.for_user(user)
+            refresh = str(refresh)
+
+            context = {'user': user.handle, 'uid': user.id, 'token': refresh}
+            message = render_to_string('forgot-password.html', context)
+
+            mail = EmailMessage(
+                subject="Password reset",
+                body=message,
+                from_email=settings.EMAIL_SENDER,
+                to=[email]
+            )
+            mail.content_subtype = 'html'
+            mail.send()
+
+            return {'type': 'ok', 'data': {'uid': user.id, 'token': refresh}}
+        except(DatabaseError, ObjectDoesNotExist, Exception, ) as e:
+            logger.error('Unable to send forgot password email to user')
+            if isinstance(e, ObjectDoesNotExist):
+                return {'type': 'error', 'data': str(e)}
+
+
     def change_password(self,user_id:int=None, **validated_data) ->dict[str, str]:
         try:
             user = CustomUser.objects.get(pk=user_id)
+            if not check_password(validated_data['oldpassword'], user.password):
+                raise ValueError('Old password is incorrect.')
             are_same = check_password(validated_data['password'], user.password)
             if are_same:
                 raise ValueError('Password cannot be the same as old password.')
@@ -26,11 +63,11 @@ class CustomUserManager(BaseUserManager):
 
             return {'type': 'ok','message': 'Password has been changed.'}
         except (DatabaseError, ValueError, ) as e:
+            logger.error('Unable to change the user\'s password in settings.')
             if isinstance(e, ValueError):
                 return {'type': 'error', 'message': str(e)}
             else:
                 return {'type': 'error', 'message': 'Something went wrong.'}
-            logger.error('Unable to change the user\'s password in settings.')
 
 
     def __add_calendar(self, histories: dict) -> list[dict[str, int | str]]:
@@ -243,13 +280,5 @@ class CustomUser(AbstractUser, PermissionsMixin):
 
             self.logged_in = logged_in
             self.save()
-
-
-
-
-
-
-
-
 
 

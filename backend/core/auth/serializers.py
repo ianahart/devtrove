@@ -8,14 +8,36 @@ import re
 
 
 
+class ForgotPasswordSerializer(serializers.ModelSerializer):
+    email = serializers.CharField()
+    class Meta:
+        model = CustomUser
+        fields = ('email', )
+        extra_kwargs = {'email': {'read_only':True}}
+
+    def validate_email(self, value):
+        pattern = re.compile(r'^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$')
+        matched = re.fullmatch(pattern, value)
+
+        if not matched:
+            raise serializers.ValidationError('Please provide a valid email.')
+        return value
+
+
+
+    def create(self, validated_data):
+        return CustomUser.objects.send_user_email(validated_data['email'])
+
+
 class ChangePasswordSerializer(serializers.ModelSerializer):
     confirmpassword = serializers.CharField()
     refresh_token = serializers.CharField()
+    oldpassword = serializers.CharField()
     password = serializers.CharField()
     class Meta:
 
         model = CustomUser
-        fields = ('confirmpassword', 'password',  'refresh_token', )
+        fields = ('confirmpassword', 'password',   'oldpassword', 'refresh_token', )
         extra_kwargs = {'password': {'write_only': True},
             'confirmpassword': {'write_only': True}}
 
