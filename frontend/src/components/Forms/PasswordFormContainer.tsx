@@ -3,22 +3,17 @@ import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios, { AxiosError } from 'axios';
 import PasswordForm from '../Forms/PasswordForm';
-import { IFormField, IPasswordForm } from '../../interfaces/index';
+import {
+  IPasswordFormContainerProps,
+  IFormField,
+  IPasswordForm,
+} from '../../interfaces/index';
 import { GlobalContext } from '../../context/global';
 import { IGlobalContext } from '../../interfaces/index';
 import { PostsContext } from '../../context/posts';
 import { IPostsContext } from '../../interfaces';
 import { http } from '../../helpers/index';
 import { nanoid } from 'nanoid';
-
-interface IPasswordFormContainerProps {
-  endpoint: string;
-  refresh_token: string;
-  btnText: string;
-  title: string;
-  helperText: string;
-  extraField: boolean;
-}
 
 const PasswordFormContainer = ({
   refresh_token,
