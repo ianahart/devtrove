@@ -60,7 +60,8 @@ INSTALLED_APPS = [
     'upvote',
     'history',
     'setting',
-    'password_reset'
+    'password_reset',
+    'tag'
 ]
 
 AUTH_USER_MODEL = 'account.CustomUser'

@@ -19,6 +19,7 @@ const GlobalContextProvider: React.FC<React.ReactNode> = ({ children }) => {
           avatar_url: '',
           setting_id: null,
           theme: '',
+          preferred_language: false,
         },
   };
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -42,11 +43,18 @@ const GlobalContextProvider: React.FC<React.ReactNode> = ({ children }) => {
   const closeUserMenu = () => {
     setIsUserMenuShowing(false);
   };
+  const updatePreferredLanguage = (data: boolean, name: string) => {
+    setUserAuth((prevState) => ({
+      ...prevState,
+      user: { ...prevState.user, preferred_language: !prevState.user.preferred_language },
+    }));
+    updateSetting(data, 'preferred_language');
+  };
 
-  const updateSetting = (data: IUpdateSettingRequest) => {
+  const updateSetting = (data: string | boolean, name: string) => {
     const user = JSON.parse(localStorage.getItem('user') ?? '');
-    if (data) {
-      user.user.theme = data.theme;
+    if (data || typeof data === 'boolean') {
+      user.user[name] = data;
     }
     localStorage.setItem('user', JSON.stringify(user));
   };
@@ -95,6 +103,7 @@ const GlobalContextProvider: React.FC<React.ReactNode> = ({ children }) => {
         logout,
         setIsSearchOpen,
         isSearchOpen,
+        updatePreferredLanguage,
         stowTokens,
         handleIsSearchOpen,
         isModalOpen,

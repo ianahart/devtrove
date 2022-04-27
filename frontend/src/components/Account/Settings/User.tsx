@@ -17,12 +17,12 @@ const User = (): JSX.Element => {
       const newTheme = theme === 'dark' ? 'light' : 'dark';
       setTheme(newTheme);
       const response = await http.patch<IUpdateSettingRequest>(
-        `/settings/${userAuth.user.setting_id}/`,
+        `/settings/theme/${userAuth.user.setting_id}/`,
         {
           data: { theme: newTheme, user: userAuth.user.id },
         }
       );
-      updateSetting(response.data);
+      updateSetting(response.data.theme, 'theme');
     } catch (e: unknown | AxiosError) {
       if (axios.isAxiosError(e)) {
         console.log(e.response);
@@ -62,8 +62,7 @@ const User = (): JSX.Element => {
         </Box>
         <Box alignItems="center" display="flex">
           <Switch
-            defaultChecked
-            value={theme}
+            isChecked={theme === 'dark' ? false : true}
             onChange={handleSwitch}
             colorScheme="pink"
             size="lg"

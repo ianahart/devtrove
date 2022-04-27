@@ -4,6 +4,8 @@ from bs4 import BeautifulSoup
 import requests
 import logging
 import re
+
+from tag.models import Tag
 from .models import Post
 from .services.scraper import Scraper
 logger = logging.getLogger('django')
@@ -128,7 +130,7 @@ class PostCreateSerializer(serializers.ModelSerializer):
                     cover['snippet'] = str(snippet)
                     cover['logo'] = str(logo)
 
-                    rows.append(
+                    post = (
                         Post(title=cover['title'],
                         tags=cover['tags'],
                         logo=cover['logo'],
@@ -140,12 +142,14 @@ class PostCreateSerializer(serializers.ModelSerializer):
                         published_date=cover['published_date'],
                         author_pic=cover['author_pic'],
                         slug=cover['slug']))
-
-
+                    post.save()
+                    post.refresh_from_db()
+                    for tag in cover['tags']:
+                        tag = Tag(post_id=post.id, text=tag) #type:ignore
+                        tag.save()
             else:
                 raise ValueError
 
-            Post.objects.bulk_create(rows)
             return validated_data
         except (KeyError, ValueError) as e:
             logger.error(msg='Unable to save scraped articles.')

@@ -42,7 +42,7 @@ class NewestAPIView(APIView):
         try:
             page = False
             posts, pagination = Post.objects.get_posts(
-                request.user.is_authenticated,page, request.user)
+                request.user.is_authenticated,page, request.user) #type: ignore
 
             if len(posts) == 0 and len(pagination) == 0:
                 raise ValueError
@@ -60,12 +60,9 @@ class NewestAPIView(APIView):
                                     'message': 'No posts were found.'
                                 }, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
-            print(e, type(e))
             return Response({
                                'message': 'Something went wrong.'
                            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
 class SearchAPIView(APIView):
     def post(self, request):
         try:
@@ -91,7 +88,6 @@ class SearchAPIView(APIView):
                     }, status=status.HTTP_400_BAD_REQUEST
                 )
         except (TypeError, EmptyPage, BadRequest, ) as e:
-            print(e)
             if isinstance(e, BadRequest) or isinstance(e, EmptyPage):
                 return Response({
                     'error': 'no results',
@@ -113,7 +109,7 @@ class ListCreateAPIView(APIView):
             page = request.query_params['page']
             posts, pagination = Post.objects.get_posts(
                 request.user.is_authenticated,
-                page,request.user)
+                page,request.user) # type:ignore
 
             if len(posts) == 0 and len(pagination) == 0:
                 raise ValueError

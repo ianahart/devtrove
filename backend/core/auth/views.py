@@ -198,8 +198,6 @@ class TokenObtainPairView(generics.ListCreateAPIView):
     authentication_classes = []
 
 
-
-
     def create(self, request):
         context = {'request': request.user}
         serializer = LoginSerializer(data=request.data, context=context)
@@ -218,7 +216,8 @@ class TokenObtainPairView(generics.ListCreateAPIView):
                            'handle': user.handle,
                             'id': user.id,
                             'setting_id': user.user_settings.id,
-                                'theme': user.user_settings.theme.lower(),
+                            'theme': user.user_settings.theme.lower(),
+                            'preferred_language': user.user_settings.preferred_language,
                             'avatar_url': user.avatar_url,
                             }
                         })

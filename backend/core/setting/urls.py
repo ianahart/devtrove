@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
 urlpatterns = [
-    path('settings/<int:pk>/', views.DetailAPIView.as_view())
+    path('settings/theme/<int:pk>/', views.ThemeAPIView.as_view()),
+    path('settings/language/<int:pk>/', views.PreferredLanguageAPIView.as_view())
 ]

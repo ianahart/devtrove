@@ -38,8 +38,7 @@ class PostManager(models.Manager):
             pagination = {'page': cur_page, 'has_next': page.has_next()}
 
             return queryset, pagination
-        except DatabaseError as e:
-            print(e)
+        except DatabaseError:
             logger.error('Unable to retrieve most discussed posts.')
             return [], []
 
@@ -129,7 +128,17 @@ class PostManager(models.Manager):
             if not page:
                 return self.__get_newest(is_authenticated, user)
 
-            objects = Post.objects.all().order_by('-id')
+            if is_authenticated and user.user_settings.preferred_language:
+                languages = user.languages.all()
+                languages = [f'#{language.name.lower()}' for language in languages]
+
+                objects = Post.objects.all().order_by(
+                    '-id'
+                ).filter(
+                    post_tags__text__in=languages
+                )
+            else:
+                objects = Post.objects.all().order_by('-id')
             paginator = Paginator(objects, 5)
             page = int(page) + 1
 
@@ -143,7 +152,6 @@ class PostManager(models.Manager):
             pagination = {'page': page, 'has_next': cur_page.has_next()}
             return queryset, pagination
         except DatabaseError as e:
-            print(e)
             return [], []
             logger.error(msg='Unable to retrieve scraped posts from the database.')
 

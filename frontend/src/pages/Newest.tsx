@@ -17,7 +17,6 @@ const Newest = () => {
   const fetchNewest = useCallback(async () => {
     try {
       const response = await http.get<IAllPostsRequest>('/posts/newest/');
-      console.log(response);
       setPosts(response.data.posts);
     } catch (e: unknown | AxiosError) {
       if (axios.isAxiosError(e)) {

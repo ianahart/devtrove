@@ -150,6 +150,7 @@ export interface IUser {
   handle?: string | null;
   setting_id: number;
   theme: string;
+  preferred_language: boolean;
 }
 
 export interface ILanguage {
@@ -189,6 +190,7 @@ export interface IUserAuth {
     avatar_url?: string | null;
     setting_id?: number | null;
     theme?: string | null;
+    preferred_language?: boolean;
   };
   refresh_token: ITokens['refresh_token'] | null | string;
   access_token: ITokens['access_token'] | null | string;
@@ -233,10 +235,11 @@ export interface IGlobalContext {
   toggleUserMenu: () => void;
   closeUserMenu: () => void;
   updateUser: (user: IUpdateProfileFormRequest) => void;
-  updateSetting: (theme: IUpdateSettingRequest) => void;
+  updateSetting: (theme: string, name: string) => void;
   openModal: () => void;
   closeModal: () => void;
   stowTokens: (tokens: ITokens, user: IUser) => void;
+  updatePreferredLanguage: (data: boolean, name: string) => void;
   setIsSearchOpen: (isSearchOpen: boolean) => void;
   setTheme: (theme: string) => void;
   logout: () => void;

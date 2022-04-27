@@ -1,5 +1,6 @@
 import { Box, Button, Heading } from '@chakra-ui/react';
 import { useCallback, useContext, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { IPostsContext, IGlobalContext } from '../interfaces';
 import MainSidebar from '../components/Sidebars/MainSidebar';
 import SecondarySidebar from '../components/Sidebars/SecondarySidebar';
@@ -9,21 +10,25 @@ import Posts from '../components/Posts/';
 import Spinner from '../components/Mixed/Spinner';
 
 const Home = (): JSX.Element => {
+  const location = useLocation();
   const {
     paginatePosts,
     updatePostUpvote,
     isLoaded,
     bookmark,
     scrape,
+    setIsLoaded,
     postsError,
     fetchPosts,
     posts,
   } = useContext(PostsContext) as IPostsContext;
-
   const { userAuth } = useContext(GlobalContext) as IGlobalContext;
   const fetch = useCallback(() => {
     fetchPosts();
   }, [fetchPosts]);
+  useEffect(() => {
+    setIsLoaded(false);
+  }, [location.pathname]);
 
   useEffect(() => {
     if (!isLoaded) {
@@ -47,7 +52,7 @@ const Home = (): JSX.Element => {
         </Box>
       )}
 
-      <Box display="none" /*display="flex"*/ justifyContent="center" my="3rem">
+      <Box display="none" /**display="flex"*/ justifyContent="center" my="3rem">
         <Button onClick={scrape} variant="secondaryButton">
           Scrape
         </Button>
