@@ -1,7 +1,7 @@
 import { createContext, useState } from 'react';
 import axios, { AxiosError } from 'axios';
 import { IPost, IPostsContext } from '../interfaces';
-import { AllPostsRequest } from '../interfaces/requests';
+import { IAllPostsRequest } from '../interfaces/requests';
 import { http } from '../helpers';
 
 export const PostsContext = createContext<IPostsContext | null>(null);
@@ -61,9 +61,8 @@ const PostsContextProvider: React.FC<React.ReactNode> = ({ children }) => {
 
   const fetchPosts = async () => {
     try {
-      const response = await http.get<AllPostsRequest>('/posts/?page=0');
+      const response = await http.get<IAllPostsRequest>('/posts/?page=0');
       if (response.status === 200) {
-        console.log(response.data, 'initial posts');
         setPosts(response.data.posts);
         setPagination(response.data.pagination);
         setIsLoaded(true);
@@ -78,7 +77,9 @@ const PostsContextProvider: React.FC<React.ReactNode> = ({ children }) => {
   const paginatePosts = async () => {
     try {
       if (!pagination.has_next) return;
-      const response = await http.get<AllPostsRequest>(`/posts/?page=${pagination.page}`);
+      const response = await http.get<IAllPostsRequest>(
+        `/posts/?page=${pagination.page}`
+      );
       if (response.status === 200) {
         setPosts((prevState) => [...prevState, ...response.data.posts]);
         setPagination((prevState) => ({

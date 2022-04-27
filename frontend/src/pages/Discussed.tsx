@@ -96,7 +96,7 @@ const Discussed = () => {
         </Grid>
       )}
       {pagination.has_next && spinner && (
-        <Box display="flex" justifyContent="center">
+        <Box my="2rem" display="flex" justifyContent="center">
           <Button variant="secondaryButton" onClick={loadMore}>
             Load more...
           </Button>

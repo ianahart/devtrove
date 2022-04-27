@@ -3,6 +3,7 @@ import axios, { AxiosError } from 'axios';
 import { useCallback, useContext, useEffect } from 'react';
 import GoBack from '../components/Mixed/GoBack';
 import { PostsContext } from '../context/posts';
+import { IAllPostsRequest } from '../interfaces/requests';
 import { IPostsContext } from '../interfaces';
 import Post from '../components/Posts/Post';
 import { IPost } from '../interfaces';
@@ -15,8 +16,9 @@ const Newest = () => {
 
   const fetchNewest = useCallback(async () => {
     try {
-      const response = await http.get<IPost[]>('/posts/newest/');
-      setPosts(response.data);
+      const response = await http.get<IAllPostsRequest>('/posts/newest/');
+      console.log(response);
+      setPosts(response.data.posts);
     } catch (e: unknown | AxiosError) {
       if (axios.isAxiosError(e)) {
         console.log(e.response);

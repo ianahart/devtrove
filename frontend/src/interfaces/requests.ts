@@ -2,7 +2,7 @@ import { IFullUser, ITokens, IUser } from '.';
 import { DevIcon } from '../types';
 import { IHistoryPost, IBookmark, ISearchResult, IPost, IComment } from '.';
 
-export interface AllPostsRequest {
+export interface IAllPostsRequest {
   posts: IPost[];
   message?: string;
   pagination: { page: number; has_next: boolean };

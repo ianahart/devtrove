@@ -40,12 +40,17 @@ class DiscussedAPIView(APIView):
 class NewestAPIView(APIView):
     def get(self, request):
         try:
-            newest_posts = Post.objects.get_posts(
-                request.user.is_authenticated,request.user)
+            page = False
+            posts, pagination = Post.objects.get_posts(
+                request.user.is_authenticated,page, request.user)
 
-            serializer = PostSerializer(newest_posts, many=True)
+            if len(posts) == 0 and len(pagination) == 0:
+                raise ValueError
+
+            serializer = PostSerializer(posts, many=True)
+
             if serializer.data:
-                return Response(serializer.data, status=status.HTTP_200_OK)
+                return Response({'posts': serializer.data, 'pagination': pagination}, status=status.HTTP_200_OK)
 
                 return Response({
                             'message': 'success'
@@ -54,7 +59,8 @@ class NewestAPIView(APIView):
                 return Response({
                                     'message': 'No posts were found.'
                                 }, status=status.HTTP_404_NOT_FOUND)
-        except:
+        except Exception as e:
+            print(e, type(e))
             return Response({
                                'message': 'Something went wrong.'
                            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -118,8 +124,7 @@ class ListCreateAPIView(APIView):
             return Response({
                                 'error': 'No results found.',
                             }, status.HTTP_404_NOT_FOUND)
-        except Exception as e:
-            print(e, type(e))
+        except Exception:
             return Response({
                                 'message': 'Something went wrong.',
                             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

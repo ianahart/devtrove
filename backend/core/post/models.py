@@ -109,8 +109,26 @@ class PostManager(models.Manager):
             return False
 
 
+
+    def __get_newest(self, is_authenticated:bool, user):
+        try:
+            queryset = Post.objects.all().order_by('-id', '-created_at')[0:20]
+            pagination = {'page': 1, 'has_next': False}
+            for _, post in enumerate(queryset):
+                post = self.__get_total_counts(post, is_authenticated, user)
+                setattr(post, 'cur_user_bookmarked', self.__is_bookmarked(post, is_authenticated, user))
+
+            return queryset, pagination
+
+
+        except DatabaseError:
+            logger.error('Unable to get newest posts to display')
+
     def get_posts(self, is_authenticated: bool, page: int, user=None):
         try:
+            if not page:
+                return self.__get_newest(is_authenticated, user)
+
             objects = Post.objects.all().order_by('-id')
             paginator = Paginator(objects, 5)
             page = int(page) + 1
