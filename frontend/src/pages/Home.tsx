@@ -28,7 +28,7 @@ const Home = (): JSX.Element => {
   }, [fetchPosts]);
   useEffect(() => {
     setIsLoaded(false);
-  }, [location.pathname]);
+  }, [setIsLoaded, location.pathname]);
 
   useEffect(() => {
     if (!isLoaded) {

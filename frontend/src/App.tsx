@@ -29,6 +29,8 @@ import Login from './pages/Login';
 import ReadingHistory from './pages/ReadingHistory';
 import ResetPassword from './components/Mixed/ResetPassword';
 import ForgotPassword from './components/Mixed/ForgotPassword';
+import Editor from './pages/Editor';
+import DevtrovePost from './pages/DevtrovePost';
 import './App.css';
 import { getStorage } from './helpers';
 const App = () => {
@@ -69,6 +71,9 @@ const App = () => {
                   </RequireGuest>
                 }
               />
+
+              <Route path="/devtrove-posts/:id" element={<DevtrovePost />} />
+
               <Route path="/posts/discussed" element={<Discussed />} />
               <Route path="/posts/newest" element={<Newest />} />
               <Route path="/posts/upvoted" element={<Upvoted />} />
@@ -93,6 +98,14 @@ const App = () => {
                 element={
                   <RequireAuth>
                     <ReadingHistory />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/editor"
+                element={
+                  <RequireAuth>
+                    <Editor />
                   </RequireAuth>
                 }
               />

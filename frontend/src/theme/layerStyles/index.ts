@@ -17,6 +17,13 @@ export const layerStyles = {
     cursor: 'pointer',
     fontSize: '1.6rem',
   },
+  editorBtn: {
+    background: 'transparent',
+    width: '30px',
+    height: '40px',
+    border: '1px solid #cfcfd4',
+    margin: 'auto 0.25rem 0 0.25rem',
+  },
 
   listItemSidebar: {
     display: 'flex',

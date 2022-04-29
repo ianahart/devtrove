@@ -1,5 +1,6 @@
 from core import settings
 import boto3
+from django.db import DatabaseError
 from datetime import datetime
 from random import randint
 import logging
@@ -71,10 +72,22 @@ class FileUpload():
             logger.error(msg='Failed deleting avatar file from AWS S3')
 
 
+    def upload_post_image(self, file:bytes , filename: str, file_extension:str):
+           try:
+            obj = self.s3.Object(self.bucket_name, filename)
+            obj.put(
+               Body=file,
+               ACL='public-read',
+            ContentType=f'image/{file_extension}')
 
-
-
-
+            post_url = f"https://{self.bucket_name}.s3.{self.region_name}.amazonaws.com/{filename}"
+            if post_url is not None and filename is not None:
+                return {'post_url': post_url, 'post_fn': filename}
+            else:
+                return {}
+           except DatabaseError as e:
+                logger.error('Unable to upload post image to amazon s3.')
+                return {}
 
 
 

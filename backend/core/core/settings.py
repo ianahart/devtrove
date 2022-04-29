@@ -61,7 +61,8 @@ INSTALLED_APPS = [
     'history',
     'setting',
     'password_reset',
-    'tag'
+    'tag',
+    'devtrove_post'
 ]
 
 AUTH_USER_MODEL = 'account.CustomUser'

@@ -3,8 +3,10 @@ import { MdOutlineHistory } from 'react-icons/md';
 import { Link as RouterLink } from 'react-router-dom';
 import {
   BsBookmark,
+  BsPencil,
   BsFillArrowRightSquareFill,
   BsFillArrowLeftSquareFill,
+  BsJournalMedical,
 } from 'react-icons/bs';
 import { useContext, useState } from 'react';
 import { IGlobalContext } from '../../interfaces';
@@ -66,10 +68,16 @@ const SecondarySidebar = () => {
               </Link>
             </ListItem>
 
-            <ListItem layerStyle="listItemSidebar" textAlign="left" mb="0.2rem">
+            <ListItem layerStyle="listItemSidebar" textAlign="left" mb="2rem">
               <Icon mr="0.2rem" as={MdOutlineHistory} />
               <Link to="/reading-history" as={RouterLink}>
                 Reading history
+              </Link>
+            </ListItem>
+            <ListItem layerStyle="listItemSidebar" textAlign="left" mb="0.2rem">
+              <Icon mr="0.2rem" as={BsPencil} />
+              <Link to="/editor" as={RouterLink}>
+                Write post
               </Link>
             </ListItem>
           </UnorderedList>
