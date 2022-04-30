@@ -4,6 +4,11 @@ import re
 from .models import DevtrovePost
 
 
+class DevtrovePostMinimalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DevtrovePost
+        fields = ('id', )
+
 class DevtrovePostSerializer(serializers.ModelSerializer):
     class Meta:
         model= DevtrovePost

@@ -11,6 +11,7 @@ import {
 import { useContext, useState } from 'react';
 import { IGlobalContext } from '../../interfaces';
 import { GlobalContext } from '../../context/global';
+import { RiPagesLine } from 'react-icons/ri';
 
 const SecondarySidebar = () => {
   const { theme } = useContext(GlobalContext) as IGlobalContext;
@@ -78,6 +79,12 @@ const SecondarySidebar = () => {
               <Icon mr="0.2rem" as={BsPencil} />
               <Link to="/editor" as={RouterLink}>
                 Write post
+              </Link>
+            </ListItem>
+            <ListItem layerStyle="listItemSidebar" textAlign="left" mb="0.2rem">
+              <Icon mr="0.2rem" as={RiPagesLine} />
+              <Link to="/your-devtrove-posts" as={RouterLink}>
+                Your Posts
               </Link>
             </ListItem>
           </UnorderedList>

@@ -1,7 +1,7 @@
-import { Box, Text } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import { useState, useCallback, useEffect } from 'react';
 import axios, { AxiosError } from 'axios';
-import ReactQuill, { Quill } from 'react-quill';
+import ReactQuill from 'react-quill';
 import { http } from '../helpers';
 
 const DevtrovePost = () => {
@@ -12,7 +12,7 @@ const DevtrovePost = () => {
 
   const fetchPost = useCallback(async () => {
     try {
-      const response = await http.get(`/devtrove-posts/39/`, {});
+      const response = await http.get(`/devtrove-posts/92/`, {});
       console.log(response);
       setValue(response.data.post.post);
     } catch (e: unknown | AxiosError) {

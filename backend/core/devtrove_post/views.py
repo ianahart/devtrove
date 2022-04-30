@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 from rest_framework.views import APIView
 from account.permissions import AccountPermission
 from .models import DevtrovePost
-from .serializers import DevtrovePostCreateSerializer, DevtrovePostSerializer
+from .serializers import DevtrovePostMinimalSerializer, DevtrovePostCreateSerializer, DevtrovePostSerializer
 
 
 
@@ -15,7 +15,6 @@ class DetailAPIView(APIView):
         permission_classes = [IsAuthenticatedOrReadOnly, ]
         try:
             instance = DevtrovePost.objects.get(pk=pk)
-            print(instance)
             if instance:
                 serializer = DevtrovePostSerializer(instance)
                 return Response({
@@ -24,16 +23,20 @@ class DetailAPIView(APIView):
                                 }, status=status.HTTP_200_OK)
             else:
                 raise ObjectDoesNotExist('Could not find post.')
-        except (Exception, BadRequest, ) as e:
-            print(e)
+        except (Exception, BadRequest, ValueError, ) as e:
             if isinstance(e, ObjectDoesNotExist):
                 return Response({
                                 'error': str(e)
                                 }, status=status.HTTP_404_NOT_FOUND)
-            return Response(
-                {
-                    'message': 'Something went wrong.'
-                }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            elif isinstance(e, ValueError):
+                return Response({
+                                'error': str(e)
+                                }, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response(
+                    {
+                        'message': 'Something went wrong.'
+                    }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class ListCreateAPIView(APIView):
@@ -46,13 +49,20 @@ class ListCreateAPIView(APIView):
             serializer = DevtrovePostCreateSerializer(data=request.data)
             if serializer.is_valid():
                 result = serializer.create(validated_data=serializer.data)
+
+                if isinstance(result, dict):
+                    raise ValueError(str(result['error']))
+
+                serializer = DevtrovePostMinimalSerializer(result)
                 return Response(
-                                {'message': 'success'},
+                                {'message': 'success',
+                                    'devtrove_post': serializer.data
+                                    },
                                 status=status.HTTP_201_CREATED)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except (BadRequest, ValueError, PermissionDenied ) as e:
-            if isinstance(e, BadRequest):
+            if isinstance(e, ValueError):
                 return Response({
                         'error': str(e),
                     },status=status.HTTP_400_BAD_REQUEST)

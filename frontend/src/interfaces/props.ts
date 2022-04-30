@@ -12,6 +12,14 @@ import {
   IComment,
 } from '.';
 
+export interface ICoverUploadProps {
+  dataURL: string;
+  applyErrors: (error: string) => void;
+  addFile: (file: File) => void;
+  addDataURL: (URL: string) => void;
+  clearFile: () => void;
+}
+
 export interface IStatsProps<T> {
   countTags: { [key: string]: number };
   calendar: CalendarDatum[];

@@ -39,38 +39,49 @@ class DevtrovePostMananger(models.Manager):
 
     def create_devtrove_post(self, data):
         try:
-            image = None
+            leaf = None
+            post_fn, post_url = '', ''
+            already_post_image = False
             decoder = Decoder()
+
             tree = data['post']['ops']
             if self.__post_limit_exceeded(user_id=data['user']):
                 raise BadRequest(
                     'You have exceeded thee 10 maximum posts a day limit.'
                 )
-
             for index, node in enumerate(tree):
                 if 'attributes' not in node.keys() and 'insert' in node.keys():
                     if 'image' in node['insert']:
+                        if already_post_image:
+                            tree[index].clear()
+                            continue
                         leaf = tree[index]['insert']['image']
+                        file, filename, file_extension = decoder.decode_base64_file(data=leaf)
+                        if all(v is None for v in [file, filename, file_extension]):
+                            raise ValueError('Image sizes must be under 1.2MB(megabytes)')
 
-                        file, filename, file_extension = decoder.decode_base64_file(
-                            data=leaf
-                        )
                         file_upload = FileUpload(file, filename)
-                        image = file_upload.upload_post_image(
+                        post_url, post_fn = file_upload.upload_post_image(
                                 file, filename, file_extension
                         )
-                        tree[index]['insert']['image'] = image['post_url'] #insert s3 link
+                        tree[index]['insert']['image'] = post_url
+                        already_post_image = True
+
+            filter_empty_out = [el for el in data['post']['ops'] if len(el) > 0]
 
             devtrove_post = self.model(
                 user_id=data['user'],
-                post=data['post'],
-                post_filename=image['post_fn'],
-                post_url=image['post_url']
+                post=filter_empty_out,
+                post_filename=post_fn,
+                post_url=post_url
             )
             devtrove_post.save()
+            devtrove_post.refresh_from_db()
+            return devtrove_post
 
-        except (DatabaseError, Exception, ):
+        except (DatabaseError, Exception, ValueError,  ) as e:
             logger.error('Unable to create the user\'s written post for devtrove.')
+            return {'error': str(e), 'ok': False}
 
 
 class DevtrovePost(models.Model):

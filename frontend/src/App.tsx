@@ -30,6 +30,7 @@ import ReadingHistory from './pages/ReadingHistory';
 import ResetPassword from './components/Mixed/ResetPassword';
 import ForgotPassword from './components/Mixed/ForgotPassword';
 import Editor from './pages/Editor';
+import YourDevtrovePosts from './pages/YourDevtrovePosts';
 import DevtrovePost from './pages/DevtrovePost';
 import './App.css';
 import { getStorage } from './helpers';
@@ -72,17 +73,33 @@ const App = () => {
                 }
               />
 
-              <Route path="/devtrove-posts/:id" element={<DevtrovePost />} />
-
+              <Route
+                path="/your-devtrove-posts/:id"
+                element={
+                  <RequireAuth>
+                    <DevtrovePost />
+                  </RequireAuth>
+                }
+              />
               <Route path="/posts/discussed" element={<Discussed />} />
               <Route path="/posts/newest" element={<Newest />} />
               <Route path="/posts/upvoted" element={<Upvoted />} />
+
               <Route
                 path="/reset-password"
                 element={
                   <RequireGuest>
                     <ResetPassword />
                   </RequireGuest>
+                }
+              />
+
+              <Route
+                path="/your-devtrove-posts"
+                element={
+                  <RequireAuth>
+                    <YourDevtrovePosts />
+                  </RequireAuth>
                 }
               />
               <Route
