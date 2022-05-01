@@ -9,7 +9,6 @@ import { GlobalContext } from '../../context/global';
 import PostPicture from './PostPicture';
 import Logo from '../Mixed/Logo';
 const Post = ({ bookmark, post, updatePostUpvote }: IPostProps) => {
-  console.log(post);
   const { userAuth } = useContext(GlobalContext) as IGlobalContext;
   const { addToReadHistory } = useContext(PostsContext) as IPostsContext;
 
@@ -18,7 +17,6 @@ const Post = ({ bookmark, post, updatePostUpvote }: IPostProps) => {
       addToReadHistory(userAuth.user.id, post.id, post.tags);
     }
   };
-
   return (
     <Box
       as="article"
@@ -57,7 +55,7 @@ const Post = ({ bookmark, post, updatePostUpvote }: IPostProps) => {
         onClick={handleHistory}
         textAlign="center"
         color="#FFF"
-        href={post.details_url}
+        href={post.type !== null ? '/' + post.details_url : post.details_url}
       >
         <Heading as="h3" fontSize="22px">
           {post.title}
@@ -84,6 +82,7 @@ const Post = ({ bookmark, post, updatePostUpvote }: IPostProps) => {
       <Actions
         updatePostUpvote={updatePostUpvote}
         bookmark={bookmark}
+        type={post.type}
         cur_user_bookmarked={post.cur_user_bookmarked}
         upvotes_count={post.upvotes_count}
         cur_user_voted={post.cur_user_voted}

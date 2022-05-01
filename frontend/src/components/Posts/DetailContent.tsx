@@ -4,6 +4,7 @@ import { AiOutlinePicture } from 'react-icons/ai';
 import { IGlobalContext } from '../../interfaces/';
 import { GlobalContext } from '../../context/global';
 import { IPostProps } from '../../interfaces/props';
+import Logo from '../Mixed/Logo';
 import Tags from './Tags';
 
 const DetailContent = ({ post }: IPostProps) => {
@@ -34,7 +35,17 @@ const DetailContent = ({ post }: IPostProps) => {
             )}
           </Box>
           <Box alignItems="center" display="flex">
-            <Image src={post.logo} alt={post.title} />
+            {post.logo ? (
+              <Image src={post.logo} alt={post.title} />
+            ) : (
+              <Logo
+                height="30px"
+                width="30px"
+                fontSize="16px"
+                textOne="Dev"
+                textTwo="Trove"
+              />
+            )}
           </Box>
           <Box m="2rem auto 1.5rem auto" textAlign="center">
             <Heading
@@ -72,7 +83,14 @@ const DetailContent = ({ post }: IPostProps) => {
             <Text>{post.snippet}</Text>
           </Box>
           <Box my="2rem">
-            <Link color="purple.secondary" href={post.details_url}>
+            <Link
+              color="purple.secondary"
+              href={
+                post.type !== null
+                  ? `/devtrove-post/${post.id}/${post.slug}`
+                  : post.details_url
+              }
+            >
               Read full article...
             </Link>
           </Box>

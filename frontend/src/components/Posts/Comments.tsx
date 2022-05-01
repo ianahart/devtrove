@@ -35,6 +35,7 @@ const Comments = ({
         {post ? (
           <Actions
             updateDetailBookmark={updateDetailBookmark}
+            type={null}
             cur_user_bookmarked={post.cur_user_bookmarked}
             cur_user_voted={post.cur_user_voted}
             upvotes_count={post.upvotes_count}
@@ -54,6 +55,7 @@ const Comments = ({
               likeComment={likeComment}
               unlikeComment={unlikeComment}
               handleCommentOperation={handleCommentOperation}
+              type={null}
               syncEdit={syncEdit}
               key={comment.id}
               comment={comment}

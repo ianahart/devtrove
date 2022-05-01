@@ -1,27 +1,28 @@
 import { Box } from '@chakra-ui/react';
+import { useParams } from 'react-router-dom';
 import { useState, useCallback, useEffect } from 'react';
 import axios, { AxiosError } from 'axios';
 import ReactQuill from 'react-quill';
-import { http } from '../helpers';
+import { http } from '../../helpers';
 
 const DevtrovePost = () => {
+  const params = useParams();
   const [value, setValue] = useState();
   const [error, setError] = useState('');
-
   const modules = { toolbar: [] };
 
   const fetchPost = useCallback(async () => {
     try {
-      const response = await http.get(`/devtrove-posts/92/`, {});
+      const response = await http.get(`/posts/devtrove-posts/${params.id}/`, {});
       console.log(response);
-      setValue(response.data.post.post);
+      setValue(response.data.post);
     } catch (e: unknown | AxiosError) {
       if (axios.isAxiosError(e)) {
         console.log(e.response);
         setError(e.response?.data.error);
       }
     }
-  }, []);
+  }, [params.id]);
 
   useEffect(() => {
     fetchPost();

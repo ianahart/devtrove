@@ -149,6 +149,7 @@ class PostSerializer(serializers.ModelSerializer):
                  'upvotes_count',
                   'cur_user_voted',
                   'cur_user_bookmarked',
+                  'type',
                   'slug',
                   'author',
                   'snippet',

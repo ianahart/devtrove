@@ -105,6 +105,7 @@ export interface IPost {
   snippet: string;
   details_url: string;
   comments_count: number;
+  type: string;
   upvotes_count: number;
   cur_user_voted: boolean;
   cur_user_bookmarked: boolean;

@@ -17,6 +17,7 @@ import { PostsContext } from '../../context/posts';
 const Actions = ({
   id,
   cur_user_voted,
+  type,
   cur_user_bookmarked,
   upvotes_count,
   updatePostUpvote,
@@ -141,7 +142,7 @@ const Actions = ({
               />
             </Box>
           ) : (
-            <Link as={RouterLink} to={`/${id}${slug}`}>
+            <Link as={RouterLink} to={type !== null ? `/${id}/${slug}` : `/${id}${slug}`}>
               <Action
                 color="#0066FF"
                 count={comments_count}

@@ -7,7 +7,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticate
 from rest_framework.views import APIView
 from rest_framework.parsers import FormParser, MultiPartParser
 from account.permissions import AccountPermission
-from .serializers import  DevtrovePostUpdateSerializer, PostCreateSerializer, DevtrovePostMinimalSerializer, DevtrovePostCreateSerializer, PostSearchRetrieveSerializer, PostSearchCreateSerializer, PostSerializer
+from .serializers import DevtrovePostSerializer, DevtrovePostUpdateSerializer, PostCreateSerializer, DevtrovePostMinimalSerializer, DevtrovePostCreateSerializer, PostSearchRetrieveSerializer, PostSearchCreateSerializer, PostSerializer
 from .models import Post
 import json
 
@@ -16,6 +16,30 @@ class DevTroveDetailAPIView(APIView):
 
     permission_classes = [IsAuthenticatedOrReadOnly, AccountPermission, ]
     parser_classes = [ MultiPartParser, FormParser, ]
+
+
+    def get(self, request, pk=None):
+        try:
+            print(request.data)
+            if pk is None:
+                raise BadRequest
+            post = Post.objects.get(pk=pk)
+            serializer = DevtrovePostSerializer(post)
+            if serializer.data:
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response({
+                                'error': 'No results found.',
+                            }, status.HTTP_404_NOT_FOUND)
+
+        except BadRequest as e:
+            print(e, type(e))
+            return Response(
+                {'message': 'Something went wrong'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                            )
+
+
+
 
     def patch(self, request, pk=None):
         try:

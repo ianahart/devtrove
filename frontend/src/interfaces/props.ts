@@ -49,6 +49,7 @@ export interface IPostPictureProps {
 export interface ICommentProps {
   post: IPost;
   commentsLoaded: boolean;
+  type?: null | string;
   comments: IComment[];
   updateDetailBookmark: (a: boolean) => void;
   bookmark?: (a: number, b: number, dir: string) => void | undefined;
@@ -61,6 +62,7 @@ export interface ICommentProps {
 
 export interface ISingleCommentProps {
   comment: IComment;
+  type: null | string;
   handleCommentOperation: () => void;
   syncEdit: (id: number) => void;
   likeComment: (a: Like) => void;
@@ -76,6 +78,7 @@ export interface IFileUploaderProps {
 export interface IActionsProps {
   id: number;
   slug: string;
+  type: null | string;
   updateDetailBookmark?: (a: boolean) => void | undefined;
   updatePostUpvote?: (id: number, dir: string) => void | undefined;
   bookmark?: (a: number, b: number, dir: string) => void | undefined;
