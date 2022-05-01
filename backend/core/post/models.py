@@ -2,13 +2,118 @@ from django.db.models import Count
 from django.core.paginator import Paginator
 from django.db import models, DatabaseError
 from django.db.models.query import QuerySet
+from django.core.exceptions import BadRequest
 from django.utils import timezone
+from slugify import slugify #type:ignore
 from datetime import timedelta, datetime
 from typing import Any
+from account.services.file_upload import FileUpload
+from tag.models import Tag
+from .decoder import Decoder
 import calendar
 import logging
 logger = logging.getLogger('django')
 class PostManager(models.Manager):
+
+
+    def __devtrove_post_tags(self, tags: dict, post: int):
+        for key, item in enumerate(tags):
+            text = ''.join([ch for ch in item['tag'] if ch != ' '])
+            tag = Tag(post_id=post, text=item['tag'])
+            tag.save()
+
+    def update_devtrove_post(self, data):
+        try:
+            post = Post.objects.get(pk=data['post'])
+            self.__devtrove_post_tags(data['tags'], data['post'])
+
+            slug = slugify(data['title'])
+
+            file_upload = FileUpload(data['cover_image'], 'posts')
+            object_url, filename = file_upload.upload_file()
+
+            post.title = data['title']
+            post.cover_image = object_url
+            post.cover_image_fn = filename
+            post.details_url = f'{data["post"]}/{slug}'
+            post.author_pic = post.user.avatar_url
+            post.tags =  [item['tag'] for item in data['tags']]
+            post.slug = slug
+            post.published_date = datetime.now().strftime('%b %-d')
+
+            post.save()
+
+        except (Exception, DatabaseError, ):
+            logger.error('Unable to update a user\'s devtrove post ')
+
+
+
+
+    def __post_limit_exceeded(self, user_id: int):
+        try:
+            count = Post.objects.all().filter(
+                user_id=user_id
+            ).filter(
+                created_at__gte=datetime.now(
+                        tz=timezone.utc) - timedelta(days=1)).count()
+            return True if count >= 10 else False
+        except DatabaseError:
+            logger.error(
+                'Unable to determine how many posts a user has posted in the last day.'
+            )
+
+    def create_devtrove_post(self, data):
+        try:
+            leaf = None
+            post_fn, post_url = '', ''
+            already_post_image = False
+            decoder = Decoder()
+
+            tree = data['post']['ops']
+            if self.__post_limit_exceeded(user_id=data['user']):
+                raise BadRequest(
+                    'You have exceeded thee 10 maximum posts a day limit.'
+                )
+            for index, node in enumerate(tree):
+                if 'attributes' not in node.keys() and 'insert' in node.keys():
+                    if 'image' in node['insert']:
+                        if already_post_image:
+                            tree[index].clear()
+                            continue
+                        leaf = tree[index]['insert']['image']
+                        file, filename, file_extension = decoder.decode_base64_file(data=leaf)
+                        if all(v is None for v in [file, filename, file_extension]):
+                            raise ValueError('Image sizes must be under 1.2MB(megabytes)')
+
+                        file_upload = FileUpload(file, filename)
+                        post_url, post_fn = file_upload.upload_post_image(
+                                file, filename, file_extension
+                        )
+                        tree[index]['insert']['image'] = post_url
+                        already_post_image = True
+
+            filter_empty_out = [el for el in data['post']['ops'] if len(el) > 0]
+
+            devtrove_post = self.model(
+                user_id=data['user'],
+                post=filter_empty_out,
+                post_fn=post_fn,
+                post_url=post_url,
+                author=data['author'],
+                type="devtrove_post",
+                author_pic=data['author_pic']
+            )
+            devtrove_post.save()
+            devtrove_post.refresh_from_db()
+            return devtrove_post
+
+        except (DatabaseError, Exception, ValueError,  ) as e:
+            logger.error('Unable to create the user\'s written post for devtrove.')
+            return {'error': str(e), 'ok': False}
+
+
+
+
 
     def upvoted_posts(self, is_authenticated:bool, user:dict):
         try:
@@ -182,13 +287,28 @@ class Post(models.Model):
     upvotes = models.IntegerField(blank=True, null=True, default=0)
     logo = models.URLField(max_length=350, blank=True, null=True)
     cover_image = models.URLField(max_length=500, blank=True, null=True)
+    cover_image_fn = models.CharField(max_length=250, null=True, blank=True)
     snippet = models.TextField(max_length=600, blank=True, null=True)
     slug = models.TextField(max_length=300, blank=True, null=True)
+    post = models.JSONField( blank=True, null=True)
+    post_fn = models.CharField(max_length=200, blank=True, null=True)
+    post_url = models.URLField(max_length=400, blank=True, null=True)
     details_url = models.URLField(max_length=400, blank=True, null=True)
     author_pic = models.URLField(max_length=400, blank=True, null=True)
     tags = models.JSONField(blank=True, null=True)
     published_date = models.CharField(max_length=100, blank=True, null=True)
     min_to_read = models.CharField(max_length=50, blank=True, null=True)
+    type=models.CharField(max_length=50, blank=True, null=True)
+    user = models.ForeignKey(
+        'account.CustomUser',
+        on_delete=models.CASCADE,
+        related_name='post_user',
+        blank=True,
+        null=True,
+    )
+
+
 
     def __str__(self) -> str:
-        return self.title
+        return self.title if isinstance(self.title, str) else ''
+

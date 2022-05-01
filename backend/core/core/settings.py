@@ -62,7 +62,7 @@ INSTALLED_APPS = [
     'setting',
     'password_reset',
     'tag',
-    'devtrove_post'
+#    'devtrove_post'
 ]
 
 AUTH_USER_MODEL = 'account.CustomUser'

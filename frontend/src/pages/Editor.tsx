@@ -47,25 +47,25 @@ const Editor = () => {
       setPostUploaded(true);
       setIsLoaded(false);
       if (QuillRef.current) {
-        console.log(QuillRef.current.editor?.getLength());
         if (QuillRef.current!.editor!.getLength() <= 1) {
           setIsLoaded(true);
           setPostUploaded(false);
           return;
         }
-        const response = await http.post(`/devtrove-posts/`, {
+
+        const response = await http.post(`/posts/devtrove-posts/`, {
           user: userAuth.user.id,
+          author: userAuth.user.handle,
+          author_pic: userAuth.user.avatar_url,
           post: QuillRef.current.editor?.getContents(),
         });
         setIsLoaded(true);
         setPostId(response.data.devtrove_post.id);
-        console.log(response);
       }
     } catch (e: unknown | AxiosError) {
       setIsLoaded(true);
       setPostUploaded(false);
       if (axios.isAxiosError(e)) {
-        console.log(e.response);
         setError(e.response?.data.error);
       }
     }

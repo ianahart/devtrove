@@ -60,6 +60,7 @@ const GlobalContextProvider: React.FC<React.ReactNode> = ({ children }) => {
   };
 
   const updateUser = (user: IUpdateProfileFormRequest) => {
+    console.log(user);
     setUserAuth((prevState) => ({
       ...prevState,
       user: user.user_auth.user,

@@ -10,6 +10,8 @@ urlpatterns = [
     path('posts/newest/', views.NewestAPIView.as_view()),
     path('posts/discussed/', views.DiscussedAPIView.as_view()),
     path('posts/upvoted/', views.UpVotedAPIView.as_view()),
+    path('posts/devtrove-posts/', views.DevTroveListCreateAPIView.as_view()),
+    path('posts/devtrove-posts/<int:pk>/', views.DevTroveDetailAPIView.as_view()),
     path('posts/<int:pk>/', views.DetailAPIView.as_view())
 ]
 

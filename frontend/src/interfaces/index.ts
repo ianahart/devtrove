@@ -9,6 +9,15 @@ export interface ISearchResult {
   id: number;
 }
 
+export interface ICoverFormProps {
+  postId: number | null;
+}
+
+export interface CreateTag {
+  id: string;
+  tag: string;
+}
+
 export interface IHistoryPost {
   user_id: number;
   post_id: number;

@@ -12,6 +12,71 @@ logger = logging.getLogger('django')
 
 
 
+
+
+
+
+class DevtrovePostUpdateSerializer(serializers.ModelSerializer):
+    tags = serializers.JSONField()
+    title = serializers.CharField()
+    cover_image = serializers.ImageField()
+    class Meta:
+        model = Post
+        fields = ('tags', 'title', 'cover_image', 'post', )
+
+    def validate_tags(self, value):
+        if any(len(tag['tag']) > 50 for tag in value):
+            raise serializers.ValidationError('Tags must be less than 50 characters.')
+
+        return value
+
+
+    def validate_title(self, value):
+        if len(value) > 100:
+            raise serializers.ValidationError('Title must be less than 100 characters.')
+
+        return value
+
+    def validate_cover_image(self, value):
+        if value is None:
+            raise serializers.ValidationError(
+                'Please provide a cover image.')
+
+        if value.size > 1200000:
+            raise serializers.ValidationError(
+                'Cover image must be under 1.2MB.')
+
+        return value
+
+
+    def update(self, validated_data):
+        return Post.objects.update_devtrove_post(validated_data)
+
+
+
+class DevtrovePostMinimalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ('id', )
+
+class DevtrovePostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model= Post
+        fields = ('post', )
+
+
+class DevtrovePostCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ('user', 'post', 'author', 'author_pic')
+
+
+    def validate(self, data):
+        return data
+
+    def create(self, validated_data):
+        return Post.objects.create_devtrove_post(validated_data)
+
 class PostSearchRetrieveSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
@@ -93,7 +158,10 @@ class PostSerializer(serializers.ModelSerializer):
                   'published_date',
                   'details_url',
                   'tags',
-                  'min_to_read'
+                  'min_to_read',
+                  'post',
+                  'type',
+                  'user',
                   )
 
 class PostCreateSerializer(serializers.ModelSerializer):

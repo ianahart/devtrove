@@ -1,11 +1,89 @@
+from django.core.exceptions import BadRequest, PermissionDenied
 from django.core.exceptions import BadRequest
 from django.core.paginator import EmptyPage
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.views import APIView
-from .serializers import PostCreateSerializer, PostSearchRetrieveSerializer, PostSearchCreateSerializer, PostSerializer
+from rest_framework.parsers import FormParser, MultiPartParser
+from account.permissions import AccountPermission
+from .serializers import  DevtrovePostUpdateSerializer, PostCreateSerializer, DevtrovePostMinimalSerializer, DevtrovePostCreateSerializer, PostSearchRetrieveSerializer, PostSearchCreateSerializer, PostSerializer
 from .models import Post
+import json
+
+
+class DevTroveDetailAPIView(APIView):
+
+    permission_classes = [IsAuthenticatedOrReadOnly, AccountPermission, ]
+    parser_classes = [ MultiPartParser, FormParser, ]
+
+    def patch(self, request, pk=None):
+        try:
+            post = Post.objects.get(pk=pk)
+            self.check_object_permissions(request, post.user)
+
+            main_serializer = DevtrovePostUpdateSerializer(data=request.data)
+
+
+            if main_serializer.is_valid():
+                main_serializer.update(main_serializer.validated_data)
+
+            else:
+                return Response(
+                    {
+                        'error': main_serializer.errors
+                    }, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                    {
+                        'message': 'success',
+                    }, status=status.HTTP_200_OK)
+        except (Exception, PermissionDenied, ) as e:
+            return Response(
+                    {
+                        'message': 'Something went wrong.',
+                    }, status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class DevTroveListCreateAPIView(APIView):
+
+   permission_classes = [IsAuthenticated, ]
+   def post(self, request):
+        try:
+            if request.user.id != request.data['user']:
+                raise PermissionDenied('You do not have access.')
+
+            serializer = DevtrovePostCreateSerializer(data=request.data)
+            if serializer.is_valid():
+                result = serializer.create(validated_data=serializer.data)
+
+                if isinstance(result, dict):
+                    raise ValueError(str(result['error']))
+
+                serializer = DevtrovePostMinimalSerializer(result)
+                return Response(
+                                {'message': 'success',
+                                    'devtrove_post': serializer.data
+                                    },
+                                status=status.HTTP_201_CREATED)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except (BadRequest, ValueError, PermissionDenied ) as e:
+            if isinstance(e, ValueError):
+                return Response({
+                        'error': str(e),
+                    },status=status.HTTP_400_BAD_REQUEST)
+
+            if isinstance(e, PermissionDenied):
+                return Response({
+                                    'message': str(e),
+                                },status=status.HTTP_403_FORBIDDEN)
+            return Response({
+                            'message': 'Something went wrong'
+                            },status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+
 
 class UpVotedAPIView(APIView):
     def get(self, request):
@@ -82,7 +160,7 @@ class NewestAPIView(APIView):
                 return Response({
                                     'message': 'No posts were found.'
                                 }, status=status.HTTP_404_NOT_FOUND)
-        except Exception as e:
+        except Exception:
             return Response({
                                'message': 'Something went wrong.'
                            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

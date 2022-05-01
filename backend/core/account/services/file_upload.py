@@ -1,6 +1,8 @@
 from io import BytesIO
 from core import settings
 import boto3
+import uuid
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import DatabaseError
 from datetime import datetime
 from random import randint
@@ -52,7 +54,7 @@ class FileUpload():
             file = self.file.read()
             return file
         except OSError:
-            logger.error(msg='Avatar file could not be read')
+            logger.error(msg='File could not be read')
 
 
     def __make_path(self):
@@ -91,5 +93,25 @@ class FileUpload():
                 return None, None
 
 
+    def upload_file(self) -> tuple[str, str]:
+        try:
+             object_url, filename = '', ''
+             if not isinstance(self.file, InMemoryUploadedFile):
+                raise TypeError('Provided file is of wrong type.')
 
+             decoded_file = self.__decode_file()
+             file_exentsion = self.file.content_type.split('/')[1]
+
+             filename = f'{self.folder}/{str(uuid.uuid4())[:12]}.{file_exentsion}'
+
+             s3_instance = self.s3.Object(self.bucket_name, filename)
+             s3_instance.put(
+                Body=decoded_file,
+                ACL='public-read',
+                ContentType=self.file.content_type
+             )
+             object_url = f"https://{self.bucket_name}.s3.{self.region_name}.amazonaws.com/{filename}"
+             return object_url, filename
+        except OSError:
+            logger.error('Unable to upload generic file to S3')
 

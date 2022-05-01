@@ -111,6 +111,9 @@ class DetailAPIView(APIView):
                         'handle':user['handle'],
                         'logged_in': user['logged_in'],
                         'avatar_url':user['avatar_url'],
+                        'preferred_language': account.user_settings.preferred_language, # type:ignore
+                        'setting_id': account.user_settings.id, #type:ignore
+                        'theme': account.user_settings.theme.lower() #type:ignore
                     }
                 }
 

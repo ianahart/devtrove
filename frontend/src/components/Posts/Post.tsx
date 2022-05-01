@@ -7,8 +7,9 @@ import { IPostsContext, IGlobalContext } from '../../interfaces';
 import { PostsContext } from '../../context/posts';
 import { GlobalContext } from '../../context/global';
 import PostPicture from './PostPicture';
-
+import Logo from '../Mixed/Logo';
 const Post = ({ bookmark, post, updatePostUpvote }: IPostProps) => {
+  console.log(post);
   const { userAuth } = useContext(GlobalContext) as IGlobalContext;
   const { addToReadHistory } = useContext(PostsContext) as IPostsContext;
 
@@ -36,15 +37,19 @@ const Post = ({ bookmark, post, updatePostUpvote }: IPostProps) => {
       flex="auto"
       justifySelf="center"
     >
-      <Image
-        mb="0.25rem"
-        width="30px"
-        height="30px"
-        borderRadius="50%"
-        boxShadow="lg"
-        src={post.logo}
-        alt={post.title}
-      />
+      {post.logo ? (
+        <Image
+          mb="0.25rem"
+          width="30px"
+          height="30px"
+          borderRadius="50%"
+          boxShadow="lg"
+          src={post.logo}
+          alt={post.title}
+        />
+      ) : (
+        <Logo textOne="" textTwo="" height="30px" width="30px" fontSize="0" />
+      )}
 
       <Link
         isExternal
@@ -73,7 +78,7 @@ const Post = ({ bookmark, post, updatePostUpvote }: IPostProps) => {
         <Text mx="0.5rem">{post.min_to_read}</Text>
       </Box>
       <PostPicture coverImage={post.cover_image} author={post.author} />
-      <Tags tags={post.tags} />
+      {post.tags && <Tags tags={post.tags} />}
       <Box bg="text.secondary" height="2px" width="100%" m="auto auto 0 auto"></Box>
 
       <Actions
