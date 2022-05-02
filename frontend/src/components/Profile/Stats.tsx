@@ -60,7 +60,7 @@ const Stats = ({ countTags, articles_read, dates, calendar }: IStatsProps<object
           Top tags read this year
         </Heading>
         <Text mt="0.5rem" color="purple.tertiary">
-          Remember you only get 3 reads counted towards this metric.
+          Remember you only get 3 reads per day counted towards this metric.
         </Text>
         {Object.keys(countTags).length > 0 && (
           <Box display="flex">

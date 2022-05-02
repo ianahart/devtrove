@@ -10,12 +10,6 @@ from .models import Post
 from .services.scraper import Scraper
 logger = logging.getLogger('django')
 
-
-
-
-
-
-
 class DevtrovePostUpdateSerializer(serializers.ModelSerializer):
     tags = serializers.JSONField()
     title = serializers.CharField()
@@ -62,7 +56,7 @@ class DevtrovePostMinimalSerializer(serializers.ModelSerializer):
 class DevtrovePostSerializer(serializers.ModelSerializer):
     class Meta:
         model= Post
-        fields = ('post', )
+        fields = ('post', 'title', 'cover_image', 'author_pic', 'author', 'published_date',  )
 
 
 class DevtrovePostCreateSerializer(serializers.ModelSerializer):

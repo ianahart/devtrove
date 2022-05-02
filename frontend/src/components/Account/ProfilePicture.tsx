@@ -1,7 +1,8 @@
 import { useContext } from 'react';
 import { Image, Icon } from '@chakra-ui/react';
 import { FaUserCircle } from 'react-icons/fa';
-
+import { IGlobalContext } from '../../interfaces/';
+import { GlobalContext } from '../../context/global';
 interface IProfilePictureProps {
   height: string;
   width: string;
@@ -15,6 +16,7 @@ const ProfilePicture = ({
   borderRadius = '50%',
   width,
 }: IProfilePictureProps) => {
+  const { theme } = useContext(GlobalContext) as IGlobalContext;
   return (
     <>
       {avatar_url ? (
@@ -25,7 +27,7 @@ const ProfilePicture = ({
           src={avatar_url as string}
         />
       ) : (
-        <Icon as={FaUserCircle} color="#FFF" height="40px" width="40px" />
+        <Icon as={FaUserCircle} color="purple.secondary" height="40px" width="40px" />
       )}
     </>
   );

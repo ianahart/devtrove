@@ -34,7 +34,7 @@ const Navigation = () => {
     )
       return (
         <Icon
-          color={theme === 'dark' ? '#FFF' : '#000'}
+          color="purple.secondary"
           onClick={toggleUserMenu}
           cursor="pointer"
           as={FaUserCircle}

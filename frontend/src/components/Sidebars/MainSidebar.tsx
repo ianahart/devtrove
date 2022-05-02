@@ -12,6 +12,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import { useContext, useState } from 'react';
 import { AiOutlineClockCircle, AiOutlineSearch, AiOutlineComment } from 'react-icons/ai';
 import { BiUpvote } from 'react-icons/bi';
+import { GiPirateHat } from 'react-icons/gi';
 import { IGlobalContext } from '../../interfaces';
 import { GlobalContext } from '../../context/global';
 
@@ -82,6 +83,13 @@ const MainSidebar = () => {
                 Most upvoted
               </Link>
             </ListItem>
+            <ListItem layerStyle="listItemSidebar" mb="0.2rem">
+              <Icon mr="0.2rem" as={GiPirateHat} />
+              <Link to="devtrove-posts" as={RouterLink}>
+                Devtrove posts
+              </Link>
+            </ListItem>
+
             <ListItem layerStyle="listItemSidebar" mb="0.2rem">
               <Icon mr="0.2rem" as={AiOutlineSearch} />
               <Text onClick={handleIsSearchOpen} role="button">

@@ -61,17 +61,19 @@ const CoverForm = ({ postId }: ICoverFormProps) => {
   };
 
   const validate = (tags: CreateTag[], file: File, title: string) => {
-    setErrors([]);
     if (!tags.length) {
+      console.log('first if');
       setErrors((prevState) => [...prevState, 'Make sure to provide at least one tag.']);
     }
     if (file === undefined || title.trim().length === 0) {
+      console.log('2nd if');
       setErrors((prevState) => [
         ...prevState,
         'Make sure to provide a title and a cover photo.',
       ]);
     }
     if (tags.some((tag) => (tag.tag.length as number) > 50)) {
+      console.log('3rd if');
       setErrors((prevState) => [...prevState, 'Please keep tags under 50 characters.']);
     }
     return errors.length ? true : false;
@@ -79,13 +81,17 @@ const CoverForm = ({ postId }: ICoverFormProps) => {
 
   const handleOnSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     try {
+      setErrors([]);
       setIsLoaded(false);
       e.preventDefault();
-      if (file === null || file === undefined) return;
-      if (validate(tags, file, title)) {
+      if (file === null || file === undefined || postId === null) {
+        setIsLoaded(true);
         return;
       }
-      if (postId === null) return;
+      if (validate(tags, file, title)) {
+        setIsLoaded(true);
+        return;
+      }
       const formData = new FormData();
       if (file) {
         formData.append('tags', JSON.stringify(Object.values(tags)));

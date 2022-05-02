@@ -31,6 +31,7 @@ import ResetPassword from './components/Mixed/ResetPassword';
 import ForgotPassword from './components/Mixed/ForgotPassword';
 import Editor from './pages/Editor';
 import YourDevtrovePosts from './pages/YourDevtrovePosts';
+import PublicDevtrovePosts from './pages/PublicDevtrovePosts';
 import DevtrovePost from './components/Posts/DevtrovePost';
 
 import './App.css';
@@ -87,6 +88,7 @@ const App = () => {
                   </RequireGuest>
                 }
               />
+              <Route path="/devtrove-posts" element={<PublicDevtrovePosts />} />
 
               <Route
                 path="/your-devtrove-posts"

@@ -1,4 +1,5 @@
 from django.db.models import Count
+from django.contrib.auth.models import AnonymousUser
 from django.core.paginator import Paginator
 from django.db import models, DatabaseError
 from django.db.models.query import QuerySet
@@ -9,11 +10,60 @@ from datetime import timedelta, datetime
 from typing import Any
 from account.services.file_upload import FileUpload
 from tag.models import Tag
+from account.models import CustomUser
 from .decoder import Decoder
 import calendar
 import logging
 logger = logging.getLogger('django')
 class PostManager(models.Manager):
+
+
+
+    def get_devtrove_posts(self,
+                           ownership: str,
+                           user: CustomUser | AnonymousUser,
+                           post_type: str,
+                           cur_page: int):
+        try:
+            objects = None
+            print('instance of: ', isinstance(user, CustomUser))
+            print('ownership: ', ownership)
+            if isinstance(user, CustomUser) and ownership == 'private':
+                objects = Post.objects.order_by('-id').filter(
+                    user_id=user.pk
+                ).filter(
+                    type=post_type
+                ).all()
+                print(len(objects))
+            else:
+                objects = Post.objects.order_by(
+                    '-id'
+                ).filter(
+                    type=post_type
+                ).all()
+
+            for index, post in enumerate(objects):
+                post = self.__get_total_counts(post, user.is_authenticated, user)
+                setattr(post, 'cur_user_bookmarked', 
+                        self.__is_bookmarked(post, user.is_authenticated, user))
+
+
+            paginator = Paginator(objects, 2)
+            cur_page = 1 if cur_page == 0 else cur_page + 1
+            page = paginator.page(cur_page)
+
+
+            return {
+                'has_next': page.has_next(),
+                'cur_page': cur_page,
+                'posts': page.object_list
+            }
+        except DatabaseError:
+            logger.error(
+                'Unable to retrieve public or private devtrove posts list view.'
+            )
+            return {'has_next': False, 'posts': [], 'cur_page': 0}
+
 
 
     def __devtrove_post_tags(self, tags: dict, post: int):

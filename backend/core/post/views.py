@@ -3,7 +3,7 @@ from django.core.exceptions import BadRequest
 from django.core.paginator import EmptyPage
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.views import APIView
 from rest_framework.parsers import FormParser, MultiPartParser
 from account.permissions import AccountPermission
@@ -20,7 +20,6 @@ class DevTroveDetailAPIView(APIView):
 
     def get(self, request, pk=None):
         try:
-            print(request.data)
             if pk is None:
                 raise BadRequest
             post = Post.objects.get(pk=pk)
@@ -31,15 +30,11 @@ class DevTroveDetailAPIView(APIView):
                                 'error': 'No results found.',
                             }, status.HTTP_404_NOT_FOUND)
 
-        except BadRequest as e:
-            print(e, type(e))
+        except BadRequest:
             return Response(
                 {'message': 'Something went wrong'},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
                             )
-
-
-
 
     def patch(self, request, pk=None):
         try:
@@ -70,7 +65,45 @@ class DevTroveDetailAPIView(APIView):
 
 class DevTroveListCreateAPIView(APIView):
 
-   permission_classes = [IsAuthenticated, ]
+   permission_classes = [IsAuthenticatedOrReadOnly, ]
+
+
+   def get(self, request):
+       try:
+           ownership, allowed_params, query_param = None, ['public', 'private'] ,''
+           ownership, page = list(request.query_params.values())
+
+           if ownership not in allowed_params:
+                raise BadRequest('Invalid query parameters.')
+
+           posts = Post.objects.get_devtrove_posts(
+                ownership, request.user, 'devtrove_post', int(page))
+
+           serializer = PostSerializer(posts['posts'], many=True)
+
+           return Response(
+                    {
+                        'posts': serializer.data,
+                        'pagination': {
+                            'page': posts['cur_page'],
+                            'has_next': posts['has_next']
+                            },
+                    }, status=status.HTTP_200_OK,
+                )
+       except (IndexError, BadRequest, Exception, ) as e:
+           if isinstance(e, BadRequest):
+                return Response({
+                                'message': 'Bad Request.',
+                                 'error':str(e)
+                                }, status=status.HTTP_400_BAD_REQUEST)
+           return Response(
+            {
+                'message': 'Something went wrong.'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+
+
    def post(self, request):
         try:
             if request.user.id != request.data['user']:

@@ -1,8 +1,7 @@
 import { Box, Heading, Text } from '@chakra-ui/react';
 import GoBack from '../components/Mixed/GoBack';
 import DevtrovePosts from '../components/Posts/DevtrovePosts';
-
-const YourDevtrovePosts = () => {
+const PublicDevtrovePosts = () => {
   return (
     <>
       <GoBack />
@@ -15,13 +14,13 @@ const YourDevtrovePosts = () => {
           fontSize="36px"
           color="text.primary"
         >
-          Your Posts
+          Devtrove posts
         </Heading>
 
-        <DevtrovePosts endpoint="/posts/devtrove-posts/" ownership="private" />
+        <DevtrovePosts endpoint="/posts/devtrove-posts/" ownership="public" />
       </Box>
     </>
   );
 };
 
-export default YourDevtrovePosts;
+export default PublicDevtrovePosts;
