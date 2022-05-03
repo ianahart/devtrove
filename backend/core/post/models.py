@@ -17,7 +17,13 @@ import logging
 logger = logging.getLogger('django')
 class PostManager(models.Manager):
 
-
+    def delete_devtrove_posts(self, post_ids: list[int]):
+        try:
+            for post_id in post_ids:
+                post = Post.objects.get(pk=post_id)
+                post.delete()
+        except DatabaseError:
+            logger.error('Unable to delete selected devtrove posts.')
 
     def get_devtrove_posts(self,
                            ownership: str,
@@ -26,15 +32,12 @@ class PostManager(models.Manager):
                            cur_page: int):
         try:
             objects = None
-            print('instance of: ', isinstance(user, CustomUser))
-            print('ownership: ', ownership)
             if isinstance(user, CustomUser) and ownership == 'private':
                 objects = Post.objects.order_by('-id').filter(
                     user_id=user.pk
                 ).filter(
                     type=post_type
                 ).all()
-                print(len(objects))
             else:
                 objects = Post.objects.order_by(
                     '-id'
@@ -44,11 +47,12 @@ class PostManager(models.Manager):
 
             for index, post in enumerate(objects):
                 post = self.__get_total_counts(post, user.is_authenticated, user)
+                setattr(post, 'is_checked', False)
                 setattr(post, 'cur_user_bookmarked', 
                         self.__is_bookmarked(post, user.is_authenticated, user))
 
 
-            paginator = Paginator(objects, 2)
+            paginator = Paginator(objects, 3)
             cur_page = 1 if cur_page == 0 else cur_page + 1
             page = paginator.page(cur_page)
 
@@ -58,7 +62,7 @@ class PostManager(models.Manager):
                 'cur_page': cur_page,
                 'posts': page.object_list
             }
-        except DatabaseError:
+        except DatabaseError as e:
             logger.error(
                 'Unable to retrieve public or private devtrove posts list view.'
             )
@@ -174,6 +178,7 @@ class PostManager(models.Manager):
                 raise DatabaseError
 
             for post in posts:
+                setattr(post, 'is_checked', False)
                 post = self.__get_total_counts(post, is_authenticated, user)
                 post.cur_user_bookmarked = self.__is_bookmarked(post, is_authenticated, user)
 
@@ -198,6 +203,7 @@ class PostManager(models.Manager):
                 raise DatabaseError
 
             for post in posts:
+                setattr(post, 'is_checked', False)
                 post = self.__get_total_counts(post, is_authenticated, user)
                 post.cur_user_bookmarked = self.__is_bookmarked(post, is_authenticated, user)
 
@@ -260,6 +266,7 @@ class PostManager(models.Manager):
                 raise DatabaseError
             post = self.__get_total_counts(post, is_authenticated, user)
             post.cur_user_bookmarked = self.__is_bookmarked(post, is_authenticated, user)
+            setattr(post, 'is_checked', False)
             return post
         except DatabaseError:
             logger.error(msg="Unable to retrieve a single post for details page.")
@@ -286,6 +293,7 @@ class PostManager(models.Manager):
             queryset = Post.objects.all().order_by('-id', '-created_at')[0:20]
             pagination = {'page': 1, 'has_next': False}
             for _, post in enumerate(queryset):
+                setattr(post, 'is_checked', False)
                 post = self.__get_total_counts(post, is_authenticated, user)
                 setattr(post, 'cur_user_bookmarked', self.__is_bookmarked(post, is_authenticated, user))
 
@@ -319,8 +327,8 @@ class PostManager(models.Manager):
 
             for post in queryset:
                 post = self.__get_total_counts(post, is_authenticated, user)
+                setattr(post, 'is_checked', False)
                 setattr(post, 'cur_user_bookmarked', self.__is_bookmarked(post, is_authenticated, user))
-
             pagination = {'page': page, 'has_next': cur_page.has_next()}
             return queryset, pagination
         except DatabaseError as e:

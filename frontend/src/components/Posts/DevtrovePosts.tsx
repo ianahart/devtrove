@@ -18,7 +18,7 @@ const DevtrovePosts = ({ endpoint, ownership }: IDevtrovePostsProps) => {
     PostsContext
   ) as IPostsContext;
   const [pagination, setPagination] = useState({ page: 0, has_next: false });
-  const [spinner, setSpinner] = useState(false);
+  const [error, setError] = useState('');
 
   const handleOnClick = async () => {
     try {
@@ -29,7 +29,7 @@ const DevtrovePosts = ({ endpoint, ownership }: IDevtrovePostsProps) => {
       setPagination((prevState) => ({ ...prevState, ...response.data.pagination }));
     } catch (e: unknown | AxiosError) {
       if (axios.isAxiosError(e)) {
-        console.log(e.response);
+        setError(e.response?.data.error);
       }
     }
   };
@@ -41,11 +41,10 @@ const DevtrovePosts = ({ endpoint, ownership }: IDevtrovePostsProps) => {
           `${endpoint}?ownership=${ownership}&page=0`
         );
         setPosts(response.data.posts);
-        console.log(response);
         setPagination((prevState) => ({ ...prevState, ...response.data.pagination }));
       } catch (e: unknown | AxiosError) {
         if (axios.isAxiosError(e)) {
-          console.log(e.response);
+          setError(e.response?.data.error);
         }
       }
     },
@@ -53,11 +52,11 @@ const DevtrovePosts = ({ endpoint, ownership }: IDevtrovePostsProps) => {
   );
   useEffect(() => {
     fetchPosts(endpoint, ownership);
-  }, [fetchPosts, endpoint]);
+  }, [fetchPosts, ownership, endpoint]);
   return (
     <Box mb="1rem">
       <>
-        <Grid className="posts-grid">
+        <Grid margin="0 auto" className="posts-grid">
           {posts.map((post) => {
             return (
               <Post

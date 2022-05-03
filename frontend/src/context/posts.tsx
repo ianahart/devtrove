@@ -15,7 +15,7 @@ const PostsContextProvider: React.FC<React.ReactNode> = ({ children }) => {
   const [pagination, setPagination] = useState(paginationState);
   const scrape = async () => {
     try {
-      const response = await http.post('/posts/', {
+      const response = await http.post('/posts/scrape/', {
         url: 'https://www.dev.to',
       });
       if (response.status === 201) {
@@ -27,6 +27,35 @@ const PostsContextProvider: React.FC<React.ReactNode> = ({ children }) => {
         setHistoryError(e.response?.data.error);
       }
     }
+  };
+
+  const checkedPostsList = (): number[] => {
+    return [...posts]
+      .map((post) => {
+        return post.is_checked ? post.id : 0;
+      })
+      .filter((post) => post !== 0);
+  };
+
+  const deleteCheckedPosts = (ids: number[]) => {
+    const filtered = [...posts].filter((post) => !ids.includes(post.id));
+    setPosts(filtered);
+  };
+
+  const someCheckedPosts = (): boolean => {
+    return posts.some((post) => post.is_checked);
+  };
+
+  const toggleCheckAllPosts = (checked: boolean) => {
+    const updated = posts.map((post) => ({ ...post, is_checked: checked }));
+    setPosts(updated);
+  };
+
+  const updateCheckedPost = (id: number, checked: boolean) => {
+    const updated = [...posts].map((post) => {
+      return post.id === id ? { ...post, is_checked: checked } : post;
+    });
+    setPosts(updated);
   };
 
   const addToReadHistory = async (user: number, post: number, tags: string[]) => {
@@ -137,8 +166,13 @@ const PostsContextProvider: React.FC<React.ReactNode> = ({ children }) => {
         clearPosts,
         addToReadHistory,
         postsError,
+        updateCheckedPost,
         updatePostUpvote,
         setPosts,
+        toggleCheckAllPosts,
+        checkedPostsList,
+        deleteCheckedPosts,
+        someCheckedPosts,
         pagination,
         fetchPosts,
         posts,

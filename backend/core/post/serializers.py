@@ -54,9 +54,10 @@ class DevtrovePostMinimalSerializer(serializers.ModelSerializer):
         fields = ('id', )
 
 class DevtrovePostSerializer(serializers.ModelSerializer):
+    is_checked = serializers.BooleanField()
     class Meta:
         model= Post
-        fields = ('post', 'title', 'cover_image', 'author_pic', 'author', 'published_date',  )
+        fields = ('post', 'title','is_checked', 'cover_image', 'author_pic', 'author', 'published_date',  )
 
 
 class DevtrovePostCreateSerializer(serializers.ModelSerializer):
@@ -135,10 +136,12 @@ class PostSerializer(serializers.ModelSerializer):
     upvotes_count = serializers.IntegerField()
     cur_user_voted = serializers.BooleanField()
     cur_user_bookmarked = serializers.BooleanField()
+    is_checked = serializers.BooleanField()
     class Meta:
         model = Post
         fields = ('title',
                   'id',
+                  'is_checked',
                  'comments_count',
                  'upvotes_count',
                   'cur_user_voted',

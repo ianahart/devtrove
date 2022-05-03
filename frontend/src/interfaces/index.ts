@@ -9,6 +9,11 @@ export interface ISearchResult {
   id: number;
 }
 
+export interface ICheckedPost {
+  id: number;
+  checked: boolean;
+}
+
 export interface ICoverFormProps {
   postId: number | null;
 }
@@ -63,6 +68,7 @@ export interface IBookmark {
   post: {
     author: string;
     author_pic: string;
+    is_checked: false;
     cover_image: string;
     details_url: string;
     id: number;
@@ -104,6 +110,7 @@ export interface IPost {
   cover_image: string;
   snippet: string;
   details_url: string;
+  is_checked: boolean;
   comments_count: number;
   type: string;
   upvotes_count: number;
@@ -262,14 +269,19 @@ export interface IGlobalContext {
 export interface IPostsContext {
   posts: IPost[];
   postsError: string;
+  updateCheckedPost: (id: number, checked: boolean) => void;
   pagination: { page: number; has_next: boolean };
   scrape: () => void;
   clearPosts: () => void;
   paginatePosts: () => void;
   bookmark: (a: number, b: number, c: string) => void;
+  toggleCheckAllPosts: (checked: boolean) => void;
   addToReadHistory: (user: number, post: number, tags: string[]) => void;
+  deleteCheckedPosts: (ids: number[]) => void;
   setIsLoaded: (loaded: boolean) => void;
+  checkedPostsList: () => number[];
   setPosts: (posts: any) => void;
+  someCheckedPosts: () => boolean;
   isLoaded: boolean;
   updatePostUpvote: (a: number, b: string) => void;
   fetchPosts: () => void;

@@ -306,3 +306,11 @@ body {
   min-height: 300px;
   border: 1px solid transparent;
 }
+
+.delete-post-modal {
+  width: 100%;
+  margin: 8rem auto 1.5rem auto;
+  min-height: 200px;
+  border-left: 1px solid #c42cb0;
+  border-right: 1px solid #c42cb0;
+}

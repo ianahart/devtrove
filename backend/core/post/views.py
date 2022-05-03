@@ -1,5 +1,5 @@
 from django.core.exceptions import BadRequest, PermissionDenied
-from django.core.exceptions import BadRequest
+from django.db import DatabaseError
 from django.core.paginator import EmptyPage
 from rest_framework import status
 from rest_framework.response import Response
@@ -10,6 +10,26 @@ from account.permissions import AccountPermission
 from .serializers import DevtrovePostSerializer, DevtrovePostUpdateSerializer, PostCreateSerializer, DevtrovePostMinimalSerializer, DevtrovePostCreateSerializer, PostSearchRetrieveSerializer, PostSearchCreateSerializer, PostSerializer
 from .models import Post
 import json
+
+
+
+class DevTroveDeleteAPIView(APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly, AccountPermission, ]
+
+    def post(self, request):
+        try:
+            post_ids = request.data['post_ids']
+            Post.objects.delete_devtrove_posts(post_ids)
+            return Response(
+                {
+                    'message': 'success',
+                }, status=status.HTTP_200_OK
+            )
+        except DatabaseError:
+            return Response({
+                            'message': 'Something went wrong.'
+                        },status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                    )
 
 
 class DevTroveDetailAPIView(APIView):
@@ -23,6 +43,7 @@ class DevTroveDetailAPIView(APIView):
             if pk is None:
                 raise BadRequest
             post = Post.objects.get(pk=pk)
+            setattr(post, 'is_checked', False)
             serializer = DevtrovePostSerializer(post)
             if serializer.data:
                 return Response(serializer.data, status=status.HTTP_200_OK)
@@ -30,7 +51,8 @@ class DevTroveDetailAPIView(APIView):
                                 'error': 'No results found.',
                             }, status.HTTP_404_NOT_FOUND)
 
-        except BadRequest:
+        except BadRequest as e:
+            print(e)
             return Response(
                 {'message': 'Something went wrong'},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -91,6 +113,7 @@ class DevTroveListCreateAPIView(APIView):
                     }, status=status.HTTP_200_OK,
                 )
        except (IndexError, BadRequest, Exception, ) as e:
+           print(e, type(e))
            if isinstance(e, BadRequest):
                 return Response({
                                 'message': 'Bad Request.',
