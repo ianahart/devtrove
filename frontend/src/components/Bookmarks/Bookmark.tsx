@@ -8,6 +8,7 @@ import { PostsContext } from '../../context/posts';
 import { GlobalContext } from '../../context/global';
 import PostPicture from '../Posts/PostPicture';
 import Tags from '../Posts/Tags';
+import Logo from '../Mixed/Logo';
 
 const Bookmark = ({ deleteBookmark, bookmark }: IBookmarkProps) => {
   const { addToReadHistory } = useContext(PostsContext) as IPostsContext;
@@ -18,7 +19,6 @@ const Bookmark = ({ deleteBookmark, bookmark }: IBookmarkProps) => {
   };
 
   const handleHistory = () => {
-    console.log('test');
     if (userAuth.user.id) {
       addToReadHistory(userAuth.user.id, bookmark.post.id, bookmark.post.tags);
     }
@@ -37,14 +37,18 @@ const Bookmark = ({ deleteBookmark, bookmark }: IBookmarkProps) => {
     >
       <Box display="flex" flexDir="column">
         <Box display="flex" alignItems="center" justifyContent="space-between">
-          <Image
-            mb="0.5rem"
-            width="40px"
-            height="40px"
-            borderRadius="8px"
-            src={bookmark.post.logo}
-            alt="the logo from the site where this was written"
-          />
+          {bookmark.post.logo ? (
+            <Image
+              mb="0.5rem"
+              width="40px"
+              height="40px"
+              borderRadius="8px"
+              src={bookmark.post.logo}
+              alt="the logo from the site where this was written"
+            />
+          ) : (
+            <Logo textOne="" height="30px" width="30px" fontSize="12px" textTwo="" />
+          )}
           <Tooltip label="Remove bookmark" hasArrow placement="top-end">
             <Box as="span">
               <Icon

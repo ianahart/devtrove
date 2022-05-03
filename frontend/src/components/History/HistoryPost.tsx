@@ -16,6 +16,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import { AiOutlineClose } from 'react-icons/ai';
 import { IHistoryPostProps } from '../../interfaces/props';
 import PostPicture from '../Posts/PostPicture';
+import Logo from '../Mixed/Logo';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { RiArticleLine } from 'react-icons/ri';
 import { IGlobalContext } from '../../interfaces/';
@@ -46,16 +47,20 @@ const HistoryPost = ({ deleteHistory, history }: IHistoryPostProps) => {
         <Box mr="1.5rem">
           <Text color={theme === 'dark' ? '#FFF' : '#000'}>{history.readable_date}</Text>
           <Box position="relative" borderRadius="20px" width="175px">
-            <Image
-              width="40px"
-              position="absolute"
-              top="15px"
-              left="0"
-              boxShadow="md"
-              borderRadius="20px"
-              src={history.post.logo}
-              alt="a logo of the website that owns the original article."
-            />
+            {history.post.logo ? (
+              <Image
+                width="40px"
+                position="absolute"
+                top="15px"
+                left="0"
+                boxShadow="md"
+                borderRadius="20px"
+                src={history.post.logo}
+                alt="a logo of the website that owns the original article."
+              />
+            ) : (
+              <Logo textOne="" height="30px" width="30px" fontSize="30px" textTwo="" />
+            )}
             <PostPicture
               coverImage={history.post.cover_image}
               author={history.post.author}
