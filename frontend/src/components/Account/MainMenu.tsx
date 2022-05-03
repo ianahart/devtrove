@@ -2,6 +2,7 @@ import { Box, Image, UnorderedList } from '@chakra-ui/react';
 import { useState, useContext } from 'react';
 import { BiUser } from 'react-icons/bi';
 import { FiSettings } from 'react-icons/fi';
+import GoBack from '../Mixed/GoBack';
 import MenuItem from './MenuItem';
 import { GlobalContext } from '../../context/global';
 import { IGlobalContext } from '../../interfaces';
@@ -29,6 +30,7 @@ const MainMenu = () => {
         src={theme === 'dark' ? logoImage : lightLogoImage}
         alt="devtrove logo of pirate with code brackets"
       />
+      <GoBack />
       <UnorderedList my="2rem" listStyleType="none">
         <MenuItem
           menu="parent"

@@ -7,6 +7,7 @@ import Bookmark from '../components/Bookmarks/Bookmark';
 import { IBookmarkRequest } from '../interfaces/requests';
 import { http } from '../helpers';
 import Spinner from '../components/Mixed/Spinner';
+import GoBack from '../components/Mixed/GoBack';
 
 type Dir = 'next' | 'previous';
 
@@ -84,6 +85,7 @@ const Bookmarks = () => {
         </Box>
       ) : (
         <Box>
+          <GoBack />
           <Box mt="3rem" display="flex" alignItems="center" justifyContent="center">
             <Icon ml="1rem" as={BsBookmarks} color="purple.secondary" fontSize="30px" />
             <Text fontSize="26px" color="purple.tertiary">

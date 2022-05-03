@@ -3,10 +3,11 @@ import { useCallback, useContext, useEffect, useState } from 'react';
 import axios, { AxiosError } from 'axios';
 import { IHistoryPagination, IGlobalContext, IHistoryPost } from '../interfaces';
 import { IHistoryRequest } from '../interfaces/requests';
+import { AiOutlineEye } from 'react-icons/ai';
 import { GlobalContext } from '../context/global';
 import { http } from '../helpers';
+import GoBack from '../components/Mixed/GoBack';
 import HistoryPost from '../components/History/HistoryPost';
-import { AiOutlineEye } from 'react-icons/ai';
 
 const ReadingHistory = () => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -94,6 +95,7 @@ const ReadingHistory = () => {
 
   return (
     <Box minH="100vh" margin="0 auto" width="100%" display="flex">
+      <GoBack />
       <Box
         className="history-sidebar"
         width="100%"
