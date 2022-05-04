@@ -14,9 +14,11 @@ const PostsContextProvider: React.FC<React.ReactNode> = ({ children }) => {
   const [historyError, setHistoryError] = useState('');
   const [pagination, setPagination] = useState(paginationState);
   const scrape = async () => {
+    // dev.to 'https://www.dev.to'
+    // sitepoint ''https://www.sitepoint.com/blog/'
     try {
-      const response = await http.post('/posts/scrape/', {
-        url: 'https://www.dev.to',
+      const response = await http.post('/posts/', {
+        url: 'https://www.sitepoint.com/blog/',
       });
       if (response.status === 201) {
         setIsLoaded(true);

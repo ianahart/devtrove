@@ -8,6 +8,7 @@ import re
 from tag.models import Tag
 from .models import Post
 from .services.scraper import Scraper
+from .services.sitepoint_scraper import SitePointsScraper
 logger = logging.getLogger('django')
 
 class DevtrovePostUpdateSerializer(serializers.ModelSerializer):
@@ -175,20 +176,60 @@ class PostCreateSerializer(serializers.ModelSerializer):
                 dict(url=['url is not formatted correctly.']))
         return data
 
-    def create(self, **validated_data):
+    def create_sitepoint_posts(self, validated_data):
+
         try:
-            covers = validated_data['validated_data']
-            home_page = requests.post(covers)
+            home_page = requests.get(validated_data)
+            scraper = SitePointsScraper(home_page.text, 4)
+            scraper.parse_post_cover()
+            covers = scraper.get_post_covers()
+            rows = []
+            if isinstance(covers, list):
+                for cover in covers:
+                    if isinstance(cover, dict):
+                        post = (
+                            Post(title=cover['title'],
+                            tags=cover['tags'],
+                            author=cover['author'],
+                            logo=str(cover['logo']),
+                            cover_image=cover['cover_image'],
+                            snippet=cover['snippet'],
+                            details_url=cover['details_url'],
+                            published_date=cover['published_date'],
+                            author_pic=cover['author_pic'],
+                            slug=cover['slug']))
+                        post.save()
+                        post.refresh_from_db()
+                        for tag in cover['tags']:
+                            tag = Tag(post_id=post.id, text=tag) #type:ignore
+                            tag.save()
+
+
+
+        except (KeyError, ValueError):
+            logger.error(msg='Unable to save scrape sitepoint articles.')
+
+
+
+
+
+
+
+    def create(self, validated_data):
+        self.create_sitepoint_posts(validated_data)
+        # self.create_devtrove_posts(validated_data)
+
+    def create_devtrove_posts(self, validated_data):
+        try:
+            home_page = requests.post(validated_data)
             scraper = Scraper(home_page.text, 25)
             scraper.parse_covers()
             covers = scraper.get_covers()
-
             rows = []
             if isinstance(covers, list):
                 for cover in covers:
                     details_page = cover['details_url']
                     page = requests.post(details_page)
-
                     scraper = Scraper(page.text)
                     scraper.collect_details()
                     snippet, cover_image, logo = scraper.get_details()
@@ -218,6 +259,4 @@ class PostCreateSerializer(serializers.ModelSerializer):
 
             return validated_data
         except (KeyError, ValueError) as e:
-            logger.error(msg='Unable to save scraped articles.')
-
-
+            logger.error(msg='Unable to save scrape devto articles.')
