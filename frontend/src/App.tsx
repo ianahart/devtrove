@@ -33,6 +33,7 @@ import Editor from './pages/Editor';
 import YourDevtrovePosts from './pages/YourDevtrovePosts';
 import PublicDevtrovePosts from './pages/PublicDevtrovePosts';
 import DevtrovePost from './components/Posts/DevtrovePost';
+import Groups from './pages/Groups';
 
 import './App.css';
 import { getStorage } from './helpers';
@@ -90,6 +91,14 @@ const App = () => {
               />
               <Route path="/devtrove-posts" element={<PublicDevtrovePosts />} />
 
+              <Route
+                path="/:handle/groups"
+                element={
+                  <RequireAuth>
+                    <Groups />
+                  </RequireAuth>
+                }
+              />
               <Route
                 path="/your-devtrove-posts"
                 element={

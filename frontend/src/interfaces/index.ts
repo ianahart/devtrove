@@ -243,6 +243,14 @@ export interface ILinkTheme {
   };
 }
 
+export interface IGroup {
+  avatar: string;
+  group_user: number;
+  host: number;
+  post: number;
+  title: string;
+}
+
 export interface IGlobalContext {
   isModalOpen: boolean;
   isUserMenuShowing: boolean;
@@ -285,4 +293,10 @@ export interface IPostsContext {
   isLoaded: boolean;
   updatePostUpvote: (a: number, b: string) => void;
   fetchPosts: () => void;
+}
+
+export interface IGroupsContext {
+  groups: IGroup[];
+  addGroup: (group: IGroup) => void;
+  getGroups: () => void;
 }

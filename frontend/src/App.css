@@ -179,7 +179,36 @@ body {
   width: 300px;
 }
 
+.group-view-container {
+  height: 100vh;
+  flex-grow: 2;
+  border-left: 1px solid;
+  border-right: 1px solid;
+  border-left-color: #444447;
+  border-right-color: #444447;
+}
+
+.group-sidebar {
+  max-width: 250px;
+  width: 250px;
+}
+
+.groups-container {
+  justify-content: center;
+  display: flex;
+  height: 100%;
+  margin: 0 auto;
+}
+
 @media (max-width: 1180px) {
+  .groups-container {
+    flex-direction: column;
+  }
+
+  .group-view-container {
+    border: none;
+  }
+
   .history-posts {
     min-width: 600px;
     width: 600px;
@@ -205,7 +234,18 @@ body {
   }
 }
 
+@media (min-width: 1620px) {
+  .group-view {
+    width: 80%;
+    background: yellow;
+    margin: 0 auto;
+  }
+}
+
 @media (max-width: 768px) {
+  .groups-container {
+    align-items: unset;
+  }
   .history-posts {
     width: 100%;
     min-width: 100%;

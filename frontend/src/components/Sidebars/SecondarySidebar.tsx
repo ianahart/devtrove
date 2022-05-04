@@ -12,9 +12,10 @@ import { useContext, useState } from 'react';
 import { IGlobalContext } from '../../interfaces';
 import { GlobalContext } from '../../context/global';
 import { RiPagesLine } from 'react-icons/ri';
+import { FiBookOpen } from 'react-icons/fi';
 
 const SecondarySidebar = () => {
-  const { theme } = useContext(GlobalContext) as IGlobalContext;
+  const { theme, userAuth } = useContext(GlobalContext) as IGlobalContext;
   const [mainClass, setMainClass] = useState('secondary-sidebar-block');
   const [isMenuOpen, setIsMenuOpen] = useState(true);
   const handleOpenMenu = () => {
@@ -85,6 +86,12 @@ const SecondarySidebar = () => {
               <Icon mr="0.2rem" as={RiPagesLine} />
               <Link to="/your-devtrove-posts" as={RouterLink}>
                 Your Posts
+              </Link>
+            </ListItem>
+            <ListItem layerStyle="listItemSidebar" textAlign="left" mb="0.2rem">
+              <Icon mr="0.2rem" as={FiBookOpen} />
+              <Link to={`/${userAuth.user.handle}/groups`} as={RouterLink}>
+                Groups
               </Link>
             </ListItem>
           </UnorderedList>

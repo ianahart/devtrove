@@ -1,4 +1,4 @@
-import { IFullUser, ITokens, IUser } from '.';
+import { IFullUser, IGroup, ITokens, IUser } from '.';
 import { DevIcon } from '../types';
 import { IHistoryPost, IBookmark, ISearchResult, IPost, IComment } from '.';
 
@@ -13,6 +13,18 @@ export interface IRegisterRequest {
   username: string;
   password: string;
   confirmpassword: string;
+}
+
+export interface IGroupCreateRequest {
+  message?: string;
+  group: IGroup;
+}
+
+export interface IGroupIndexRequest {
+  message?: string;
+  data: {
+    group: IGroup;
+  };
 }
 
 export interface ISearchPostRequest {
