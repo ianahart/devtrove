@@ -4,13 +4,16 @@ import { AiOutlineLogout } from 'react-icons/ai';
 import { useNavigate } from 'react-router-dom';
 import axios, { AxiosError } from 'axios';
 import { http } from '../../helpers';
-import { IGlobalContext } from '../../interfaces';
+import { IGlobalContext, IGroupsContext } from '../../interfaces';
 import { GlobalContext } from '../../context/global';
 import { PostsContext } from '../../context/posts';
 import { IPostsContext } from '../../interfaces';
 import { ILogoutRequest } from '../../interfaces/requests';
+import { GroupsContext } from '../../context/groups';
+
 const Logout = () => {
   const navigate = useNavigate();
+  const { resetInvitations, resetGroups } = useContext(GroupsContext) as IGroupsContext;
   const { setTheme, setIsSearchOpen, userAuth, logout } = useContext(
     GlobalContext
   ) as IGlobalContext;
@@ -40,6 +43,8 @@ const Logout = () => {
         setTheme('dark');
         setIsLoaded(false);
         setIsSearchOpen(false);
+        resetGroups();
+        resetInvitations();
       }
     } catch (e: unknown | AxiosError) {
       if (axios.isAxiosError(e) && e.response) {

@@ -1,6 +1,12 @@
-import { IFullUser, IGroup, ITokens, IUser } from '.';
+import { IFullUser, IGroup, IInvitation, ITokens, IUser } from '.';
 import { DevIcon } from '../types';
 import { IHistoryPost, IBookmark, IPagination, ISearchResult, IPost, IComment } from '.';
+
+export interface IAllInvitationsRequest {
+  message?: string;
+  pagination: IPagination;
+  invitations: IInvitation[];
+}
 
 export interface IAllPostsRequest {
   posts: IPost[];

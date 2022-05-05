@@ -2,15 +2,15 @@ import { Box, Button, FormLabel, Heading, Input, Text } from '@chakra-ui/react';
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { debounce } from 'lodash';
 import axios, { AxiosError } from 'axios';
-import FormInput from '../Forms/FormInput';
-import { GlobalContext } from '../../context/global';
-import { IGroupsContext, IGlobalContext, ISearchResult } from '../../interfaces/';
-import { http } from '../../helpers';
-import { IGroupCreateRequest } from '../../interfaces/requests';
-import { GroupsContext } from '../../context/groups';
+import FormInput from '../../Forms/FormInput';
+import { GlobalContext } from '../../../context/global';
+import { IGroupsContext, IGlobalContext, ISearchResult } from '../../../interfaces/';
+import { http } from '../../../helpers';
+import { IGroupCreateRequest } from '../../../interfaces/requests';
+import { GroupsContext } from '../../../context/groups';
 
 type ID = number | null;
-export interface IForm {
+interface IGroupForm {
   name: { name: string; value: string; error: string; id: ID };
   title: { name: string; value: string; error: string; id: ID };
 }
@@ -24,7 +24,7 @@ const CreateGroup = () => {
   const [pagination, setPagination] = useState({ page: 1, has_next_page: false });
   const { closeModal } = useContext(GlobalContext) as IGlobalContext;
 
-  const [form, setForm] = useState<IForm>({
+  const [form, setForm] = useState<IGroupForm>({
     name: { name: 'name', value: '', error: '', id: null },
     title: { name: 'title', value: '', error: '', id: null },
   });

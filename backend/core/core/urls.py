@@ -20,6 +20,7 @@ urlpatterns = [
     path('api/v1/', include(('history.urls', 'history'))),
     path('api/v1/', include(('setting.urls', 'setting'))),
     path('api/v1/', include(('group.urls', 'group'))),
+    path('api/v1/', include(('invitation.urls', 'invitation'))),
 ]
 
 

@@ -1,14 +1,15 @@
-import { Box, Button, Icon, Text } from '@chakra-ui/react';
+import { Box, Button, Icon } from '@chakra-ui/react';
 import { useContext } from 'react';
 import { MdGroups } from 'react-icons/md';
 import { GlobalContext } from '../../context/global';
 import { IGlobalContext } from '../../interfaces';
 import BasicModal from '../Mixed/BasicModal';
-import CreateGroup from './CreateGroup';
-import GroupList from './GroupList';
+import CreateGroup from './Group/CreateGroup';
+import GroupList from './Group/GroupList';
+import InvitationList from './Invitation/InvitationList';
 
 const Sidebar = () => {
-  const { theme, openModal, closeModal } = useContext(GlobalContext) as IGlobalContext;
+  const { openModal } = useContext(GlobalContext) as IGlobalContext;
   return (
     <Box color="text.primary" className="group-sidebar">
       <Box p="0.25rem" mt="3rem">
@@ -31,6 +32,9 @@ const Sidebar = () => {
         </BasicModal>
         <Box mt="5rem">
           <GroupList />
+        </Box>
+        <Box mt="2rem">
+          <InvitationList />
         </Box>
       </Box>
     </Box>

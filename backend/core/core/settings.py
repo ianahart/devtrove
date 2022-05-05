@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'setting',
     'password_reset',
     'tag',
+    'invitation',
     'group',
 ]
 

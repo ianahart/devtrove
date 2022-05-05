@@ -1,12 +1,28 @@
 import { InputEntryType, DevIcon } from '../types';
 import { IUpdateProfileFormRequest, IUpdateSettingRequest } from './requests';
 
+export interface IInvite {
+  host: number;
+  id: number;
+  handle: string;
+}
+
 export interface ISearchResult {
   cover_image: string;
   title: string;
   author: string;
   slug: string;
   id: number;
+}
+
+export interface IInvitation {
+  accepted: boolean;
+  avatar_url: string;
+  group: number;
+  handle: string;
+  host: number;
+  pk: number;
+  user: number;
 }
 
 export interface IPagination {
@@ -306,5 +322,11 @@ export interface IGroupsContext {
   addGroup: (group: IGroup) => void;
   getGroups: () => void;
   pagGroups: () => void;
+  resetGroups: () => void;
   groupPag: IPagination;
+  getInvitations: () => void;
+  invitations: IInvitation[];
+  pagInvitations: () => void;
+  invitationPag: IPagination;
+  resetInvitations: () => void;
 }
