@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.paginator import Paginator
 from django.db.utils import DatabaseError
 from django.utils import timezone
 import logging
@@ -39,7 +40,26 @@ class GroupMananger(models.Manager):
             logger.error('Unable to create a reading group for user.')
 
 
+    def groups(self, user_id: int, cur_page: int):
+        try:
+            objects = Group.objects.all().order_by(
+                '-id'
+            ).filter(
+                group_user=user_id
+            )
 
+            paginator = Paginator(objects, 3)
+            cur_page = cur_page + 1
+
+            page = paginator.page(cur_page)
+            groups = page.object_list
+
+            pagination = {'has_next': page.has_next(), 'page': cur_page}
+            return groups, pagination
+
+        except DatabaseError as e:
+            return [], []
+            logger.error('Unable to retrieve user\'s reading group list.')
 
 class Group(models.Model):
     objects: GroupMananger = GroupMananger()

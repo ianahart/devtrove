@@ -9,6 +9,11 @@ export interface ISearchResult {
   id: number;
 }
 
+export interface IPagination {
+  has_next: boolean;
+  page: number;
+}
+
 export interface ICheckedPost {
   id: number;
   checked: boolean;
@@ -244,6 +249,7 @@ export interface ILinkTheme {
 }
 
 export interface IGroup {
+  id: number;
   avatar: string;
   group_user: number;
   host: number;
@@ -299,4 +305,6 @@ export interface IGroupsContext {
   groups: IGroup[];
   addGroup: (group: IGroup) => void;
   getGroups: () => void;
+  pagGroups: () => void;
+  groupPag: IPagination;
 }

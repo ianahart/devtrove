@@ -21,12 +21,30 @@ class ListCreateAPIView(APIView):
             group = Group.objects.all().filter(
                 group_user=request.user.id
             ).first()
+            self.check_object_permissions(request, group.group_user)
+            if 'page' not in request.query_params:
+                raise BadRequest
+            groups, pagination = Group.objects.groups(int(request.user.id),
+                                 int(request.query_params['page']))
 
-            print(group.group_user)
+            if len(groups) == 0 and len(pagination) == 0:
+                raise RuntimeError
+
+            serializer = GroupSerializer(groups, many=True)
             return Response({
                                 'message': 'success',
+                                'groups': serializer.data,
+                                'pagination': pagination
                             }, status=status.HTTP_200_OK)
-        except Exception as e:
+        except (Exception, BadRequest, ) as e:
+            if isinstance(e, BadRequest):
+                return Response({
+                                'message': 'Something went wrong'
+                                }, status=status.HTTP_400_BAD_REQUEST)
+            elif isinstance(e, RuntimeError):
+                return Response({
+                                'message': 'Something went wrong'
+                                }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             return Response({
                                 'message': 'Something went wrong'
                             }, status=status.HTTP_404_NOT_FOUND)

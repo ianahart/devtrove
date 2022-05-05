@@ -1,11 +1,11 @@
 import { IFullUser, IGroup, ITokens, IUser } from '.';
 import { DevIcon } from '../types';
-import { IHistoryPost, IBookmark, ISearchResult, IPost, IComment } from '.';
+import { IHistoryPost, IBookmark, IPagination, ISearchResult, IPost, IComment } from '.';
 
 export interface IAllPostsRequest {
   posts: IPost[];
   message?: string;
-  pagination: { page: number; has_next: boolean };
+  pagination: IPagination;
 }
 
 export interface IRegisterRequest {
@@ -22,9 +22,8 @@ export interface IGroupCreateRequest {
 
 export interface IGroupIndexRequest {
   message?: string;
-  data: {
-    group: IGroup;
-  };
+  groups: IGroup[];
+  pagination: IPagination;
 }
 
 export interface ISearchPostRequest {
