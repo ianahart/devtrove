@@ -14,7 +14,10 @@ const GroupItem = ({ group }: IGroupItemProps): JSX.Element => {
     <>
       <Box cursor="pointer" p="0.4rem" my="0.5rem" display="flex">
         <Box>
-          <Tooltip label={group.host !== null ? 'Host' : 'Member'} placement="right-end">
+          <Tooltip
+            label={group.host === group.group_user ? 'Host' : 'Member'}
+            placement="right-end"
+          >
             <Box flexWrap="wrap" display="flex" alignItems="center">
               <Box borderRadius="50%" boxShadow="md" bg={group.avatar}>
                 <Logo textOne="" textTwo="" width="30px" height="30px" fontSize="12px" />
@@ -28,7 +31,7 @@ const GroupItem = ({ group }: IGroupItemProps): JSX.Element => {
               </Text>
             </Box>
           </Tooltip>
-          {group.host !== null && <SendInvitationButton group={group} />}
+          {group.host === group.group_user && <SendInvitationButton group={group} />}
         </Box>
       </Box>
     </>

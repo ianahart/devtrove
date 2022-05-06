@@ -69,7 +69,7 @@ const Editor = () => {
         setError(e.response?.data.error);
       }
     }
-  }, []);
+  }, [userAuth.user.id, userAuth.user.handle, userAuth.user.avatar_url]);
 
   const onChange = (content: any, delta: any, source: any, editor: any) => {
     setContent(editor.getContents());

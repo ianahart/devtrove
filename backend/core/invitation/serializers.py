@@ -19,14 +19,28 @@ class InvitationCreateSerializer(serializers.ModelSerializer):
 
 
 
+class InvitationUpdateSerializer(serializers.ModelSerializer):
+    accepted = serializers.BooleanField()
+    group_id = serializers.IntegerField()
+    class Meta:
+        model = Invitation
+        fields = ('group_id', 'user', 'accepted', )
+
+
+
+    def update(self, validated_data, id):
+        return Invitation.objects.update(data=validated_data, id=int(id))
+
 
 class InvitationAllSerializer(serializers.ModelSerializer):
     avatar_url = serializers.URLField()
     handle = serializers.CharField()
+    title = serializers.CharField()
     class Meta:
         model =  Invitation
         fields = ('pk',
                   'group',
+                  'title',
                   'host',
                   'user',
                   'accepted',

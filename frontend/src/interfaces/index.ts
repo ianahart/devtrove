@@ -19,6 +19,7 @@ export interface IInvitation {
   accepted: boolean;
   avatar_url: string;
   group: number;
+  title: string;
   handle: string;
   host: number;
   pk: number;
@@ -329,4 +330,6 @@ export interface IGroupsContext {
   pagInvitations: () => void;
   invitationPag: IPagination;
   resetInvitations: () => void;
+  denyInvitation: (id: number) => void;
+  acceptInvitation: (groupId: number, userId: number, invitationId: number) => void;
 }

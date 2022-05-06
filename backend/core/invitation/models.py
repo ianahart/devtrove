@@ -3,12 +3,31 @@ from django.core.paginator import Paginator
 from django.db import models, DataError, DatabaseError
 from django.utils import timezone
 from account.models import CustomUser
+from group.models import Group
 from datetime import datetime, timedelta, date
 import logging
 logger = logging.getLogger('django')
 
 class InvitationManager(models.Manager):
 
+
+
+
+    def update(self, data: dict, id: int):
+        try:
+            invitation = Invitation.objects.get(pk=id)
+
+            if invitation is None:
+                raise ObjectDoesNotExist('Unable to find invitation to update.')
+
+            invitation.accepted = data['accepted']
+            invitation.save()
+
+        except (DatabaseError, ObjectDoesNotExist) as e:
+            if isinstance(e, ObjectDoesNotExist):
+                logger.error(str(e))
+            else:
+                logger.error('Unable to update an invitation to accepted')
 
 
     def invitations(self, user_id: int, page: int):
@@ -18,13 +37,15 @@ class InvitationManager(models.Manager):
             ).order_by(
                 '-id').filter(
                 user_id=user_id
+            ).filter(
+                accepted=False
             )
 
             for result in results:
                 result.avatar_url = result.host.avatar_url
                 result.handle = result.host.handle
-
-            paginator = Paginator(results, 1)
+                result.title = result.group.title
+            paginator = Paginator(results, 3)
             page = page + 1
             cur_page = paginator.page(page)
 
@@ -60,7 +81,13 @@ class InvitationManager(models.Manager):
                 accepted=False
             ).count()
 
-           if invitation_count > 0:
+           group_count = Group.objects.all().filter(
+                group_user=user.id
+            ).filter(
+                host=data['host'].id
+            ).count()
+
+           if invitation_count > 0 or group_count > 0:
                handle = data['handle']
                raise BadRequest(f'You have already sent an invitation to {handle}')
 

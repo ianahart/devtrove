@@ -1,11 +1,71 @@
-from django.core.exceptions import BadRequest, ObjectDoesNotExist
+from django.core.exceptions import BadRequest, ObjectDoesNotExist, PermissionDenied
+from django.db import DatabaseError
 from rest_framework.exceptions import NotFound
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
+
+from group.models import Group
 from .models import Invitation
-from .serializers import InvitationCreateSerializer, InvitationAllSerializer
+from .serializers import InvitationCreateSerializer,InvitationUpdateSerializer, InvitationAllSerializer
+from account.permissions import AccountPermission
+
+
+
+
+
+class DetailAPIView(APIView):
+    permission_classes = [IsAuthenticated, AccountPermission, ]
+
+    def delete(self, request, pk=None):
+        try:
+           invitation = Invitation.objects.get(pk=pk)
+           self.check_object_permissions(request, invitation.user)
+           invitation.delete()
+
+
+           return Response(
+                {
+                    'message': 'success'
+                }, status=status.HTTP_200_OK)
+
+        except (PermissionDenied, ):
+            return Response({
+                    'error': 'Cannot deny another user\'s invitation.'
+                    }, status.HTTP_403_FORBIDDEN)
+
+
+
+    def patch(self, request, pk=None):
+        try:
+           invitation = Invitation.objects.get(pk=pk)
+           self.check_object_permissions(request, invitation.user)
+           serializer = InvitationUpdateSerializer(data=request.data)
+
+           if serializer.is_valid():
+                serializer.update(serializer.validated_data, pk)
+                Group.objects.add(data=serializer.validated_data)
+           else:
+                return Response({
+                                    'error': serializer.errors
+                                },status=status.HTTP_400_BAD_REQUEST)
+
+           return Response(
+                {
+                    'message': 'success'
+                }, status=status.HTTP_200_OK)
+
+        except (PermissionDenied, Exception, ) as e:
+            if isinstance(e, PermissionDenied):
+                return Response({
+                        'error': 'Cannot deny another user\'s invitation.'
+                        }, status.HTTP_403_FORBIDDEN)
+
+            return Response({
+                    'error': 'Cannot deny another user\'s invitation.'
+                    }, status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 class ListCreateAPIView(APIView):
     permission_classes = [IsAuthenticated, ]
@@ -35,10 +95,6 @@ class ListCreateAPIView(APIView):
 
             return Response({'message': 'Something went wrong.'},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-
-
 
 
     def post(self, request):

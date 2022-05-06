@@ -33,7 +33,7 @@ const Sidebar = () => {
         <Box mt="5rem">
           <GroupList />
         </Box>
-        <Box mt="2rem">
+        <Box mt="5rem">
           <InvitationList />
         </Box>
       </Box>

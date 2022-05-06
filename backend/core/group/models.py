@@ -11,6 +11,24 @@ import random
 class GroupMananger(models.Manager):
 
 
+    def add(self, data):
+        try:
+           group = Group.objects.all().filter(
+                pk=data['group_id']
+            ).first()
+
+
+           new_group = self.model(
+                group_user=data['user'],
+                host=group.host,
+                post_id=group.post_id,
+                title=group.title,
+                avatar=group.avatar
+            )
+           new_group.save()
+
+        except DatabaseError as e:
+            logger.error('Unable to add a user\'s new group that they joined.')
 
     def __group_avatar(self):
         try:

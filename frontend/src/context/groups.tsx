@@ -9,8 +9,8 @@ export const GroupsContext = createContext<IGroupsContext | null>(null);
 const GroupsContextProvider: React.FC<React.ReactNode> = ({ children }) => {
   const [groups, setGroups] = useState<IGroup[]>([]);
   const [groupError, setGroupError] = useState('');
-  const [invitationError, setInvitationError] = useState('');
   const [groupPag, setGroupPag] = useState<IPagination>({ has_next: false, page: 1 });
+  const [invitationError, setInvitationError] = useState('');
   const [invitations, setInvitations] = useState<IInvitation[]>([]);
   const [invitationPag, setInvitationPag] = useState<IPagination>({
     has_next: false,
@@ -81,7 +81,44 @@ const GroupsContextProvider: React.FC<React.ReactNode> = ({ children }) => {
     } catch (e: unknown | AxiosError) {
       if (axios.isAxiosError(e)) {
         console.log(e.response);
-        setGroupError(e.response?.data.error);
+        setInvitationError(e.response?.data.error);
+      }
+    }
+  };
+
+  const removeInvitation = (id: number) => {
+    setInvitations([...invitations.filter((invitation) => invitation.pk !== id)]);
+  };
+
+  const denyInvitation = async (id: number) => {
+    try {
+      const response = await http.delete(`/invitations/${id}/`);
+      removeInvitation(id);
+    } catch (e: unknown | AxiosError) {
+      if (axios.isAxiosError(e)) {
+        setInvitationError(e.response?.data.error);
+      }
+    }
+  };
+
+  const acceptInvitation = async (
+    groupId: number,
+    userId: number,
+    invitationId: number
+  ) => {
+    try {
+      const response = await http.patch(`/invitations/${invitationId}/`, {
+        group_id: groupId,
+        user: userId,
+        accepted: true,
+      });
+      setGroups([]);
+      await getGroups();
+      removeInvitation(invitationId);
+    } catch (e: unknown | AxiosError) {
+      if (axios.isAxiosError(e)) {
+        console.log(e.response);
+        setInvitationError(e.response?.data.error);
       }
     }
   };
@@ -100,6 +137,8 @@ const GroupsContextProvider: React.FC<React.ReactNode> = ({ children }) => {
         getInvitations,
         invitations,
         pagInvitations,
+        denyInvitation,
+        acceptInvitation,
       }}
     >
       {children}

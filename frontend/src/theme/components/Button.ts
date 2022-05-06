@@ -30,7 +30,7 @@ export const Button = {
         backgroundColor: 'transparent',
       },
       _hover: {
-        backgroundColor: 'transparent',
+        backgroundColor: '#181717',
       },
     },
   },
