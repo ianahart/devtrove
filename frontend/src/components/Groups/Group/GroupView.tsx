@@ -1,4 +1,5 @@
 import { Box, Text } from '@chakra-ui/react';
+import GroupViewContents from './GroupViewContents';
 
 const GroupView = () => {
   return (
@@ -9,6 +10,7 @@ const GroupView = () => {
       p="0.5rem"
       minH="400px"
     >
+      <GroupViewContents />
       <Text color="#FFF">GROUP VIEW</Text>
     </Box>
   );

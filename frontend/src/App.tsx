@@ -35,6 +35,8 @@ import PublicDevtrovePosts from './pages/PublicDevtrovePosts';
 import DevtrovePost from './components/Posts/DevtrovePost';
 import Groups from './pages/Groups';
 
+import GroupView from './components/Groups/Group/GroupView';
+
 import './App.css';
 import { getStorage } from './helpers';
 const App = () => {
@@ -59,6 +61,7 @@ const App = () => {
             <BasicModal resetForm={undefined}></BasicModal>
             <Routes>
               <Route path="/" element={<Home />} />
+
               <Route
                 path="/login"
                 element={
@@ -98,7 +101,16 @@ const App = () => {
                     <Groups />
                   </RequireAuth>
                 }
-              />
+              >
+                <Route
+                  path="users/:groupId"
+                  element={
+                    <RequireAuth>
+                      <GroupView />
+                    </RequireAuth>
+                  }
+                />
+              </Route>
               <Route
                 path="/your-devtrove-posts"
                 element={

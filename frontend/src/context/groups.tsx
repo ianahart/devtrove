@@ -49,6 +49,20 @@ const GroupsContextProvider: React.FC<React.ReactNode> = ({ children }) => {
     }
   };
 
+  const removeGroup = async (groupId: string, groupUser: number) => {
+    try {
+      const response = await http.delete(`groups/users/${groupUser}/?q=${groupId}`);
+      const filtered = [...groups].filter((group) => group.group_id !== groupId);
+      console.log(response);
+      setGroups(filtered);
+    } catch (e: unknown | AxiosError) {
+      if (axios.isAxiosError(e)) {
+        console.log(e.response);
+        setGroupError(e.response?.data.error);
+      }
+    }
+  };
+
   const addGroup = (group: IGroup) => {
     setGroups((prevState) => [...prevState, group]);
   };
@@ -132,6 +146,7 @@ const GroupsContextProvider: React.FC<React.ReactNode> = ({ children }) => {
         groups,
         getGroups,
         pagGroups,
+        removeGroup,
         resetInvitations,
         invitationPag,
         getInvitations,

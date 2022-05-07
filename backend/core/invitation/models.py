@@ -11,8 +11,6 @@ logger = logging.getLogger('django')
 class InvitationManager(models.Manager):
 
 
-
-
     def update(self, data: dict, id: int):
         try:
             invitation = Invitation.objects.get(pk=id)
@@ -85,7 +83,8 @@ class InvitationManager(models.Manager):
                 group_user=user.id
             ).filter(
                 host=data['host'].id
-            ).count()
+            ).filter(
+                group_id=data['group_id']).count()
 
            if invitation_count > 0 or group_count > 0:
                handle = data['handle']

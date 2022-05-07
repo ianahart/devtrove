@@ -1,14 +1,68 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.core.paginator import Paginator
 from django.db.utils import DatabaseError
 from django.utils import timezone
 import logging
-
+import uuid
 from account.models import CustomUser
 logger = logging.getLogger('django')
 import random
 
 class GroupMananger(models.Manager):
+
+
+
+    def delete(self, user_id: int, group_id: str):
+        try:
+            group = Group.objects.all().filter(
+                group_user=user_id
+            ).filter(
+                group_id=group_id
+            ).first()
+
+            if group is not None:
+               group.delete()
+            else:
+                raise DatabaseError
+
+        except DatabaseError:
+            logger.error('Unable to leave group for specified user.')
+
+
+
+    def users(self, group_id: int, user_id: int):
+        try:
+            group = Group.objects.order_by(
+                '-id'
+            ).select_related(
+            'group_user'
+            ).all().filter(
+                group_id=group_id
+            )
+            if group.count() == 0:
+                raise ObjectDoesNotExist('No users were found for this group.')
+
+            group_slice = group[0:4]
+            count = len(group) - len(group_slice)
+            count_text = f'{count} more...' if count > 0 else ''
+
+
+            for user in group_slice:
+                user.avatar_url = user.group_user.avatar_url
+            post ={
+            'title': group[0].post.title,
+            'cover_image': group[0].post.cover_image,
+            'post_id': group[0].post.id,
+            'host': group[0].host.id,
+             'user_id': user_id,
+             'slug': group[0].post.slug,
+            'count': count_text,
+            }
+            return post, group_slice
+        except (DatabaseError, ObjectDoesNotExist, ) as e:
+            return {'error': str(e)}, {}
+            logger.error('Unable to get group users for group view.')
 
 
     def add(self, data):
@@ -23,7 +77,8 @@ class GroupMananger(models.Manager):
                 host=group.host,
                 post_id=group.post_id,
                 title=group.title,
-                avatar=group.avatar
+                avatar=group.avatar,
+                group_id=group.group_id
             )
            new_group.save()
 
@@ -48,6 +103,7 @@ class GroupMananger(models.Manager):
                 post_id=int(data['post'].id),
                 title=data['title'],
                 avatar=self.__group_avatar(),
+                group_id=uuid.uuid4()
             )
 
             new_group.save()
@@ -86,6 +142,7 @@ class Group(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)
     avatar = models.CharField(max_length=75, blank=True, null=True)
+    group_id = models.CharField(max_length=200, blank=True, null=True)
     title = models.CharField(max_length=200, blank=True, null=True)
     host = models.ForeignKey('account.CustomUser',
                              on_delete=models.CASCADE,

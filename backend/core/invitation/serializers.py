@@ -3,10 +3,10 @@ from .models import Invitation
 
 class InvitationCreateSerializer(serializers.ModelSerializer):
     handle = serializers.CharField(max_length=100)
-
+    group_id = serializers.CharField(max_length=200)
     class Meta:
         model = Invitation
-        fields = ('group', 'host', 'handle', )
+        fields = ('group', 'host', 'handle', 'group_id', )
 
 
     def validate_handle(self, value):

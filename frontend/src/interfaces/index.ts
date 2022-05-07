@@ -272,6 +272,17 @@ export interface IGroup {
   host: number;
   post: number;
   title: string;
+  group_id: string;
+}
+
+export interface IGroupUser {
+  avatar_url: string;
+  group_id: string;
+  host: number;
+  group_user: number;
+  id: number;
+  post: number;
+  title: string;
 }
 
 export interface IGlobalContext {
@@ -324,6 +335,7 @@ export interface IGroupsContext {
   getGroups: () => void;
   pagGroups: () => void;
   resetGroups: () => void;
+  removeGroup: (groupId: string, userId: number) => void;
   groupPag: IPagination;
   getInvitations: () => void;
   invitations: IInvitation[];

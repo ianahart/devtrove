@@ -1,4 +1,4 @@
-import { IFullUser, IGroup, IInvitation, ITokens, IUser } from '.';
+import { IFullUser, IGroup, IGroupUser, IInvitation, ITokens, IUser } from '.';
 import { DevIcon } from '../types';
 import { IHistoryPost, IBookmark, IPagination, ISearchResult, IPost, IComment } from '.';
 
@@ -82,6 +82,12 @@ export interface IBookmarkRequest {
   bookmarked_posts: IBookmark[];
   message?: string;
   paginator: { page: number; start: number; end: number };
+}
+
+export interface IGroupUserRequest {
+  message?: string;
+  group: IGroupUser[];
+  post: { title: string; cover_image: string; post_id: number };
 }
 
 export interface IHistoryRequest {

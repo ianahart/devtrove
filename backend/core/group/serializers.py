@@ -3,10 +3,29 @@ from .models import Group
 from account.models import CustomUser
 
 
+
+
 class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
-        fields = ('avatar', 'title', 'host', 'post', 'group_user', 'id', )
+        fields = ('group_id', 'avatar', 'title', 'host', 'post', 'group_user', 'id', )
+
+
+
+
+class GroupUserSerializer(serializers.ModelSerializer):
+    avatar_url = serializers.CharField()
+    class Meta:
+        model = Group
+        fields = ('group_id',
+                  'id',
+                  'title',
+                  'host',
+                  'post',
+                  'group_user',
+                  'avatar_url', )
+
+
 
 class GroupCreateSerializer(serializers.ModelSerializer):
     class Meta:

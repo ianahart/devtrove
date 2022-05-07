@@ -55,6 +55,7 @@ const SendInvitationButton = ({ group }: ISendInvitationButtonProps) => {
         host: group.host,
         group: group.id,
         handle: handle.value,
+        group_id: group.group_id,
       });
       closeModal();
 

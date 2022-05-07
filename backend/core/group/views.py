@@ -1,4 +1,4 @@
-from django.core.exceptions import BadRequest, PermissionDenied
+from django.core.exceptions import BadRequest, ObjectDoesNotExist, PermissionDenied
 from django.db import DatabaseError
 from django.core.paginator import EmptyPage
 from rest_framework import status
@@ -6,10 +6,72 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from .models import Group
-from .serializers import GroupCreateSerializer, GroupSerializer
+from .serializers import GroupCreateSerializer, GroupSerializer, GroupUserSerializer
 from rest_framework.parsers import FormParser, MultiPartParser
 from account.permissions import AccountPermission
 import json
+
+
+
+
+class GroupUserDetailAPIView(APIView):
+    permission_classes = [IsAuthenticated, ]
+    def delete(self, request, pk=None):
+        try:
+            if 'q' not in request.query_params:
+                raise BadRequest
+            Group.objects.delete(user_id=pk, group_id=request.query_params['q'])
+
+            return Response({
+                                'message': 'success on delete'
+                            }, status=status.HTTP_200_OK)
+        except (Exception,  BadRequest, PermissionDenied, ) as e:
+            print(e, type(e))
+            if isinstance(e, BadRequest):
+                return Response(
+                    {
+                        'error': 'Something went wrong trying to leave group.'
+                    },status=status.HTTP_400_BAD_REQUEST
+                )
+            return Response(
+                {
+                    'error': 'Something went wrong.',
+                }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class GroupUserListCreateAPIView(APIView):
+    permission_classes =[IsAuthenticated, ]
+
+    def get(self, request):
+        try:
+            if 'id' not in request.query_params:
+                raise BadRequest('Unable to find users for this group.')
+
+            post, group = Group.objects.users(
+                request.query_params['id'],
+                int(request.user.id)
+            )
+            serializer = GroupUserSerializer(group, many=True)
+
+            if len(post) == 0 and len(group) == 0:
+                raise ObjectDoesNotExist
+
+            return Response({
+                            'message': 'success',
+                            'post': post,
+                            'group' :serializer.data,
+                            }, status=status.HTTP_200_OK)
+
+        except (BadRequest, ObjectDoesNotExist, ) as e:
+            if isinstance(e, BadRequest):
+                return Response({
+                    'error': str(e)
+                },status=status.HTTP_400_BAD_REQUEST)
+
+            return Response({
+                                'error': 'Unable to locate group users.'
+                            },status=status.HTTP_404_NOT_FOUND)
+
 
 
 class ListCreateAPIView(APIView):
