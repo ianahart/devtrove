@@ -1,6 +1,16 @@
 import { InputEntryType, DevIcon } from '../types';
 import { IUpdateProfileFormRequest, IUpdateSettingRequest } from './requests';
 
+export interface IGroupPost {
+  title: string;
+  cover_image: string;
+  post_id: number | null;
+  host: number | null;
+  slug: string;
+  user_id: number | null;
+  count: string;
+}
+
 export interface IInvite {
   host: number;
   id: number;
@@ -334,7 +344,9 @@ export interface IGroupsContext {
   addGroup: (group: IGroup) => void;
   getGroups: () => void;
   pagGroups: () => void;
+  groupError: string;
   resetGroups: () => void;
+  disbandGroup: (groupdId: string, userIds: number[]) => void;
   removeGroup: (groupId: string, userId: number) => void;
   groupPag: IPagination;
   getInvitations: () => void;

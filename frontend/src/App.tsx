@@ -7,6 +7,7 @@ import Home from './pages/Home';
 import Register from './pages/Register';
 import Profile from './pages/Auth/Profile';
 import Navigation from './components/Navigation/';
+import PageNotFound from './pages/PageNotFound';
 import Footer from './components/Footer/';
 import BasicModal from './components/Mixed/BasicModal';
 import WithAxios from './helpers/WithAxios';
@@ -221,6 +222,7 @@ const App = () => {
                 </Route>
               </Route>
               <Route path=":id/:slug" element={<Detail />} />
+              <Route path="*" element={<PageNotFound />} />
             </Routes>
           </Box>
           <Footer name="DevTrove" year={2022} />

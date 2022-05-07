@@ -3,7 +3,11 @@ from .models import Group
 from account.models import CustomUser
 
 
-
+class GroupRemoveSerializer(serializers.ModelSerializer):
+    user_ids = serializers.JSONField()
+    class Meta:
+        model = Group
+        fields = ('group_id', 'user_ids', )
 
 class GroupSerializer(serializers.ModelSerializer):
     class Meta:

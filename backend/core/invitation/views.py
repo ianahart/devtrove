@@ -21,6 +21,8 @@ class DetailAPIView(APIView):
     def delete(self, request, pk=None):
         try:
            invitation = Invitation.objects.get(pk=pk)
+           if invitation is None:
+               raise ObjectDoesNotExist
            self.check_object_permissions(request, invitation.user)
            invitation.delete()
 
@@ -30,7 +32,10 @@ class DetailAPIView(APIView):
                     'message': 'success'
                 }, status=status.HTTP_200_OK)
 
-        except (PermissionDenied, ):
+        except (PermissionDenied, ObjectDoesNotExist, ):
+            return Response({
+                                'error': 'Not Found'
+                            }, status=status.HTTP_404_NOT_FOUND)
             return Response({
                     'error': 'Cannot deny another user\'s invitation.'
                     }, status.HTTP_403_FORBIDDEN)
@@ -45,7 +50,9 @@ class DetailAPIView(APIView):
 
            if serializer.is_valid():
                 serializer.update(serializer.validated_data, pk)
-                Group.objects.add(data=serializer.validated_data)
+                result = Group.objects.add(data=serializer.validated_data)
+                if 'error' in result:
+                    raise ObjectDoesNotExist
            else:
                 return Response({
                                     'error': serializer.errors
@@ -56,14 +63,16 @@ class DetailAPIView(APIView):
                     'message': 'success'
                 }, status=status.HTTP_200_OK)
 
-        except (PermissionDenied, Exception, ) as e:
+        except (PermissionDenied, Exception,ObjectDoesNotExist ) as e:
             if isinstance(e, PermissionDenied):
                 return Response({
-                        'error': 'Cannot deny another user\'s invitation.'
+                        'error': 'Cannot accept another user\'s invitation.'
                         }, status.HTTP_403_FORBIDDEN)
+            if isinstance(e, ObjectDoesNotExist):
+                return Response({'error': 'Not Found'}, status=status.HTTP_404_NOT_FOUND)
 
             return Response({
-                    'error': 'Cannot deny another user\'s invitation.'
+                    'error': 'Cannot accept another user\'s invitation.'
                     }, status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 

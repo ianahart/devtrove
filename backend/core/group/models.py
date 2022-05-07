@@ -11,9 +11,19 @@ import random
 
 class GroupMananger(models.Manager):
 
+    def disband(self, data):
+        try:
+            group = Group.objects.filter(group_id=data['group_id'])
+            if group.count() > 0:
+                for invitation in group[0].invitation_group.all():
+                    invitation.delete()
+            for group_member in group:
+                group_member.delete()
 
+        except DatabaseError:
+            logger.error('Unable to disband group, from the host.')
 
-    def delete(self, user_id: int, group_id: str):
+    def leave(self, user_id: int, group_id: str):
         try:
             group = Group.objects.all().filter(
                 group_user=user_id
@@ -71,7 +81,8 @@ class GroupMananger(models.Manager):
                 pk=data['group_id']
             ).first()
 
-
+           if group is None:
+                raise DatabaseError('Unable to add a user\'s new group that they joined.')
            new_group = self.model(
                 group_user=data['user'],
                 host=group.host,
@@ -81,9 +92,10 @@ class GroupMananger(models.Manager):
                 group_id=group.group_id
             )
            new_group.save()
-
+           return {}
         except DatabaseError as e:
-            logger.error('Unable to add a user\'s new group that they joined.')
+            logger.error(str(e))
+            return {'error': str(e)}
 
     def __group_avatar(self):
         try:

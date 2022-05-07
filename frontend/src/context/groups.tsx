@@ -53,11 +53,24 @@ const GroupsContextProvider: React.FC<React.ReactNode> = ({ children }) => {
     try {
       const response = await http.delete(`groups/users/${groupUser}/?q=${groupId}`);
       const filtered = [...groups].filter((group) => group.group_id !== groupId);
-      console.log(response);
       setGroups(filtered);
     } catch (e: unknown | AxiosError) {
       if (axios.isAxiosError(e)) {
-        console.log(e.response);
+        setGroupError(e.response?.data.error);
+      }
+    }
+  };
+
+  const disbandGroup = async (groupId: string, userIds: number[]) => {
+    try {
+      const response = await http.post('/groups/users/', {
+        user_ids: userIds,
+        group_id: groupId,
+      });
+      const filtered = [...groups].filter((group) => group.group_id !== groupId);
+      setGroups(filtered);
+    } catch (e: unknown | AxiosError) {
+      if (axios.isAxiosError(e)) {
         setGroupError(e.response?.data.error);
       }
     }
@@ -94,7 +107,6 @@ const GroupsContextProvider: React.FC<React.ReactNode> = ({ children }) => {
       setInvitationPag((prevState) => ({ ...prevState, ...response.data.pagination }));
     } catch (e: unknown | AxiosError) {
       if (axios.isAxiosError(e)) {
-        console.log(e.response);
         setInvitationError(e.response?.data.error);
       }
     }
@@ -110,7 +122,11 @@ const GroupsContextProvider: React.FC<React.ReactNode> = ({ children }) => {
       removeInvitation(id);
     } catch (e: unknown | AxiosError) {
       if (axios.isAxiosError(e)) {
+        removeInvitation(id);
         setInvitationError(e.response?.data.error);
+        if (e.response?.status === 404) {
+          removeInvitation(id);
+        }
       }
     }
   };
@@ -131,8 +147,10 @@ const GroupsContextProvider: React.FC<React.ReactNode> = ({ children }) => {
       removeInvitation(invitationId);
     } catch (e: unknown | AxiosError) {
       if (axios.isAxiosError(e)) {
-        console.log(e.response);
         setInvitationError(e.response?.data.error);
+        if (e.response?.status === 404) {
+          removeInvitation(invitationId);
+        }
       }
     }
   };
@@ -143,8 +161,10 @@ const GroupsContextProvider: React.FC<React.ReactNode> = ({ children }) => {
         resetGroups,
         groupPag,
         addGroup,
+        groupError,
         groups,
         getGroups,
+        disbandGroup,
         pagGroups,
         removeGroup,
         resetInvitations,

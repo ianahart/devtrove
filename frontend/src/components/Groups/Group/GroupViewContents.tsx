@@ -1,8 +1,13 @@
 import { Box, Button, Icon, Heading, Image, Link, Text } from '@chakra-ui/react';
-import { useParams, Link as RouterLink } from 'react-router-dom';
+import { useParams, useNavigate, Link as RouterLink } from 'react-router-dom';
 import axios, { AxiosError } from 'axios';
 import { GlobalContext } from '../../../context/global';
-import { IGlobalContext, IGroupsContext, IGroupUser } from '../../../interfaces';
+import {
+  IGroupPost,
+  IGlobalContext,
+  IGroupsContext,
+  IGroupUser,
+} from '../../../interfaces';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { http } from '../../../helpers';
 import { IGroupUserRequest } from '../../../interfaces/requests';
@@ -10,16 +15,6 @@ import ProfilePicture from '../../Account/ProfilePicture';
 import { AiOutlinePlusCircle } from 'react-icons/ai';
 import Spinner from '../../Mixed/Spinner';
 import { GroupsContext } from '../../../context/groups';
-
-interface IGroupPost {
-  title: string;
-  cover_image: string;
-  post_id: number | null;
-  host: number | null;
-  slug: string;
-  user_id: number | null;
-  count: string;
-}
 
 const GroupViewContents = () => {
   const initialPost = {
@@ -31,10 +26,11 @@ const GroupViewContents = () => {
     slug: '',
     user_id: null,
   };
+  const navigate = useNavigate();
   const params = useParams();
   const [error, setError] = useState('');
   const [isLoaded, setIsLoaded] = useState(true);
-  const { removeGroup } = useContext(GroupsContext) as IGroupsContext;
+  const { removeGroup, disbandGroup } = useContext(GroupsContext) as IGroupsContext;
   const { theme, userAuth } = useContext(GlobalContext) as IGlobalContext;
   const [post, setPost] = useState<IGroupPost>(initialPost);
   const [group, setGroup] = useState<IGroupUser[]>([]);
@@ -57,7 +53,6 @@ const GroupViewContents = () => {
       );
       setIsLoaded(true);
       setGroup((prevState) => [...prevState, ...response.data.group]);
-      // @ts-ignore
       setPost(response.data.post);
     } catch (e: unknown | AxiosError) {
       if (axios.isAxiosError(e)) {
@@ -81,9 +76,22 @@ const GroupViewContents = () => {
     setIsDeleted(true);
   };
 
-  const to = post.slug.startsWith('/')
-    ? `/${post.post_id}${post.slug}`
-    : `/${post.post_id}/${post.slug}`;
+  const deleteGroup = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    const userIds = [...group].map((member) => member.group_user);
+    if (params.groupId === undefined) return;
+    disbandGroup(params.groupId, userIds);
+    setPost(initialPost);
+    setGroup([]);
+    setIsDeleted(true);
+    navigate(`/${userAuth.user.handle}/groups/`);
+  };
+  let to = '/';
+  if (post.slug) {
+    to = post.slug.startsWith('/')
+      ? `/${post.post_id}${post.slug}`
+      : `/${post.post_id}/${post.slug}`;
+  }
 
   return (
     <>
@@ -108,7 +116,7 @@ const GroupViewContents = () => {
                     </Box>
                   );
                 })}
-                {post.count.length > 0 && (
+                {post.count && post.count.length > 0 && (
                   <Box display="flex" alignItems="center">
                     <Icon
                       ml="0.5rem"
@@ -124,7 +132,9 @@ const GroupViewContents = () => {
               </Box>
               <Box display="flex" justifyContent="flex-end">
                 {post.host === userAuth.user.id ? (
-                  <Button variant="transparentButton">Disband Group</Button>
+                  <Button onClick={deleteGroup} variant="transparentButton">
+                    Disband Group
+                  </Button>
                 ) : (
                   <Button onClick={leaveGroup} variant="transparentButton">
                     Leave Group
