@@ -7,6 +7,7 @@ import Home from './pages/Home';
 import Register from './pages/Register';
 import Profile from './pages/Auth/Profile';
 import Navigation from './components/Navigation/';
+import PageNotFound from './pages/PageNotFound';
 import Footer from './components/Footer/';
 import BasicModal from './components/Mixed/BasicModal';
 import WithAxios from './helpers/WithAxios';
@@ -33,6 +34,9 @@ import Editor from './pages/Editor';
 import YourDevtrovePosts from './pages/YourDevtrovePosts';
 import PublicDevtrovePosts from './pages/PublicDevtrovePosts';
 import DevtrovePost from './components/Posts/DevtrovePost';
+import Groups from './pages/Groups';
+
+import GroupView from './components/Groups/Group/GroupView';
 
 import './App.css';
 import { getStorage } from './helpers';
@@ -58,6 +62,7 @@ const App = () => {
             <BasicModal resetForm={undefined}></BasicModal>
             <Routes>
               <Route path="/" element={<Home />} />
+
               <Route
                 path="/login"
                 element={
@@ -90,6 +95,23 @@ const App = () => {
               />
               <Route path="/devtrove-posts" element={<PublicDevtrovePosts />} />
 
+              <Route
+                path="/:handle/groups"
+                element={
+                  <RequireAuth>
+                    <Groups />
+                  </RequireAuth>
+                }
+              >
+                <Route
+                  path="users/:groupId"
+                  element={
+                    <RequireAuth>
+                      <GroupView />
+                    </RequireAuth>
+                  }
+                />
+              </Route>
               <Route
                 path="/your-devtrove-posts"
                 element={
@@ -200,6 +222,7 @@ const App = () => {
                 </Route>
               </Route>
               <Route path=":id/:slug" element={<Detail />} />
+              <Route path="*" element={<PageNotFound />} />
             </Routes>
           </Box>
           <Footer name="DevTrove" year={2022} />

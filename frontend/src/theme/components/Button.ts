@@ -21,6 +21,18 @@ export const Button = {
         backgroundColor: '#0066FF',
       },
     },
+
+    transparentButton: {
+      border: '1px solid #C42CB0',
+      borderRadius: '12px',
+      backgroundColor: 'transparent',
+      _active: {
+        backgroundColor: 'transparent',
+      },
+      _hover: {
+        backgroundColor: '#181717',
+      },
+    },
   },
 };
 export default Button;

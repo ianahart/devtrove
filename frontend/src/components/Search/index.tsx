@@ -22,6 +22,7 @@ const Search = () => {
   const searchPosts = useCallback(
     async (search_term: string) => {
       try {
+        setSearches([]);
         setInputValue(search_term);
         if (search_term.trim().length === 0) return;
         const response = await http.post<ISearchPostRequest>('/posts/search/', {

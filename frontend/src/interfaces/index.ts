@@ -1,12 +1,44 @@
 import { InputEntryType, DevIcon } from '../types';
 import { IUpdateProfileFormRequest, IUpdateSettingRequest } from './requests';
 
+export interface IGroupPost {
+  title: string;
+  cover_image: string;
+  post_id: number | null;
+  host: number | null;
+  slug: string;
+  user_id: number | null;
+  count: string;
+}
+
+export interface IInvite {
+  host: number;
+  id: number;
+  handle: string;
+}
+
 export interface ISearchResult {
   cover_image: string;
   title: string;
   author: string;
   slug: string;
   id: number;
+}
+
+export interface IInvitation {
+  accepted: boolean;
+  avatar_url: string;
+  group: number;
+  title: string;
+  handle: string;
+  host: number;
+  pk: number;
+  user: number;
+}
+
+export interface IPagination {
+  has_next: boolean;
+  page: number;
 }
 
 export interface ICheckedPost {
@@ -243,6 +275,26 @@ export interface ILinkTheme {
   };
 }
 
+export interface IGroup {
+  id: number;
+  avatar: string;
+  group_user: number;
+  host: number;
+  post: number;
+  title: string;
+  group_id: string;
+}
+
+export interface IGroupUser {
+  avatar_url: string;
+  group_id: string;
+  host: number;
+  group_user: number;
+  id: number;
+  post: number;
+  title: string;
+}
+
 export interface IGlobalContext {
   isModalOpen: boolean;
   isUserMenuShowing: boolean;
@@ -285,4 +337,23 @@ export interface IPostsContext {
   isLoaded: boolean;
   updatePostUpvote: (a: number, b: string) => void;
   fetchPosts: () => void;
+}
+
+export interface IGroupsContext {
+  groups: IGroup[];
+  addGroup: (group: IGroup) => void;
+  getGroups: () => void;
+  pagGroups: () => void;
+  groupError: string;
+  resetGroups: () => void;
+  disbandGroup: (groupdId: string, userIds: number[]) => void;
+  removeGroup: (groupId: string, userId: number) => void;
+  groupPag: IPagination;
+  getInvitations: () => void;
+  invitations: IInvitation[];
+  pagInvitations: () => void;
+  invitationPag: IPagination;
+  resetInvitations: () => void;
+  denyInvitation: (id: number) => void;
+  acceptInvitation: (groupId: number, userId: number, invitationId: number) => void;
 }

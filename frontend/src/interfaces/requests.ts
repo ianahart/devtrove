@@ -1,11 +1,25 @@
-import { IFullUser, ITokens, IUser } from '.';
+import {
+  IFullUser,
+  IGroupPost,
+  IGroup,
+  IGroupUser,
+  IInvitation,
+  ITokens,
+  IUser,
+} from '.';
 import { DevIcon } from '../types';
-import { IHistoryPost, IBookmark, ISearchResult, IPost, IComment } from '.';
+import { IHistoryPost, IBookmark, IPagination, ISearchResult, IPost, IComment } from '.';
+
+export interface IAllInvitationsRequest {
+  message?: string;
+  pagination: IPagination;
+  invitations: IInvitation[];
+}
 
 export interface IAllPostsRequest {
   posts: IPost[];
   message?: string;
-  pagination: { page: number; has_next: boolean };
+  pagination: IPagination;
 }
 
 export interface IRegisterRequest {
@@ -13,6 +27,17 @@ export interface IRegisterRequest {
   username: string;
   password: string;
   confirmpassword: string;
+}
+
+export interface IGroupCreateRequest {
+  message?: string;
+  group: IGroup;
+}
+
+export interface IGroupIndexRequest {
+  message?: string;
+  groups: IGroup[];
+  pagination: IPagination;
 }
 
 export interface ISearchPostRequest {
@@ -65,6 +90,12 @@ export interface IBookmarkRequest {
   bookmarked_posts: IBookmark[];
   message?: string;
   paginator: { page: number; start: number; end: number };
+}
+
+export interface IGroupUserRequest {
+  message?: string;
+  group: IGroupUser[];
+  post: IGroupPost;
 }
 
 export interface IHistoryRequest {

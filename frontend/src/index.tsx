@@ -5,13 +5,15 @@ import App from './App';
 import { devtroveTheme } from './theme/devtroveTheme';
 import GlobalContextProvider from './context/global';
 import PostsContextProvider from './context/posts';
-
+import GroupsContextProvider from './context/groups';
 ReactDOM.render(
   <React.StrictMode>
     <ChakraProvider theme={devtroveTheme}>
       <GlobalContextProvider>
         <PostsContextProvider>
-          <App />
+          <GroupsContextProvider>
+            <App />
+          </GroupsContextProvider>
         </PostsContextProvider>
       </GlobalContextProvider>
     </ChakraProvider>
