@@ -8,7 +8,21 @@ import {
   IUser,
 } from '.';
 import { DevIcon } from '../types';
-import { IHistoryPost, IBookmark, IPagination, ISearchResult, IPost, IComment } from '.';
+import {
+  IHistoryPost,
+  IMessage,
+  IBookmark,
+  IPagination,
+  ISearchResult,
+  IPost,
+  IComment,
+} from '.';
+
+export interface IMessagesRequest {
+  message?: string;
+  pagination: IPagination;
+  messages: IMessage[];
+}
 
 export interface IAllInvitationsRequest {
   message?: string;

@@ -2,6 +2,13 @@ import axios from 'axios';
 import { nanoid } from 'nanoid';
 import { IUserAuth } from '../interfaces';
 
+export const getGroupId = () => {
+  let groupId = localStorage.getItem('group_id') || '';
+  if (groupId.length) {
+    return (groupId = JSON.parse(groupId));
+  }
+};
+
 export const http = axios.create({
   // Change in production
   baseURL: 'http://localhost:3000/api/v1/',

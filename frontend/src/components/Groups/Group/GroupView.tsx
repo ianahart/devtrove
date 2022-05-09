@@ -7,13 +7,7 @@ import GroupViewContents from './GroupViewContents';
 const GroupView = () => {
   const { groupError } = useContext(GroupsContext) as IGroupsContext;
   return (
-    <Box
-      className="group-view"
-      border="1px solid blue"
-      margin="8rem auto 1rem auto"
-      p="0.5rem"
-      minH="400px"
-    >
+    <Box className="group-view" margin="8rem auto 1rem auto">
       {groupError && (
         <Box display="flex" mb="4rem" justifyContent="center">
           <Text color="purple.secondary">{groupError}</Text>

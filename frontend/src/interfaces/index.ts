@@ -1,6 +1,15 @@
 import { InputEntryType, DevIcon } from '../types';
 import { IUpdateProfileFormRequest, IUpdateSettingRequest } from './requests';
 
+export interface IMessage {
+  avatar_url: string;
+  handle: string;
+  message: string;
+  readable_date: string;
+  room: string;
+  user: number;
+}
+
 export interface IGroupPost {
   title: string;
   cover_image: string;
@@ -9,6 +18,8 @@ export interface IGroupPost {
   slug: string;
   user_id: number | null;
   count: string;
+  group_id: number | null;
+  id: number | null;
 }
 
 export interface IInvite {

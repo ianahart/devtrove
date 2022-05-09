@@ -57,7 +57,6 @@ class GroupMananger(models.Manager):
             count = len(group) - len(group_slice)
             count_text = f'{count} more...' if count > 0 else ''
 
-
             for user in group_slice:
                 user.avatar_url = user.group_user.avatar_url
             post ={
@@ -67,7 +66,9 @@ class GroupMananger(models.Manager):
             'host': group[0].host.id,
              'user_id': user_id,
              'slug': group[0].post.slug,
+             'group_id': group[0].group_id,
             'count': count_text,
+             'id': group[0].id
             }
             return post, group_slice
         except (DatabaseError, ObjectDoesNotExist, ) as e:

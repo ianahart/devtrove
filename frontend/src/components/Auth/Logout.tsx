@@ -45,6 +45,7 @@ const Logout = () => {
         setIsSearchOpen(false);
         resetGroups();
         resetInvitations();
+        localStorage.removeItem('group_id');
       }
     } catch (e: unknown | AxiosError) {
       if (axios.isAxiosError(e) && e.response) {

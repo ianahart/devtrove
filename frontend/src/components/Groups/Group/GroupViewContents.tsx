@@ -2,6 +2,7 @@ import { Box, Button, Icon, Heading, Image, Link, Text } from '@chakra-ui/react'
 import { useParams, useNavigate, Link as RouterLink } from 'react-router-dom';
 import axios, { AxiosError } from 'axios';
 import { GlobalContext } from '../../../context/global';
+import Chat from './Chat';
 import {
   IGroupPost,
   IGlobalContext,
@@ -25,6 +26,8 @@ const GroupViewContents = () => {
     count: '',
     slug: '',
     user_id: null,
+    group_id: null,
+    id: null,
   };
   const navigate = useNavigate();
   const params = useParams();
@@ -47,6 +50,8 @@ const GroupViewContents = () => {
         count: '',
         slug: '',
         user_id: null,
+        group_id: null,
+        id: null,
       });
       const response = await http.get<IGroupUserRequest>(
         `/groups/users/?id=${params.groupId}`
@@ -65,6 +70,7 @@ const GroupViewContents = () => {
   useEffect(() => {
     setIsDeleted(false);
     getGroupUsers();
+    localStorage.setItem('group_id', JSON.stringify(params.groupId));
   }, [getGroupUsers, params.groupId]);
 
   const leaveGroup = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -103,7 +109,7 @@ const GroupViewContents = () => {
             <Spinner text="Loading..." />
           ) : (
             <Box>
-              <Box alignItems="center" display="flex" justifyContent="center">
+              <Box p="0.5rem" alignItems="center" display="flex" justifyContent="center">
                 {group.map((item) => {
                   return (
                     <Box key={item.group_user}>
@@ -130,7 +136,7 @@ const GroupViewContents = () => {
                   </Box>
                 )}
               </Box>
-              <Box display="flex" justifyContent="flex-end">
+              <Box p="0.5rem" display="flex" justifyContent="flex-end">
                 {post.host === userAuth.user.id ? (
                   <Button onClick={deleteGroup} variant="transparentButton">
                     Disband Group
@@ -156,6 +162,7 @@ const GroupViewContents = () => {
                   width="200px"
                 />
               </Box>
+              {post.group_id !== null && <Chat group={post} />}
             </Box>
           )}
         </Box>
