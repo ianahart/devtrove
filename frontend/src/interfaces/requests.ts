@@ -1,6 +1,6 @@
 import {
   IFullUser,
-  IGroupPost,
+  IGroupData,
   IGroup,
   IGroupUser,
   IInvitation,
@@ -109,7 +109,7 @@ export interface IBookmarkRequest {
 export interface IGroupUserRequest {
   message?: string;
   group: IGroupUser[];
-  post: IGroupPost;
+  group_data: IGroupData;
 }
 
 export interface IHistoryRequest {

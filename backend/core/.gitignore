@@ -11,7 +11,7 @@ logs/*
 .coverage
 htmlcov/
 commands.txt
-
+dump.rdb
 .env
 .DS_Store
 dist/

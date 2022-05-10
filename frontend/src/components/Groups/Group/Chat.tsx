@@ -3,12 +3,12 @@ import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import axios, { AxiosError } from 'axios';
 import { nanoid } from 'nanoid';
 import { GlobalContext } from '../../../context/global';
-import { IMessage, IPagination, IGlobalContext, IGroupPost } from '../../../interfaces';
+import { IMessage, IPagination, IGlobalContext, IGroupData } from '../../../interfaces';
 import { IMessagesRequest } from '../../../interfaces/requests';
 import { getGroupId, http } from '../../../helpers';
 import Message from '../Messages/Message';
 export interface IChatProps {
-  group: IGroupPost;
+  group: IGroupData;
 }
 
 const socket = new WebSocket(`ws://localhost:8000/ws/chat/${getGroupId()}/`);
@@ -73,7 +73,6 @@ const Chat = ({ group }: IChatProps) => {
       const response = await http.get<IMessagesRequest>(
         `/messages/?group=${group.id}&page=${pagination.page}`
       );
-      console.log(response);
       setMessages((prevState) => [...prevState, ...response.data.messages]);
       setPagination((prevState) => ({ ...prevState, ...response.data.pagination }));
     } catch (e: unknown | AxiosError) {
@@ -89,7 +88,6 @@ const Chat = ({ group }: IChatProps) => {
       const response = await http.get<IMessagesRequest>(
         `/messages/?group=${group.id}&page=0`
       );
-      console.log(response);
 
       setMessages(response.data.messages);
       setPagination((prevState) => ({ ...prevState, ...response.data.pagination }));
@@ -117,6 +115,7 @@ const Chat = ({ group }: IChatProps) => {
         flexDir="column-reverse"
         overflowY="auto"
         color="#fff"
+        p="0.5rem"
         className="overflow-scroll"
       >
         {messages.map((message) => {

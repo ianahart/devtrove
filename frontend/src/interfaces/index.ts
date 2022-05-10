@@ -10,7 +10,7 @@ export interface IMessage {
   user: number;
 }
 
-export interface IGroupPost {
+export interface IGroupData {
   title: string;
   cover_image: string;
   post_id: number | null;
@@ -20,6 +20,7 @@ export interface IGroupPost {
   count: string;
   group_id: number | null;
   id: number | null;
+  group_title: string;
 }
 
 export interface IInvite {

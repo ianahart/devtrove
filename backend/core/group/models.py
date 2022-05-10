@@ -59,7 +59,8 @@ class GroupMananger(models.Manager):
 
             for user in group_slice:
                 user.avatar_url = user.group_user.avatar_url
-            post ={
+
+            group_data ={
             'title': group[0].post.title,
             'cover_image': group[0].post.cover_image,
             'post_id': group[0].post.id,
@@ -68,9 +69,10 @@ class GroupMananger(models.Manager):
              'slug': group[0].post.slug,
              'group_id': group[0].group_id,
             'count': count_text,
-             'id': group[0].id
+             'id': group[0].id,
+            'group_title': group[0].title,
             }
-            return post, group_slice
+            return group_data, group_slice
         except (DatabaseError, ObjectDoesNotExist, ) as e:
             return {'error': str(e)}, {}
             logger.error('Unable to get group users for group view.')

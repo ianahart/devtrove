@@ -69,18 +69,18 @@ class GroupUserListCreateAPIView(APIView):
             if 'id' not in request.query_params:
                 raise BadRequest('Unable to find users for this group.')
 
-            post, group = Group.objects.users(
+            group_data, group = Group.objects.users(
                 request.query_params['id'],
                 int(request.user.id)
             )
             serializer = GroupUserSerializer(group, many=True)
 
-            if len(post) == 0 and len(group) == 0:
+            if len(group_data) == 0 and len(group) == 0:
                 raise ObjectDoesNotExist
 
             return Response({
                             'message': 'success',
-                            'post': post,
+                            'group_data': group_data,
                             'group' :serializer.data,
                             }, status=status.HTTP_200_OK)
 
