@@ -5,13 +5,12 @@ import { nanoid } from 'nanoid';
 import { GlobalContext } from '../../../context/global';
 import { IMessage, IPagination, IGlobalContext, IGroupData } from '../../../interfaces';
 import { IMessagesRequest } from '../../../interfaces/requests';
-import { getGroupId, http } from '../../../helpers';
+import { getGroupId, http, getStorage } from '../../../helpers';
 import Message from '../Messages/Message';
 export interface IChatProps {
   group: IGroupData;
 }
 
-const socket = new WebSocket(`ws://localhost:8000/ws/chat/${getGroupId()}/`);
 const Chat = ({ group }: IChatProps) => {
   const webSocket = useRef<WebSocket | null>(null);
   const { userAuth } = useContext(GlobalContext) as IGlobalContext;
@@ -32,13 +31,16 @@ const Chat = ({ group }: IChatProps) => {
   };
 
   useEffect(() => {
-    webSocket.current = new WebSocket(`ws://localhost:8000/ws/chat/${getGroupId()}/`);
+    webSocket.current = new WebSocket(
+      `ws://localhost:8000/ws/chat/${getGroupId()}/?token=${getStorage().access_token}`
+    );
     webSocket.current.onmessage = (message: MessageEvent) => {
       const data = JSON.parse(message.data);
       setMessages((prevState) => [data.message, ...prevState]);
     };
     return () => webSocket?.current?.close();
   }, []);
+
   const send = () => {
     webSocket?.current?.send(
       JSON.stringify({
@@ -88,7 +90,6 @@ const Chat = ({ group }: IChatProps) => {
       const response = await http.get<IMessagesRequest>(
         `/messages/?group=${group.id}&page=0`
       );
-
       setMessages(response.data.messages);
       setPagination((prevState) => ({ ...prevState, ...response.data.pagination }));
     } catch (e: unknown | AxiosError) {

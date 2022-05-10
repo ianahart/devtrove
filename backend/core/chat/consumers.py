@@ -24,6 +24,10 @@ class Consumer(AsyncWebsocketConsumer):
             return None
 
 
+    def user_online(self, user: CustomUser, online: bool):
+        user.online = online
+        user.save()
+
     def get_user(self, data: dict[str, str]):
             try:
                 user = TokenBackend(
@@ -34,6 +38,7 @@ class Consumer(AsyncWebsocketConsumer):
                 return None
 
     async def connect(self):
+        await database_sync_to_async(self.user_online)(self.scope['user'], True)
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         self.room_group_name = 'chat_%s' % self.room_name
 
@@ -45,7 +50,9 @@ class Consumer(AsyncWebsocketConsumer):
         await self.accept()
 
 
+
     async def disconnect(self, close_code):
+        await database_sync_to_async(self.user_online)(self.scope['user'], False)
         await self.channel_layer.group_discard(
             self.room_group_name,
             self.channel_name

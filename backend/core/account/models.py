@@ -236,6 +236,7 @@ class CustomUserManager(BaseUserManager):
 class CustomUser(AbstractUser, PermissionsMixin):
     username = None
     logged_in = models.BooleanField(default=False)
+    online = models.BooleanField(default=False)
     avatar_file = models.TextField(max_length=500, blank=True, null=True)
     avatar_url = models.URLField(max_length=500, blank=True, null=True)
     bio = models.TextField(max_length=160, blank=True, null=True)
