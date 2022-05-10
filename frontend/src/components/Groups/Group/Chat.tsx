@@ -3,7 +3,7 @@ import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import axios, { AxiosError } from 'axios';
 import { nanoid } from 'nanoid';
 import { GlobalContext } from '../../../context/global';
-import { IMessage, IPagination, IGlobalContext, IGroupData } from '../../../interfaces';
+import { IMessage, IGlobalContext, IGroupData } from '../../../interfaces';
 import { IMessagesRequest } from '../../../interfaces/requests';
 import { getGroupId, http, getStorage } from '../../../helpers';
 import Message from '../Messages/Message';
@@ -13,9 +13,10 @@ export interface IChatProps {
 
 const Chat = ({ group }: IChatProps) => {
   const webSocket = useRef<WebSocket | null>(null);
-  const { userAuth } = useContext(GlobalContext) as IGlobalContext;
+  const { theme, userAuth } = useContext(GlobalContext) as IGlobalContext;
   const [error, setError] = useState('');
   const [messages, setMessages] = useState<IMessage[]>([]);
+  const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
   const [pagination, setPagination] = useState({ has_next: false, page: 1 });
   const initialTextarea = { name: 'message', value: '', error: '' };
   const [textarea, setTextarea] = useState(initialTextarea);
@@ -36,7 +37,11 @@ const Chat = ({ group }: IChatProps) => {
     );
     webSocket.current.onmessage = (message: MessageEvent) => {
       const data = JSON.parse(message.data);
-      setMessages((prevState) => [data.message, ...prevState]);
+      if (data.message.action === 'online_users') {
+        setOnlineUsers(data.message.online_users);
+      } else if (data.message.action === 'message') {
+        setMessages((prevState) => [data.message, ...prevState]);
+      }
     };
     return () => webSocket?.current?.close();
   }, []);
@@ -48,6 +53,7 @@ const Chat = ({ group }: IChatProps) => {
         group_id: group.group_id,
         user_id: group.user_id,
         token: userAuth.access_token,
+        action: 'message',
       })
     );
     clear();
@@ -101,11 +107,48 @@ const Chat = ({ group }: IChatProps) => {
   }, [group.id]);
 
   useEffect(() => {
+    setOnlineUsers([]);
     fetchMessages();
   }, [fetchMessages]);
 
   return (
     <Box minH="400px" mt="5rem">
+      <Box
+        className="overflow-scroll"
+        display="flex"
+        flexDir="column"
+        overflowY="auto"
+        height="150px"
+        width="200px"
+        color={theme === 'dark' ? '#FFF' : '#000'}
+        bg="black.primary"
+        borderRadius="12px"
+        p="0.25rem"
+      >
+        <Text color="text.primary">Online Users({onlineUsers.length})</Text>
+        {onlineUsers.map((user) => {
+          return (
+            <Box
+              p="0.5rem"
+              display="flex"
+              flexDir="column"
+              position="relative"
+              key={nanoid()}
+            >
+              <Text>{user}</Text>
+              <Box
+                borderRadius="50%"
+                top="10px"
+                left="0"
+                bg="lime"
+                height="8px"
+                width="8px"
+                position="absolute"
+              ></Box>
+            </Box>
+          );
+        })}
+      </Box>
       <Box
         margin="0 auto"
         cursor="pointer"
@@ -115,7 +158,7 @@ const Chat = ({ group }: IChatProps) => {
         maxWidth="760px"
         flexDir="column-reverse"
         overflowY="auto"
-        color="#fff"
+        color="#FFF"
         p="0.5rem"
         className="overflow-scroll"
       >
