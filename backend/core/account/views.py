@@ -1,4 +1,4 @@
-from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.parsers import FormParser, MultiPartParser
@@ -6,11 +6,34 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 import json
-
 from account.permissions import AccountPermission
 from language.serializers import LanguageCreateSerializer
 from .serializers import UserProfileSerializer, UserSerializer, UserUpdateFormSerializer, UserPhotoSerializer
 from account.models import CustomUser
+
+
+
+class UserAPIView(APIView):
+    permission_classes = [IsAuthenticated, ]
+
+
+    def get(self, request):
+        try:
+            user= CustomUser.objects.all().filter(
+                handle=request.query_params['q']
+            ).first()
+            if user is None:
+                raise ObjectDoesNotExist
+            return Response({
+
+                    'message': 'success',
+                    'user': user.id
+                }, status=status.HTTP_200_OK
+            )
+        except ObjectDoesNotExist as e:
+            return Response({
+                            'error': str(e)
+                        }, status=status.HTTP_404_NOT_FOUND)
 
 
 class ProfileAPIView(APIView):
@@ -37,7 +60,6 @@ class ProfileAPIView(APIView):
 
 
         except (Exception, ValueError, ) as e:
-            print(e, type(e))
             return Response(
                 {'message': 'Something went wrong.'},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR

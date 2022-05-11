@@ -58,6 +58,8 @@ class InvitationManager(models.Manager):
 
     def create(self, data):
         try:
+           group = Group.objects.get(pk=data['group'])
+           host = CustomUser.objects.get(pk=data['host'])
            user= CustomUser.objects.all().filter(
                 handle__iexact=data['handle']
             ).first()
@@ -67,14 +69,14 @@ class InvitationManager(models.Manager):
                     'A user with that handle does not exist.'
                 )
 
-           if user.id == data['host'].id:
+           if user.id == host.id:
                 raise BadRequest(
                     'You cannot invite your self to a group that you are the host of.'
                 )
 
            invitation_count = Invitation.objects.all().filter(
                 user_id=user.id).filter(
-                group_id=data['group'].id
+                group_id=group.id
             ).filter(
                 accepted=False
             ).count()
@@ -82,9 +84,9 @@ class InvitationManager(models.Manager):
            group_count = Group.objects.all().filter(
                 group_user=user.id
             ).filter(
-                host=data['host'].id
+                host=host.id
             ).filter(
-                group_id=data['group_id']).count()
+                group_id=group.group_id).count()
 
            if invitation_count > 0 or group_count > 0:
                handle = data['handle']
@@ -93,11 +95,17 @@ class InvitationManager(models.Manager):
            invitation = self.model(
                 accepted=False,
                 user_id=user.id,
-                group=data['group'],
-                host=data['host'],
+                group=group,
+                host=host,
             )
            invitation.save()
-           return {}
+           invitation.refresh_from_db()
+
+           invitation.avatar_url = invitation.host.avatar_url
+           invitation.handle = invitation.host.handle
+           invitation.title = invitation.group.title
+
+           return {'data': invitation}
         except (BadRequest, DatabaseError, ObjectDoesNotExist) as e:
             logger.error('Unable to send an invitation for a reading group.')
             return {'type': type(e), 'error': str(e)}
@@ -131,3 +139,42 @@ class Invitation(models.Model):
 
     def __str__(self):
         return str(self.pk)
+
+
+
+class ClientManager(models.Manager):
+    def create(self, channel_name: str, user):
+        try:
+            client = self.model(channel_name=channel_name, user=user)
+            if Client.objects.all().count() == 0:
+                client.save()
+            user = Client.objects.all().filter(user=user.id).first()
+            if user is None:
+                client.save()
+
+        except DatabaseError as e:
+            print(e, type(e))
+            logger.error('Unable to create an invitation client connection to store.')
+
+
+class Client(models.Model):
+
+    objects: ClientManager = ClientManager()
+
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(default=timezone.now)
+    channel_name = models.CharField(max_length=200)
+    user = models.ForeignKey(
+        'account.CustomUser',
+        on_delete=models.CASCADE,
+        related_name='client_user',
+    )
+
+
+
+
+
+
+
+
+

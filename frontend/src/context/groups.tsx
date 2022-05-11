@@ -131,6 +131,10 @@ const GroupsContextProvider: React.FC<React.ReactNode> = ({ children }) => {
     }
   };
 
+  const addInvitation = (invitation: IInvitation) => {
+    setInvitations((prevState) => [invitation, ...prevState]);
+  };
+
   const acceptInvitation = async (
     groupId: number,
     userId: number,
@@ -161,6 +165,7 @@ const GroupsContextProvider: React.FC<React.ReactNode> = ({ children }) => {
         resetGroups,
         groupPag,
         addGroup,
+        addInvitation,
         groupError,
         groups,
         getGroups,

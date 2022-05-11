@@ -7,9 +7,10 @@ import Logo from '../../Mixed/Logo';
 import SendInvitationButton from '../Invitation/SendInvitationButton';
 export interface IGroupItemProps {
   group: IGroup;
+  webSocket: WebSocket | null;
 }
 
-const GroupItem = ({ group }: IGroupItemProps): JSX.Element => {
+const GroupItem = ({ group, webSocket }: IGroupItemProps): JSX.Element => {
   const { theme } = useContext(GlobalContext) as IGlobalContext;
   const params = useParams();
   return (
@@ -40,7 +41,9 @@ const GroupItem = ({ group }: IGroupItemProps): JSX.Element => {
                 </Text>
               </Box>
             </Tooltip>
-            {group.host === group.group_user && <SendInvitationButton group={group} />}
+            {group.host === group.group_user && (
+              <SendInvitationButton webSocket={webSocket} group={group} />
+            )}
           </Box>
         </Link>
       </Box>

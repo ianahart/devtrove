@@ -366,6 +366,7 @@ export interface IGroupsContext {
   pagInvitations: () => void;
   invitationPag: IPagination;
   resetInvitations: () => void;
+  addInvitation: (invitation: IInvitation) => void;
   denyInvitation: (id: number) => void;
   acceptInvitation: (groupId: number, userId: number, invitationId: number) => void;
 }

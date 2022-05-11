@@ -11,7 +11,7 @@ import {
   Text,
   useToast,
 } from '@chakra-ui/react';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { AiOutlineMail } from 'react-icons/ai';
 import axios, { AxiosError } from 'axios';
 import { GlobalContext } from '../../../context/global';
@@ -21,9 +21,10 @@ import { http } from '../../../helpers';
 
 export interface ISendInvitationButtonProps {
   group: IGroup;
+  webSocket: WebSocket | null;
 }
 
-const SendInvitationButton = ({ group }: ISendInvitationButtonProps) => {
+const SendInvitationButton = ({ group, webSocket }: ISendInvitationButtonProps) => {
   const toast = useToast();
   const initialHandleState = { name: 'handle', value: '', error: '' };
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -44,35 +45,43 @@ const SendInvitationButton = ({ group }: ISendInvitationButtonProps) => {
     setHandle(initialHandleState);
   };
 
-  const handleOnClickSend = async () => {
+  const handleOnClickSend = () => {
     try {
       setError('');
       if (handle.value.trim().length === 0 || handle.value.trim().length > 100) {
         setError('Handle must be between 1 and 100 characters.');
         return;
       }
-      const response = await http.post('/invitations/', {
-        host: group.host,
-        group: group.id,
-        handle: handle.value,
-        group_id: group.group_id,
-      });
-      closeModal();
 
-      toast({
-        title: 'Invitation Sent.',
-        status: 'success',
-        duration: 1500,
-        isClosable: true,
-      });
-    } catch (e: unknown | AxiosError) {
-      if (axios.isAxiosError(e)) {
-        if (e.response?.status === 400) {
-          setError(e.response?.data.error.handle);
-          return;
-        }
-        setError(e.response?.data.error);
+      webSocket?.send(
+        JSON.stringify({
+          host: group.host,
+          group: group.id,
+          handle: handle.value,
+          group_id: group.group_id,
+        })
+      );
+
+      if (webSocket) {
+        webSocket.onmessage = (event) => {
+          const data = JSON.parse(event.data);
+          if (data.message.error === null) {
+            toast({
+              title: 'Invitation Sent.',
+              status: 'success',
+              duration: 1500,
+              isClosable: true,
+            });
+            closeModal();
+          } else {
+            setError(data.message.error);
+          }
+        };
       }
+    } catch (e: any) {
+      setIsModalOpen(true);
+      console.log(e.message);
+      setError(e.message);
     }
   };
 
