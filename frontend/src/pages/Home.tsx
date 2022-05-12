@@ -16,7 +16,6 @@ const Home = (): JSX.Element => {
     updatePostUpvote,
     isLoaded,
     bookmark,
-    scrape,
     setIsLoaded,
     postsError,
     fetchPosts,
@@ -52,11 +51,6 @@ const Home = (): JSX.Element => {
         </Box>
       )}
 
-      <Box display="none" /**display="flex"*/ justifyContent="center" my="3rem">
-        <Button onClick={scrape} variant="secondaryButton">
-          Scrape
-        </Button>
-      </Box>
       {postsError.length > 0 && (
         <Heading
           textAlign="center"

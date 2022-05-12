@@ -335,7 +335,6 @@ export interface IPostsContext {
   postsError: string;
   updateCheckedPost: (id: number, checked: boolean) => void;
   pagination: { page: number; has_next: boolean };
-  scrape: () => void;
   clearPosts: () => void;
   paginatePosts: () => void;
   bookmark: (a: number, b: number, c: string) => void;

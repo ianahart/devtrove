@@ -13,24 +13,6 @@ const PostsContextProvider: React.FC<React.ReactNode> = ({ children }) => {
   const [postsError, setPostsError] = useState('');
   const [historyError, setHistoryError] = useState('');
   const [pagination, setPagination] = useState(paginationState);
-  const scrape = async () => {
-    // dev.to 'https://www.dev.to'
-    // sitepoint ''https://www.sitepoint.com/blog/'
-    try {
-      const response = await http.post('/posts/', {
-        url: 'https://www.sitepoint.com/blog/',
-      });
-      if (response.status === 201) {
-        setIsLoaded(true);
-        setPosts(response.data);
-      }
-    } catch (e: unknown | AxiosError) {
-      if (axios.isAxiosError(e)) {
-        setHistoryError(e.response?.data.error);
-      }
-    }
-  };
-
   const checkedPostsList = (): number[] => {
     return [...posts]
       .map((post) => {
@@ -178,7 +160,6 @@ const PostsContextProvider: React.FC<React.ReactNode> = ({ children }) => {
         pagination,
         fetchPosts,
         posts,
-        scrape,
       }}
     >
       {children}
