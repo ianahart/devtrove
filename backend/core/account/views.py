@@ -40,12 +40,12 @@ class ProfileAPIView(APIView):
     queryset = CustomUser.objects.all()
     permission_classes = [IsAuthenticated, ]
 
-    def get(self, request, pk=None):
+    def get(self, request, handle=None):
         try:
-            if not pk:
+            if not handle:
                 raise ValueError
 
-            profile = CustomUser.objects.get_profile(user_id=pk)
+            profile = CustomUser.objects.get_profile(handle=handle)
             try:
                 serializer = UserProfileSerializer(profile)
                 return Response(

@@ -2,6 +2,7 @@ import {
   Box,
   Icon,
   IconButton,
+  Link,
   Text,
   Tooltip,
   Menu,
@@ -12,6 +13,7 @@ import {
 import { useContext, useState } from 'react';
 import { GiSwordBrandish } from 'react-icons/gi';
 import { BsFlagFill, BsTrash, BsThreeDotsVertical } from 'react-icons/bs';
+import { Link as RouterLink } from 'react-router-dom';
 import axios, { AxiosError } from 'axios';
 import { http } from '../../helpers';
 import ProfilePicture from '../Account/ProfilePicture';
@@ -97,33 +99,34 @@ const Comment = ({
       }
     }
   };
-
   return (
     <Box my="1.5rem" padding="0.5rem" color="#FFF">
       <Box display="flex" justifyContent="space-between">
-        <Box display="flex" justifyContent="flex-start">
-          <Box>
-            <ProfilePicture
-              borderRadius="50%"
-              avatar_url={comment.user.avatar_url}
-              height="40px"
-              width="40px"
-            />
-          </Box>
-          <Box ml="0.5rem">
-            <Text color={theme === 'dark' ? '#FFF' : '#000'} fontWeight="bold">
-              {comment.user.handle ? comment.user.handle : 'No Name'}
-            </Text>
-            <Text color={theme === 'dark' ? '#FFF' : '#000'}>
-              {comment.readable_date}
-            </Text>
-            {comment.edited && (
-              <Text textAlign="left" color="text.primary">
-                (edited)
+        <Link as={RouterLink} to={`/${comment.user.handle}/profile`}>
+          <Box display="flex" justifyContent="flex-start">
+            <Box>
+              <ProfilePicture
+                borderRadius="50%"
+                avatar_url={comment.user.avatar_url}
+                height="40px"
+                width="40px"
+              />
+            </Box>
+            <Box ml="0.5rem">
+              <Text color={theme === 'dark' ? '#FFF' : '#000'} fontWeight="bold">
+                {comment.user.handle ? comment.user.handle : 'No Name'}
               </Text>
-            )}
+              <Text color={theme === 'dark' ? '#FFF' : '#000'}>
+                {comment.readable_date}
+              </Text>
+              {comment.edited && (
+                <Text textAlign="left" color="text.primary">
+                  (edited)
+                </Text>
+              )}
+            </Box>
           </Box>
-        </Box>
+        </Link>
         {userAuth.user.logged_in && (
           <Menu size="100px">
             <MenuButton

@@ -117,9 +117,9 @@ class CustomUserManager(BaseUserManager):
             return self.__sort_tags(smallest) + [pivot] + self.__sort_tags(greatest)
 
 
-    def get_profile(self, user_id: int) -> Optional['CustomUser'] | list:
+    def get_profile(self, handle: str) -> Optional['CustomUser'] | list:
         try:
-            cur_user = CustomUser.objects.get(pk=user_id)
+            cur_user = CustomUser.objects.all().filter(handle=handle).first()
             if not cur_user:
                 raise ObjectDoesNotExist('User does not exist')
             histories = cur_user.user_history.all() \

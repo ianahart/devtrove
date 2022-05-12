@@ -36,7 +36,7 @@ class Scraper ():
     def __parse_logo(self):
         try:
             self.logo = self.soup.head.find(type='image/x-icon')
-
+            print(self.logo, 'asFDSFDS@#$%@#FWEDS')
             if not isinstance(self.logo, NavigableString):
                 if hasattr(self.logo, 'href'):
                     self.logo = self.logo.get('href')

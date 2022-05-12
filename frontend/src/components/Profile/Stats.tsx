@@ -3,11 +3,14 @@ import { useContext } from 'react';
 import { nanoid } from 'nanoid';
 import { GlobalContext } from '../../context/global';
 import { IGlobalContext } from '../../interfaces';
+import { useParams } from 'react-router-dom';
 import { ResponsiveCalendarCanvas } from '@nivo/calendar';
 import { GiRibbonMedal } from 'react-icons/gi';
 import { IStatsProps } from '../../interfaces/props';
+
 const Stats = ({ countTags, articles_read, dates, calendar }: IStatsProps<object>) => {
-  const { theme } = useContext(GlobalContext) as IGlobalContext;
+  const params = useParams();
+  const { theme, userAuth } = useContext(GlobalContext) as IGlobalContext;
   const medals = ['gold', 'silver', '#CD7F32'];
   return (
     <Box p="0.75rem">
@@ -19,7 +22,7 @@ const Stats = ({ countTags, articles_read, dates, calendar }: IStatsProps<object
           This graph only shows posts read during ({new Date().getFullYear()}).
         </Text>
         <Text mt="0.5rem" color="purple.tertiary">
-          You have read
+          {userAuth.user.handle === params.username ? 'You have read' : 'They have read'}
           <Box color="text.primary" as="span" fontWeight="bold">
             {' '}
             {articles_read}{' '}

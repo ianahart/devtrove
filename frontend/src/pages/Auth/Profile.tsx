@@ -1,5 +1,6 @@
 import { Box, Grid, Text } from '@chakra-ui/react';
 import axios, { AxiosError } from 'axios';
+import { useParams } from 'react-router-dom';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { http, getStorage } from '../../helpers';
 import { GlobalContext } from '../../context/global';
@@ -9,15 +10,15 @@ import { IProfileRequest } from '../../interfaces/requests';
 import GoBack from '../../components/Mixed/GoBack';
 
 const Profile = (): JSX.Element => {
+  const params = useParams();
   const [isLoaded, setIsLoaded] = useState(false);
   const { userAuth, theme } = useContext(GlobalContext) as IGlobalContext;
   const [profile, setProfile] = useState<IFullUser<object> | null>(null);
   const [error, setError] = useState(false);
-
   const retrieveProfile = useCallback(async () => {
     try {
       const response = await http.get<IProfileRequest<object>>(
-        `/account/profile/${userAuth.user.id}/`
+        `/account/profile/${params.username}/`
       );
       setProfile(response.data.profile);
       setIsLoaded(true);
@@ -27,7 +28,7 @@ const Profile = (): JSX.Element => {
         setError(e.response?.data.error);
       }
     }
-  }, [userAuth.user.id]);
+  }, [params.username]);
 
   useEffect(() => {
     if (!isLoaded) {
