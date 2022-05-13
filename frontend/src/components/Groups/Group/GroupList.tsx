@@ -16,7 +16,7 @@ const GroupList = () => {
 
   useEffect(() => {
     webSocket.current = new WebSocket(
-      `ws://orca-app-3lkiz.ondigitalocean.app/ws/invitation/${userAuth.user.id}/?token=${userAuth.access_token}`
+      `wss://orca-app-3lkiz.ondigitalocean.app/api/ws/invitation/${userAuth.user.id}/?token=${userAuth.access_token}`
     );
 
     webSocket.current.onmessage = (event) => {
