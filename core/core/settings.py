@@ -184,7 +184,7 @@ elif len(sys.argv) > 0 and sys.argv[1] != 'collectstatic':
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    "https://courageous-pastelito-c380bc.netlify.app/",
+    "https://courageous-pastelito-c380bc.netlify.app",
 ]
 
 
