@@ -17,8 +17,8 @@ application = ProtocolTypeRouter({
   "http": asgi,
   "websocket": TokenAuthMiddleware(
         URLRouter(
-            chat.routing.websocket_urlpatterns +
-            invitation.routing.websocket_urlpatterns
+            chat.routing.websocket_urlpatterns #+
+            #invitation.routing.websocket_urlpatterns
         )
     ),
 })
