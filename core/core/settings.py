@@ -256,9 +256,6 @@ SIMPLE_JWT = {
 
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:3000',
-    'http://localhost:8000',
-    'http://localhost:8001',
-    'https://orca-app-3lkiz.ondigitalocean.app/',
     'https://courageous-pastelito-c380bc.netlify.app/'
 ]
 
