@@ -176,10 +176,10 @@ if DEVELOPMENT_MODE is True:
     }
 
 elif len(sys.argv) > 0 and sys.argv[1] != 'collectstatic':
-    if os.getenv("DATABASE_URL", None) is None:
-        raise Exception("DATABASE_URL environment variable not defined")
+    if os.getenv("HEROKU_POSTGRESQL_GRAY_URL", None) is None:
+        raise Exception("HEROKU_POSTGRESQL_GRAY_URL environment variable not defined")
     DATABASES = {
-        "default": dj_database_url.parse(os.environ.get("DATABASE_URL")),
+        "default": dj_database_url.parse(os.environ.get("HEROKU_POSTGRESQL_GRAY_URL")),
     }
 
 CORS_ALLOWED_ORIGINS = [
