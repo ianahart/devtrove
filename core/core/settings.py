@@ -196,52 +196,52 @@ EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 EMAIL_SENDER = env('EMAIL_SENDER')
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-        'formatters':{
-            'verbose': {
-                'format': '%(levelname)s %(asctime)s %(lineno)s %(filename)s %(module)s %(process)d %(thread)d %(message)s'
-        },
-         'simple': {
-            'format': '%(levelname)s %(message)s'
-        },
-    },
-
-    'handlers': {
-            'console': {
-            'level': 'INFO',
-            'class': 'logging.StreamHandler',
-            'formatter': 'verbose'
-        },
-        'file': {
-            'level': 'ERROR',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': os.path.join(BASE_DIR,'logs/log_file1.log'),
-            'formatter': 'verbose',
-            'maxBytes': 1024*1024*5, # 5 MB
-            'backupCount': 5,
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['file', 'console'],
-            'level': 'INFO',
-            'propagate': True,
-        },
-    },
-}
-
-if DEBUG == 'True':
-    # make all loggers use the console.
-    for logger in LOGGING['loggers']:
-        LOGGING['loggers'][logger]['handlers'] = ['console']
-elif DEBUG== 'False':
-    ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
-#    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
-    for logger in LOGGING['loggers']:
-        LOGGING['loggers'][logger]['handlers'] = ['file']
-
+#LOGGING = {
+#    'version': 1,
+#    'disable_existing_loggers': False,
+#        'formatters':{
+#            'verbose': {
+#                'format': '%(levelname)s %(asctime)s %(lineno)s %(filename)s %(module)s %(process)d %(thread)d %(message)s'
+#        },
+#         'simple': {
+#            'format': '%(levelname)s %(message)s'
+#        },
+#    },
+#
+#    'handlers': {
+#            'console': {
+#            'level': 'INFO',
+#            'class': 'logging.StreamHandler',
+#            'formatter': 'verbose'
+#        },
+#        'file': {
+#            'level': 'ERROR',
+#            'class': 'logging.handlers.RotatingFileHandler',
+#            'filename': os.path.join(BASE_DIR,'logs/log_file1.log'),
+#            'formatter': 'verbose',
+#            'maxBytes': 1024*1024*5, # 5 MB
+#            'backupCount': 5,
+#        },
+#    },
+#    'loggers': {
+#        'django': {
+#            'handlers': ['file', 'console'],
+#            'level': 'INFO',
+#            'propagate': True,
+#        },
+#    },
+#}
+#
+#if DEBUG == 'True':
+#    # make all loggers use the console.
+#    for logger in LOGGING['loggers']:
+#        LOGGING['loggers'][logger]['handlers'] = ['console']
+#elif DEBUG== 'False':
+#    ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
+##    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+#    for logger in LOGGING['loggers']:
+#        LOGGING['loggers'][logger]['handlers'] = ['file']
+#
 
 #REST framework
 REST_FRAMEWORK = {
