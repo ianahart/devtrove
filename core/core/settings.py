@@ -183,7 +183,8 @@ elif len(sys.argv) > 0 and sys.argv[1] != 'collectstatic':
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "http://127.0.0.1:3000"
+    "http://127.0.0.1:3000",
+    "https://courageous-pastelito-c380bc.netlify.app/",
 ]
 
 
@@ -254,7 +255,11 @@ SIMPLE_JWT = {
 }
 
 CORS_ORIGIN_WHITELIST = [
-    'http://localhost:3000'
+    'http://localhost:3000',
+    'http://localhost:8000',
+    'http://localhost:8001',
+    'https://orca-app-3lkiz.ondigitalocean.app/',
+    'https://courageous-pastelito-c380bc.netlify.app/'
 ]
 
 # Password validation

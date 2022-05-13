@@ -11,7 +11,7 @@ export const getGroupId = () => {
 
 export const http = axios.create({
   // Change in production
-  baseURL: 'http://localhost:3000/api/v1/',
+  baseURL: 'https://courageous-pastelito-c380bc.netlify.app/api/v1/',
 });
 
 export const getStorage = () => {
