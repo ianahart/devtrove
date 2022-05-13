@@ -167,10 +167,10 @@ if DEVELOPMENT_MODE is True:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': env('DATABASE_NAME'),
-            'USER': env('DATABASE_USER'),
-            'PASSWORD': env('DATABASE_HOST'),
-            'PORT': env('DATABASE_PORT')
+            'NAME': env('POSTGRES_DB'),
+            'USER': env('POSTGRES_USERNAME'),
+            'PASSWORD': env('POSTGRES_PASSWORD'),
+            'PORT': env('POSTGRES_PORT')
         }
     }
 
