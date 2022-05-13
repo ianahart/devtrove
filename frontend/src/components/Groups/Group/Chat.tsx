@@ -33,7 +33,7 @@ const Chat = ({ group }: IChatProps) => {
 
   useEffect(() => {
     webSocket.current = new WebSocket(
-      `wss://orca-app-3lkiz.ondigitalocean.app:8080/api/ws/chat/${getGroupId()}/?token=${
+      `ws://orca-app-3lkiz.ondigitalocean.app:8080/ws/chat/${getGroupId()}/?token=${
         getStorage().access_token
       }`
     );
