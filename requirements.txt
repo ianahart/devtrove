@@ -15,6 +15,7 @@ daphne==3.0.2
 Django==4.0.3
 django-cors-headers==3.11.0
 django-environ==0.8.1
+dj-database-url==0.5.0
 django-stubs==1.9.0
 django-stubs-ext==0.3.1
 djangorestframework==3.13.1
