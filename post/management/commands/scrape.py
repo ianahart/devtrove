@@ -36,8 +36,8 @@ class Command(BaseCommand):
             sitepoint = requests.get('https://www.sitepoint.com/blog/')
             devto = requests.get('https://www.dev.to')
             # Scraper second parameter must be greater than 1 post
-            sp_scraper = sitepoint_scraper.SitePointsScraper(sitepoint.text, 25)
-            dt_scraper = scraper.Scraper(devto.text, 25)
+            sp_scraper = sitepoint_scraper.SitePointsScraper(sitepoint.text, 2)
+            dt_scraper = scraper.Scraper(devto.text, 2)
 
             sp_scraper.parse_post_cover()
             dt_scraper.parse_covers()

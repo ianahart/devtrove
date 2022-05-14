@@ -9,7 +9,6 @@ const Options = () => {
     <Box className="group-sidebar">
       <Text color="#FFF" textAlign="center">
         {' '}
-        Options sidebar
       </Text>
     </Box>
   );
