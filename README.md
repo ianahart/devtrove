@@ -40,7 +40,7 @@ p- Test12345%
 
 MIT License
 
-Copyright 2022 Ian Hart
+Copyright 2023 Ian Hart
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
