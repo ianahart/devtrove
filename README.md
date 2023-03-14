@@ -30,8 +30,8 @@ I wanted a variety of web developer articles not just from one site.
 
 
 ## Test Account
-https://courageous-pastelito-c380bc.netlify.app/
-u- bluemangroup@aol.com
+https://courageous-pastelito-c380bc.netlify.app/ </br>
+u- bluemangroup@aol.com </br>
 p- Test12345%
 
 
